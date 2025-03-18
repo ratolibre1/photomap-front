@@ -1,0 +1,42 @@
+/* Estilos para el layout y sidebar */
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  transition: width 0.3s;
+}
+
+.sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.sidebar .nav-link:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px !important;
+  }
+
+  .sidebar.expanded .sidebar-text {
+    display: none;
+  }
+
+  .content-wrapper {
+    margin-left: 60px !important;
+  }
+}

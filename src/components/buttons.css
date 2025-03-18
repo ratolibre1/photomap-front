@@ -1,0 +1,15 @@
+.btn-action {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.btn-action:hover {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.badge-theme {
+  background-color: var(--info);
+  color: var(--dark);
+}

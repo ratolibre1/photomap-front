@@ -1,0 +1,40 @@
+/* Estilos para la carga de archivos */
+.upload-dropzone {
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.upload-dropzone:hover {
+  border-color: var(--primary) !important;
+  background-color: rgba(142, 202, 230, 0.1);
+}
+
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.preview-container {
+  transition: transform 0.2s;
+}
+
+.preview-container:hover {
+  transform: scale(1.05);
+}
+
+/* Animación para subida de archivos */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.upload-progress {
+  animation: pulse 2s infinite;
+}

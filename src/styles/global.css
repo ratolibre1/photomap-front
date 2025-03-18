@@ -1,0 +1,19 @@
+/* Actualizar referencias a colores antiguos */
+.page-header {
+  border-left: 4px solid var(--primary);
+  background-color: var(--light);
+}
+
+.card-dashboard {
+  border-top: 3px solid var(--info);
+}
+
+.nav-item.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+.nav-item:hover:not(.active) {
+  background-color: var(--secondary);
+  color: white;
+}

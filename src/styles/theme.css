@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Hind:wght@300;400;500;600;700&display=swap');
+
+:root {
+
+  /* Variables Bootstrap estándar */
+  --bs-primary: var(--primary);
+  --bs-secondary: var(--secondary);
+  --bs-success: var(--success);
+  --bs-info: var(--info);
+  --bs-warning: var(--warning);
+  --bs-danger: var(--danger);
+  --bs-light: var(--light);
+  --bs-dark: var(--dark);
+
+  /* Variables para componentes específicos */
+  --sidebar-color: var(--light);
+  --sidebar-border: var(--secondary);
+
+  /* Variables para tarjetas y contenedores */
+  --card-header-bg: var(--light);
+
+  /* Variables para botones */
+  --btn-hover-transform: scale(1.03);
+  --btn-active-transform: scale(0.98);
+}
+
+/* Sobrescribir colores de Bootstrap */
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.bg-dark {
+  background-color: var(--primary-dark) !important;
+}
+
+.text-primary {
+  color: var(--primary) !important;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--btn-primary-hover) !important;
+  border-color: var(--btn-primary-hover) !important;
+}
+
+.btn-outline-primary {
+  color: var(--btn-primary-bg) !important;
+  border-color: var(--btn-primary-bg) !important;
+}
+
+.btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--btn-primary-bg) !important;
+}
+
+.btn-success {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: var(--btn-success-text, white);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  border-color: var(--danger);
+  color: var(--btn-danger-text, white);
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-color);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.sidebar .nav-link {
+  color: var(--sidebar-color);
+}
+
+.sidebar .nav-link.active {
+  background-color: var(--sidebar-active);
+  color: var(--sidebar-color);
+}
+
+.sidebar .nav-link:hover:not(.active) {
+  background-color: var(--secondary);
+}
+
+/* Tarjetas */
+.card {
+  border-color: var(--card-border) !important;
+  box-shadow: 0 4px 8px var(--card-shadow) !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 5px 15px var(--card-shadow);
+}
+
+.card-header {
+  background-color: var(--card-header-bg) !important;
+  color: var(--primary-dark) !important;
+}
+
+/* Alertas */
+.alert-primary {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-dark) !important;
+  border-color: var(--primary) !important;
+}
+
+.alert-warning {
+  background-color: var(--accent-yellow) !important;
+  color: var(--primary-dark) !important;
+  border-color: var(--accent-orange) !important;
+}
+
+/* Aplicar fondo a las páginas */
+body {
+  background-color: var(--page-background) !important;
+  font-family: 'Hind', sans-serif;
+}
+
+.content-wrapper {
+  background-color: var(--page-background) !important;
+}
+
+/* Actualizar estilos de botones */
+.btn-outline-success {
+  color: var(--btn-success-bg) !important;
+  border-color: var(--btn-success-bg) !important;
+}
+
+.btn-outline-success:hover {
+  background-color: var(--btn-success-bg) !important;
+  color: var(--btn-success-text) !important;
+}
+
+.btn-outline-danger {
+  color: var(--btn-danger-bg) !important;
+  border-color: var(--btn-danger-bg) !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--btn-danger-bg) !important;
+  color: var(--btn-danger-text) !important;
+}
+
+/* Actualizar la animación del menú */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Correcciones para elementos con colores posiblemente hardcodeados */
+.badge,
+.alert,
+.progress,
+.dropdown-menu,
+.list-group-item {
+  --bs-primary-rgb: var(--primary);
+  --bs-secondary-rgb: var(--secondary);
+  --bs-success-rgb: var(--success);
+  --bs-info-rgb: var(--info);
+  --bs-warning-rgb: var(--warning);
+  --bs-danger-rgb: var(--danger);
+}
+
+/* Ajustes para botones de temas y otros elementos de UI personalizados */
+.theme-selector button {
+  border-color: var(--light);
+  color: var(--light);
+}
+
+.theme-selector button:hover {
+  opacity: 0.9;
+}
+
+.theme-selector button.active {
+  border-width: 2px;
+  opacity: 1;
+}
+
+/* Aplicar Courgette a los títulos principales */
+h1 {
+  font-family: 'Courgette', cursive;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
