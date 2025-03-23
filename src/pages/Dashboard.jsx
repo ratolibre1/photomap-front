@@ -46,18 +46,86 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      <Row className="mb-4">
-        <Col md={8}>
+      <div className="dashboard-stats-row row">
+        <style jsx="true">{`
+          .dashboard-stats-row {
+            display: flex;
+            flex-wrap: wrap;
+          }
+          
+          .dashboard-stats-row > div {
+            display: flex;
+            margin-bottom: 1.5rem;
+          }
+          
+          .dashboard-stats-row .card {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          /* Para la tarjeta del mapa */
+          .dashboard-map-card {
+            background-color: #1b5441 !important;
+            color: white !important;
+            height: 100%;
+          }
+          
+          /* Para la tarjeta de estadísticas */
+          .dashboard-stats-card {
+            height: 100%;
+          }
+          
+          /* Estilo especial para el botón del mapa */
+          .dashboard-map-button {
+            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.03em;
+          }
+          
+          .dashboard-map-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+          }
+          
+          .dashboard-map-button:active {
+            transform: translateY(1px);
+          }
+          
+          /* Estilo para el título de la tarjeta de mapa */
+          .dashboard-map-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+          }
+        `}</style>
+
+        {/* Primera columna - Mapa */}
+        <div className="col-lg-8">
           <Card className="shadow-sm bg-primary text-white">
-            <Card.Body className="p-4">
-              <h2 className="mb-3">Explora tus recuerdos en el mapa 🗺️</h2>
+            <Card.Body className="p-4 d-flex flex-column justify-content-center align-items-center text-center">
+              <h2 className="mb-3 dashboard-map-title">Explora tus recuerdos en el mapa 🗺️</h2>
               <p>Visualiza todas tus fotos distribuidas geográficamente y descubre los lugares que has visitado.</p>
-              <Button as={Link} to="/photo-map" variant="light" className="mt-2">Ver mapa</Button>
+              <Button
+                as={Link}
+                to="/photo-map"
+                variant="light"
+                size="lg"
+                className="mt-3 dashboard-map-button"
+              >
+                <i className="bi bi-geo-alt-fill me-2"></i>
+                Ver mapa
+              </Button>
             </Card.Body>
           </Card>
-        </Col>
+        </div>
 
-        <Col md={4}>
+        {/* Segunda columna - Estadísticas */}
+        <div className="col-lg-4">
           <Card className="shadow-sm h-100">
             <Card.Body className="p-4 d-flex flex-column">
               <h3 className="mb-3">Tus estadísticas 📊</h3>
@@ -99,8 +167,8 @@ const Dashboard = () => {
               )}
             </Card.Body>
           </Card>
-        </Col>
-      </Row>
+        </div>
+      </div>
 
       <Row>
         <Col md={4}>

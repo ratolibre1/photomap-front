@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Nav, Button, Alert, ProgressBar, Form, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Nav, Button, Alert, ProgressBar, Form, Spinner, Dropdown } from 'react-bootstrap';
 import UploadPhotos from '../components/upload/UploadPhotos';
 import UploadZip from '../components/upload/UploadZip';
 import { useDropzone } from 'react-dropzone';
 import { photoService, categoryService } from '../services/api';
+import { useLabels } from '../context/LabelContext';
+import LabelBadge from '../components/common/LabelBadge';
 
 const Upload = () => {
   const [activeTab, setActiveTab] = useState('photos');
@@ -18,13 +20,15 @@ const Upload = () => {
   // Estado para los datos del formulario
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedLabels, setSelectedLabels] = useState([]);
   const [visibility, setVisibility] = useState('public');
 
   // Estado para categorías disponibles
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [categoriesError, setCategoriesError] = useState(null);
+
+  const { categoriesWithLabels, loading: labelsLoading } = useLabels();
 
   // Cargar categorías al montar el componente
   useEffect(() => {
@@ -67,14 +71,17 @@ const Upload = () => {
     setFiles(files.filter(file => file.id !== fileId));
   };
 
-  // Manejar cambios en categorías seleccionadas
-  const handleCategoryChange = (e) => {
-    const value = e.target.value;
-    if (selectedCategories.includes(value)) {
-      setSelectedCategories(selectedCategories.filter(cat => cat !== value));
-    } else {
-      setSelectedCategories([...selectedCategories, value]);
+  // Funciones para manejar etiquetas
+  const handleAddLabel = (label) => {
+    if (!selectedLabels.some(item => (item._id || item.id) === (label._id || label.id))) {
+      setSelectedLabels([...selectedLabels, label]);
     }
+  };
+
+  const handleRemoveLabel = (labelToRemove) => {
+    setSelectedLabels(selectedLabels.filter(label =>
+      (label._id || label.id) !== (labelToRemove._id || labelToRemove.id)
+    ));
   };
 
   // Enviar archivos al servidor
@@ -98,10 +105,10 @@ const Upload = () => {
         formData.append('title', title || file.name);
         formData.append('description', description || '');
 
-        // Añadir categorías como un string separado por comas
-        if (selectedCategories.length > 0) {
-          formData.append('categories', selectedCategories.join(','));
-        }
+        // Añadir etiquetas
+        selectedLabels.forEach(label => {
+          formData.append('labels[]', label._id || label.id);
+        });
 
         // Añadir visibilidad
         formData.append('visibility', visibility);
@@ -140,7 +147,7 @@ const Upload = () => {
         setFiles([]);
         setTitle('');
         setDescription('');
-        setSelectedCategories([]);
+        setSelectedLabels([]);
       } else {
         setUploadError('Hubo problemas al subir algunas imágenes. Por favor, intenta de nuevo.');
       }
@@ -308,37 +315,59 @@ const Upload = () => {
                       </Form.Group>
 
                       <Form.Group className="mb-3">
-                        <Form.Label>Categorías</Form.Label>
-                        {loadingCategories ? (
-                          <div className="text-center py-2">
-                            <Spinner animation="border" size="sm" /> Cargando categorías...
-                          </div>
-                        ) : categoriesError ? (
-                          <Alert variant="warning" className="py-2">
-                            {categoriesError}
-                          </Alert>
-                        ) : (
-                          <div className="category-selector">
-                            {categories.length === 0 ? (
-                              <Alert variant="info" className="py-2">
-                                No hay categorías disponibles. Puedes crear categorías en la sección de administración.
-                              </Alert>
+                        <Form.Label>Etiquetas</Form.Label>
+
+                        <div className="d-flex flex-wrap gap-2 mb-2">
+                          {selectedLabels.length > 0 ? (
+                            selectedLabels.map(label => (
+                              <LabelBadge
+                                key={label._id || label.id}
+                                label={label}
+                                showEditButton={false}
+                                onDelete={handleRemoveLabel}
+                              />
+                            ))
+                          ) : (
+                            <span className="text-muted">Ninguna etiqueta seleccionada</span>
+                          )}
+                        </div>
+
+                        <Dropdown>
+                          <Dropdown.Toggle variant="outline-secondary" id="label-dropdown" className="mt-2">
+                            <i className="bi bi-tag me-1"></i> Agregar etiqueta
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                            {labelsLoading ? (
+                              <Dropdown.Item disabled>Cargando etiquetas...</Dropdown.Item>
                             ) : (
-                              categories.map(category => (
-                                <Form.Check
-                                  key={category._id}
-                                  type="checkbox"
-                                  id={`category-${category._id}`}
-                                  label={category.name}
-                                  value={category._id}
-                                  checked={selectedCategories.includes(category._id)}
-                                  onChange={handleCategoryChange}
-                                  disabled={uploading}
-                                />
+                              categoriesWithLabels.map(category => (
+                                <div key={category._id || category.id}>
+                                  <Dropdown.Header>{category.name}</Dropdown.Header>
+                                  {category.labels?.map(label => {
+                                    const isSelected = selectedLabels.some(selected =>
+                                      (selected._id || selected.id) === (label._id || label.id)
+                                    );
+
+                                    return (
+                                      <Dropdown.Item
+                                        key={label._id || label.id}
+                                        onClick={() => handleAddLabel(label)}
+                                        disabled={isSelected}
+                                      >
+                                        <LabelBadge
+                                          label={label}
+                                          showEditButton={false}
+                                          disabled={isSelected}
+                                        />
+                                      </Dropdown.Item>
+                                    );
+                                  })}
+                                  <Dropdown.Divider />
+                                </div>
                               ))
                             )}
-                          </div>
-                        )}
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </Form.Group>
 
                       <Form.Group className="mb-3">

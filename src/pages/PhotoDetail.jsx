@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, ListGroup, Badge, Form, Dropdown, Toast } from 'react-bootstrap';
 import { photoService } from '../services/api';
 import { useCategories } from '../context/CategoryContext';
+import { useLabels } from '../context/LabelContext';
+import LabelBadge from '../components/common/LabelBadge';
 
 const PhotoDetail = () => {
   const { id } = useParams();
@@ -21,15 +23,16 @@ const PhotoDetail = () => {
     title: '',
     description: '',
     isPublic: false,
-    categories: [],
+    labels: [],
     coordinates: ''
   });
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
-  const { categories, loading: categoriesLoading } = useCategories();
+  const { categories } = useCategories();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const { categoriesWithLabels, loading: labelsLoading, refreshData: refreshLabels } = useLabels();
 
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -44,6 +47,10 @@ const PhotoDetail = () => {
         // Extraer la foto de la estructura correcta
         const currentPhoto = response.data.data.photo || response.data.data;
         setPhoto(currentPhoto);
+
+        // Importante: agregamos log para ver las etiquetas
+        console.log("Etiquetas de la foto:", currentPhoto.labels);
+        console.log("Tipo de etiquetas:", Array.isArray(currentPhoto.labels) ? "Array" : typeof currentPhoto.labels);
 
         // Obtener IDs de foto anterior y siguiente
         try {
@@ -68,7 +75,6 @@ const PhotoDetail = () => {
 
   useEffect(() => {
     if (showEditModal && photo) {
-      // Formatear las coordenadas como string si existen
       const coordsString = photo.location?.coordinates ?
         `${photo.location.coordinates[1].toFixed(6)}, ${photo.location.coordinates[0].toFixed(6)}` : '';
 
@@ -76,7 +82,7 @@ const PhotoDetail = () => {
         title: photo.title || '',
         description: photo.description || '',
         isPublic: photo.isPublic || false,
-        categories: photo.categories || [],
+        labels: photo.labels || [],
         coordinates: coordsString
       });
     }
@@ -97,15 +103,6 @@ const PhotoDetail = () => {
       navigate(`/photo/${nextPhotoId}`);
     }
   };
-
-  // Función para obtener una ubicación legible
-  function getLocationName(location) {
-    if (!location || !location.coordinates) return 'Ubicación desconocida';
-
-    // Formato simple de coordenadas
-    const [long, lat] = location.coordinates;
-    return `${lat.toFixed(5)}, ${long.toFixed(5)}`;
-  }
 
   // Función para eliminar foto actual
   const handleDeletePhoto = async () => {
@@ -131,18 +128,18 @@ const PhotoDetail = () => {
       console.log('Campo isPublic:', photo.isPublic, typeof photo.isPublic);
 
       console.log('Categorías disponibles actualizadas:', categories);
-      console.log('Categorías de la foto actual:', photo.categories);
+      console.log('Categorías de la foto actual:', photo.labels);
 
-      const formattedCategories = Array.isArray(photo.categories)
-        ? photo.categories.map(cat => typeof cat === 'object' ? cat._id : cat)
-        : photo.categories || [];
+      const formattedLabels = Array.isArray(photo.labels)
+        ? photo.labels.map(cat => typeof cat === 'object' ? cat._id : cat)
+        : photo.labels || [];
 
-      console.log('Categorías formateadas para el formulario:', formattedCategories);
+      console.log('Categorías formateadas para el formulario:', formattedLabels);
 
       setEditForm({
         title: photo.title || '',
         description: photo.description || '',
-        categories: formattedCategories,
+        labels: formattedLabels,
         isPublic: photo.visibility === 'public' ||
           photo.visibility === true ||
           photo.isPublic === true ||
@@ -170,8 +167,21 @@ const PhotoDetail = () => {
       setSaving(true);
       setSaveError(null);
 
-      // Guardar cambios en el servidor
-      await photoService.updatePhoto(id, editForm);
+      const formData = new FormData();
+      formData.append('title', editForm.title);
+      formData.append('description', editForm.description);
+      formData.append('isPublic', editForm.isPublic);
+      formData.append('coordinates', editForm.coordinates);
+
+      // Convertir etiquetas a array de IDs antes de enviar
+      const labelIds = editForm.labels.map(label => label._id || label.id);
+      formData.append('labels', labelIds);
+
+      // Enviar formData al API
+      await photoService.updatePhoto(id, formData);
+
+      // Actualizar el contexto de etiquetas para reflejar los cambios en los contadores
+      await refreshLabels();
 
       // Cerrar el modal
       setShowEditModal(false);
@@ -206,6 +216,32 @@ const PhotoDetail = () => {
         setToastMessage('No se pudieron copiar las coordenadas');
         setShowToast(true);
       });
+  };
+
+  // Añadir estos manejadores antes del return
+  const handleRemoveLabel = (labelToRemove) => {
+    setEditForm({
+      ...editForm,
+      labels: editForm.labels.filter(label =>
+        (label._id || label.id) !== (labelToRemove._id || labelToRemove.id)
+      )
+    });
+  };
+
+  const handleAddLabel = (labelToAdd) => {
+    // Verificar si la etiqueta ya está en la lista
+    const isAlreadyAdded = editForm.labels.some(label =>
+      typeof label === 'object'
+        ? (label._id || label.id) === (labelToAdd._id || labelToAdd.id)
+        : label === (labelToAdd._id || labelToAdd.id)
+    );
+
+    if (!isAlreadyAdded) {
+      setEditForm({
+        ...editForm,
+        labels: [...editForm.labels, labelToAdd]
+      });
+    }
   };
 
   if (loading) {
@@ -368,22 +404,22 @@ const PhotoDetail = () => {
                   </div>
                 )}
 
-                {photo.categories && photo.categories.length > 0 && (
-                  <div className="mb-3">
-                    <strong>Categorías:</strong>
-                    <div className="mt-2">
-                      {photo.categories.map(category => (
-                        <Badge
-                          key={typeof category === 'object' ? category._id : category}
-                          bg="secondary"
-                          className="me-1 mb-1"
-                        >
-                          {typeof category === 'object' ? category.name : category}
-                        </Badge>
-                      ))}
-                    </div>
+                <div className="mb-3">
+                  <strong>Etiquetas:</strong>
+                  <div className="d-flex flex-wrap gap-2">
+                    {Array.isArray(photo.labels) && photo.labels.length > 0 ? (
+                      photo.labels.map(label => (
+                        <LabelBadge
+                          key={label._id || label.id}
+                          label={label}
+                          showEditButton={false}
+                        />
+                      ))
+                    ) : (
+                      <span className="text-muted">Sin etiquetas</span>
+                    )}
                   </div>
-                )}
+                </div>
 
                 <div className="d-grid gap-2 mt-4">
                   <Button
@@ -485,78 +521,92 @@ const PhotoDetail = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Categorías</Form.Label>
-              <div className="dropdown-categories">
-                <Dropdown show={dropdownOpen} onToggle={(isOpen) => setDropdownOpen(isOpen)}>
-                  <Dropdown.Toggle
-                    variant="outline-secondary"
-                    id="dropdown-categories"
-                    className="w-100 text-start"
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                  >
-                    {editForm.categories?.length
-                      ? `${editForm.categories.length} categorías seleccionadas`
-                      : 'Seleccionar categorías'}
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu className="w-100" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                    {categories && categories.length > 0 ? (
-                      categories.map(category => {
-                        // Extraer ID y nombre de manera más robusta
-                        const categoryId = typeof category === 'object' ? (category._id || category.id) : category;
-                        const categoryName = typeof category === 'object' ? (category.name || category.title || categoryId) : category;
-
-                        // Comprobar si esta categoría está seleccionada
-                        const isChecked = editForm.categories &&
-                          editForm.categories.some(c =>
-                            (typeof c === 'object' ? (c._id || c.id) : c) === categoryId);
-
-                        return (
-                          <Dropdown.Item
-                            key={categoryId}
-                            as="div"
-                            className="px-3 py-2"
-                            onClick={(e) => {
-                              // Detener la propagación para que el dropdown no se cierre
-                              e.stopPropagation();
-                            }}
-                          >
-                            <Form.Check
-                              type="checkbox"
-                              id={`category-${categoryId}`}
-                              label={categoryName}
-                              checked={isChecked}
-                              onChange={(e) => {
-                                const checked = e.target.checked;
-                                let updatedCategories;
-
-                                if (checked) {
-                                  // Añadir categoría
-                                  updatedCategories = [...(editForm.categories || []), categoryId];
-                                } else {
-                                  // Eliminar categoría
-                                  updatedCategories = (editForm.categories || [])
-                                    .filter(id => {
-                                      const idToCompare = typeof id === 'object' ? (id._id || id.id) : id;
-                                      return idToCompare !== categoryId;
-                                    });
-                                }
-
-                                setEditForm({
-                                  ...editForm,
-                                  categories: updatedCategories
-                                });
-                              }}
-                            />
-                          </Dropdown.Item>
-                        );
-                      })
+              <Form.Label>Etiquetas</Form.Label>
+              {labelsLoading ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                <>
+                  <div className="d-flex flex-wrap gap-2 mb-2">
+                    {Array.isArray(editForm.labels) && editForm.labels.length > 0 ? (
+                      editForm.labels.map(label => (
+                        <LabelBadge
+                          key={typeof label === 'object' ? (label._id || label.id) : label}
+                          label={typeof label === 'object' ? label :
+                            categoriesWithLabels
+                              .flatMap(cat => cat.labels || [])
+                              .find(l => (l._id || l.id) === label) || { name: 'Etiqueta', _id: label }}
+                          showEditButton={false}
+                          onDelete={handleRemoveLabel}
+                        />
+                      ))
                     ) : (
-                      <Dropdown.Item disabled>No hay categorías disponibles</Dropdown.Item>
+                      <span className="text-muted">Sin etiquetas</span>
                     )}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
+                  </div>
+
+                  <Dropdown
+                    show={dropdownOpen}
+                    onToggle={(isOpen) => setDropdownOpen(isOpen)}
+                    autoClose={false}
+                  >
+                    <Dropdown.Toggle variant="outline-secondary" id="label-dropdown" className="mt-2">
+                      <i className="bi bi-tag me-1"></i> Agregar etiqueta
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                      {labelsLoading ? (
+                        <Dropdown.Item disabled>Cargando etiquetas...</Dropdown.Item>
+                      ) : (
+                        categoriesWithLabels.map(category => (
+                          <div key={category._id || category.id}>
+                            <Dropdown.Header>{category.name}</Dropdown.Header>
+                            {category.labels?.map(label => {
+                              const isSelected = editForm.labels.some(selected =>
+                                (selected._id || selected.id) === (label._id || label.id)
+                              );
+
+                              return (
+                                <div
+                                  key={label._id || label.id}
+                                  onClick={() => handleAddLabel(label)}
+                                  className={`dropdown-item custom-label-item ${isSelected ? 'disabled' : ''}`}
+                                  style={{
+                                    cursor: isSelected ? 'not-allowed' : 'pointer',
+                                    userSelect: 'none',
+                                    WebkitUserSelect: 'none',
+                                    MozUserSelect: 'none',
+                                    msUserSelect: 'none',
+                                    opacity: isSelected ? 0.65 : 1,
+                                    outline: 'none'
+                                  }}
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  tabIndex="-1"
+                                >
+                                  <LabelBadge
+                                    label={label}
+                                    showEditButton={false}
+                                    disabled={isSelected}
+                                  />
+                                </div>
+                              );
+                            })}
+                            <Dropdown.Divider />
+                          </div>
+                        ))
+                      )}
+
+                      <div className="d-grid gap-2 px-2 mt-2 mb-2">
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          <i className="bi bi-check2-all me-1"></i> Listo
+                        </Button>
+                      </div>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -627,6 +677,14 @@ const PhotoDetail = () => {
         </Toast.Header>
         <Toast.Body>{toastMessage}</Toast.Body>
       </Toast>
+
+      <style jsx>{`
+        .custom-label-item:active,
+        .custom-label-item.active {
+          background-color: transparent !important;
+          color: inherit !important;
+        }
+      `}</style>
     </Container>
   );
 };

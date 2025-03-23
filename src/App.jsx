@@ -12,6 +12,8 @@ import PhotoMap from './pages/PhotoMap';
 import { CategoryProvider } from './context/CategoryContext';
 import AdminTools from './pages/AdminTools';
 import { LocationProvider } from './context/LocationContext';
+import { LabelProvider } from './context/LabelContext';
+import { AuthProvider } from './context/AuthContext';
 
 // Importamos el CSS del layout
 import './components/layout.css';
@@ -36,81 +38,85 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <CategoryProvider>
-      <LocationProvider>
-        <ThemeProvider>
-          <Router>
-            <Routes>
-              {/* Rutas públicas */}
-              <Route path="/" element={<Navigate to="/dashboard" />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<div>Página de registro (próximamente)</div>} />
+    <AuthProvider>
+      <CategoryProvider>
+        <LabelProvider>
+          <LocationProvider>
+            <ThemeProvider>
+              <Router>
+                <Routes>
+                  {/* Rutas públicas */}
+                  <Route path="/" element={<Navigate to="/dashboard" />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<div>Página de registro (próximamente)</div>} />
 
-              {/* Rutas protegidas con layout */}
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Dashboard />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/gallery" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Gallery />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/photo-map" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <PhotoMap />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/upload" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Upload />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Profile />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/photo/:id" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <PhotoDetail />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/categories" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <CategoryManager />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/admin-tools" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <AdminTools />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                  {/* Rutas protegidas con layout */}
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Dashboard />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/gallery" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Gallery />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/photo-map" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <PhotoMap />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/upload" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Upload />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Profile />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/photo/:id" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <PhotoDetail />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/categories" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <CategoryManager />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin-tools" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <AdminTools />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
 
-              {/* Ruta para manejar direcciones no encontradas */}
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </Router>
-        </ThemeProvider>
-      </LocationProvider>
-    </CategoryProvider>
+                  {/* Ruta para manejar direcciones no encontradas */}
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+              </Router>
+            </ThemeProvider>
+          </LocationProvider>
+        </LabelProvider>
+      </CategoryProvider>
+    </AuthProvider>
   );
 }
 

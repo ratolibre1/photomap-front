@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner, Alert, Form } from 'react-bootstrap';
 import MapComponent from '../components/map/MapComponent';
 import SearchBar from '../components/gallery/SearchBar';
 import AdvancedFilters from '../components/gallery/AdvancedFilters';
@@ -7,7 +7,6 @@ import { photoService } from '../services/api';
 
 const PhotoMap = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filters, setFilters] = useState({
     startDate: '',
@@ -16,6 +15,8 @@ const PhotoMap = () => {
     region: '',
     county: '',
     city: '',
+    labels: [],
+    isPublic: true // Por defecto mostrar solo fotos públicas
   });
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,28 +31,36 @@ const PhotoMap = () => {
       setLoading(true);
 
       // Crear objeto base con filtros no relacionados con ubicación
-      const searchFilters = {
-        searchTerm,
-        startDate: filters.startDate || undefined,
-        endDate: filters.endDate || undefined,
-        isPublic: true,
-        limit: 1000,
-      };
+      const queryParams = {};
 
-      // Agregar solo el filtro de ubicación más específico que tenga valor
-      // El orden jerárquico es: city > county > region > country
-      if (filters.city) {
-        searchFilters.cityId = filters.city;
-      } else if (filters.county) {
-        searchFilters.countyId = filters.county;
-      } else if (filters.region) {
-        searchFilters.regionId = filters.region;
-      } else if (filters.country) {
-        searchFilters.countryId = filters.country;
+      if (searchTerm) queryParams.search = searchTerm;
+
+      // Añadir filtros de fecha correctamente
+      if (filters.startDate) queryParams.startDate = filters.startDate;
+      if (filters.endDate) queryParams.endDate = filters.endDate;
+
+      // Agregar IDs de etiquetas si existen
+      if (filters.labels && filters.labels.length > 0) {
+        queryParams.labels = filters.labels.map(label => label._id || label.id);
       }
 
-      console.log('🔍 Filtros de búsqueda enviados:', searchFilters);
-      const response = await photoService.getPhotos(searchFilters);
+      // Agregar filtros de ubicación - asegurarse de que se envíen correctamente
+      if (filters.country) queryParams.countryId = filters.country;
+      if (filters.region) queryParams.regionId = filters.region;
+      if (filters.county) queryParams.countyId = filters.county;
+      if (filters.city) queryParams.cityId = filters.city;
+
+      // Agregar filtro de visibilidad pública
+      if (filters.isPublic !== undefined) {
+        queryParams.isPublic = filters.isPublic;
+      }
+
+      queryParams.limit = 1000;
+
+      console.log('🔍 Filtros de búsqueda enviados:', queryParams);
+      console.log('📊 Estado actual de filters:', filters);
+
+      const response = await photoService.getPhotos(queryParams);
       setPhotos(response.data.data.photos || []);
     } catch (error) {
       console.error('Error al cargar fotos para el mapa:', error);
@@ -65,8 +74,16 @@ const PhotoMap = () => {
     setSearchTerm(term);
   };
 
-  const handleAdvancedFilterChange = (newFilters) => {
-    setFilters({ ...filters, ...newFilters });
+  const handleAdvancedFilterChange = (field, value) => {
+    console.log(`💡 Actualizando filtro: ${field} = `, value);
+
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [field]: value
+    }));
+
+    // Mostrar el estado actualizado (aunque esto capturará el estado anterior)
+    console.log('💽 Estado de filtros después de actualizar:', field, value);
   };
 
   return (

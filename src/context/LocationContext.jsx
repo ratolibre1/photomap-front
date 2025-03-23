@@ -32,18 +32,15 @@ export const LocationProvider = ({ children }) => {
   // Cargar todos los países
   useEffect(() => {
     const fetchCountries = async () => {
-      console.log('⏳ Iniciando carga de países...');
       setLoading(prev => ({ ...prev, countries: true }));
       try {
         const response = await api.get('/location/countries');
-        console.log('📊 Estructura completa de datos de países:', response.data.data);
-
         if (response.data.status === "success") {
           const countriesData = response.data.data;
           setLocations(prev => ({ ...prev, countries: countriesData }));
         }
       } catch (error) {
-        console.error('❌ Error al cargar países:', error);
+        console.error('Error al cargar países:', error);
       } finally {
         setLoading(prev => ({ ...prev, countries: false }));
       }
@@ -149,16 +146,39 @@ export const LocationProvider = ({ children }) => {
       filtered.regions = locations.regions.filter(
         region => region.countryId === selectedIds.countryId
       );
+
+      // También filtrar provincias por país, incluso si no hay región seleccionada
+      filtered.counties = locations.counties.filter(county => {
+        // Si sabemos directamente el countryId de cada county, usaríamos:
+        // return county.countryId === selectedIds.countryId;
+
+        // Pero como probablemente no tenemos esa referencia directa,
+        // filtramos por las regiones que pertenecen al país seleccionado
+        const regionIds = filtered.regions.map(region => region.id || region._id);
+        return regionIds.includes(county.regionId);
+      });
+
+      // De manera similar, filtrar ciudades por país cuando no hay provincia seleccionada
+      filtered.cities = locations.cities.filter(city => {
+        const countyIds = filtered.counties.map(county => county.id || county._id);
+        return countyIds.includes(city.countyId);
+      });
     }
 
-    // Si hay una región seleccionada, filtrar provincias por esa región
+    // Si hay una región seleccionada, sobrescribir el filtro de provincias por esa región específica
     if (selectedIds.regionId) {
       filtered.counties = locations.counties.filter(
         county => county.regionId === selectedIds.regionId
       );
+
+      // También filtrar ciudades por la región seleccionada, incluso si no hay provincia
+      filtered.cities = locations.cities.filter(city => {
+        const countyIds = filtered.counties.map(county => county.id || county._id);
+        return countyIds.includes(city.countyId);
+      });
     }
 
-    // Si hay una provincia seleccionada, filtrar ciudades por esa provincia
+    // Si hay una provincia seleccionada, sobrescribir el filtro de ciudades por esa provincia
     if (selectedIds.countyId) {
       filtered.cities = locations.cities.filter(
         city => city.countyId === selectedIds.countyId

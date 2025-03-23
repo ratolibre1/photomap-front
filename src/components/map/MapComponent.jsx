@@ -170,8 +170,8 @@ const MapComponent = ({ photos, loading }) => {
 
           const [lng, lat] = photo.location.coordinates;
 
-          // Solo añadir si las coordenadas parecen válidas
-          if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+          // Solo añadir si las coordenadas parecen válidas (verificando si son números, no si son truthy)
+          if ((lat !== undefined) && (lng !== undefined) && !isNaN(lat) && !isNaN(lng)) {
             const latLng = L.latLng(lat, lng);
             bounds.extend(latLng);
             markersAdded++;
@@ -247,7 +247,7 @@ const MapComponent = ({ photos, loading }) => {
       <div className="mt-2 text-muted">
         <small>
           {photos.length > 0 ? (
-            `Mostrando ${photos.length} fotos en el mapa${userLocation ? ' · Mapa centrado en tu ubicación' : ''}`
+            `Mostrando ${photos.length} ${photos.length === 1 ? 'foto' : 'fotos'} en el mapa${userLocation ? ' · Mapa centrado en tu ubicación' : ''}`
           ) : (
             'No hay fotos para mostrar en el mapa'
           )}

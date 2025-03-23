@@ -118,7 +118,7 @@ export const photoService = {
     return api.post('/photos', formData, uploadConfig);
   },
   updatePhoto: (id, photoData) => {
-    // Enviamos el objeto tal como está, ya que la API ahora acepta un array para categories
+    // La API ahora espera labels en vez de categories
     return api.patch(`/photos/${id}`, photoData);
   },
   deletePhoto: (id) => api.delete(`/photos/${id}`),
@@ -168,12 +168,15 @@ export const photoService = {
     };
 
     return api.post('/upload/zip', formData, uploadConfig);
+  },
+  getPhotoCalendar: async (month, year) => {
+    return await api.get(`/photos/calendar?month=${month}&year=${year}`);
   }
 };
 
 // Servicios de categorías
 export const categoryService = {
-  getCategories: () => api.get('/categories'),
+  getCategories: () => api.get(`/categories?_t=${Date.now()}`),
   getCategory: (id) => api.get(`/categories/${id}`),
   createCategory: (categoryData) => api.post('/categories', categoryData),
   updateCategory: (id, categoryData) => api.patch(`/categories/${id}`, categoryData),
@@ -197,6 +200,18 @@ export const locationService = {
   getRegions: (countryId) => api.get(countryId ? `/location/regions?countryId=${countryId}` : '/location/regions'),
   getCounties: (regionId) => api.get(regionId ? `/location/counties?regionId=${regionId}` : '/location/counties'),
   getCities: (countyId) => api.get(countyId ? `/location/cities?countyId=${countyId}` : '/location/cities')
+};
+
+// Agregar el servicio de etiquetas
+export const labelService = {
+  getLabels: (categoryId) => {
+    const url = categoryId ? `/labels?categoryId=${categoryId}` : '/labels';
+    return api.get(url);
+  },
+  getLabel: (id) => api.get(`/labels/${id}`),
+  createLabel: (labelData) => api.post('/labels', labelData),
+  updateLabel: (id, labelData) => api.patch(`/labels/${id}`, labelData),
+  deleteLabel: (id) => api.delete(`/labels/${id}`)
 };
 
 export default api;

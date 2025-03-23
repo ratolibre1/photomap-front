@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { photoService, categoryService } from '../services/api';
 import axios from 'axios';
 import { API_URL } from '../config';
+import { useLabels } from '../context/LabelContext';
 
 // Datos de prueba como respaldo
 const MOCK_PHOTOS = [
@@ -84,6 +85,9 @@ const Gallery = () => {
   const [geoSearch, setGeoSearch] = useState({ lat: '', lng: '', distance: 10000 });
   const [visibilityFilter, setVisibilityFilter] = useState('all'); // 'all', 'public', 'private'
   const [categories, setCategories] = useState([]);
+
+  // Añadir este hook para acceder al contexto de etiquetas
+  const { refreshData: refreshLabels } = useLabels();
 
   // Mover fetchPhotos fuera del useEffect para que sea accesible globalmente
   const fetchPhotos = async (page = 1) => {
@@ -246,26 +250,39 @@ const Gallery = () => {
   const togglePhotoVisibility = async (photoId, makePublic) => {
     try {
       setChangingVisibility(true);
-      console.log(`Cambiando visibilidad de ${photoId} a ${makePublic ? 'pública' : 'privada'}`);
+      console.log(`🔄 Iniciando cambio de visibilidad de ${photoId} a ${makePublic ? 'pública' : 'privada'}`);
 
       // Usar la función de batch pero con un solo ID
+      console.log('📤 Enviando petición a la API...');
       const response = await photoService.updateBatchVisibility({
         photoIds: [photoId],
         isPublic: makePublic
       });
 
-      console.log('Respuesta del servidor:', response);
+      console.log('📥 Respuesta del servidor:', response);
+      console.log('📥 Código de estado:', response.status);
+      console.log('📥 Datos de respuesta:', response.data);
 
       // Actualizar la UI después del cambio exitoso
-      setPhotos(prevPhotos => prevPhotos.map(photo => {
-        if (photo._id === photoId) {
-          return { ...photo, isPublic: makePublic };
-        }
-        return photo;
-      }));
+      setPhotos(prevPhotos => {
+        console.log('🔄 Actualizando estado local de fotos');
+        return prevPhotos.map(photo => {
+          if (photo._id === photoId) {
+            return { ...photo, isPublic: makePublic };
+          }
+          return photo;
+        });
+      });
+
+      // Actualizar el contexto de etiquetas para reflejar el cambio en los contadores publicPhotoCount
+      console.log('🔄 Llamando a refreshLabels para actualizar contadores...');
+      await refreshLabels();
+      console.log('✅ Actualización de etiquetas completada');
 
     } catch (err) {
-      console.error('Error detallado al cambiar visibilidad:', err);
+      console.error('❌ Error detallado al cambiar visibilidad:', err);
+      console.error('❌ Mensaje de error:', err.message);
+      console.error('❌ Respuesta del servidor si existe:', err.response?.data);
       alert(`No se pudo cambiar la visibilidad de la foto. ${err.message || 'Intenta nuevamente más tarde.'}`);
     } finally {
       setChangingVisibility(false);
@@ -331,6 +348,9 @@ const Gallery = () => {
         }
         return photo;
       }));
+
+      // Actualizar el contexto de etiquetas para reflejar los cambios en los contadores
+      await refreshLabels();
 
       // Limpiar selección después del cambio
       setSelectedPhotos([]);
