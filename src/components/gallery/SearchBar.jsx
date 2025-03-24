@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
-const SearchBar = ({ searchTerm, onSearch, showAdvancedFilters, setShowAdvancedFilters }) => {
+const SearchBar = ({ searchTerm, onSearch, showSearchFilters, setShowSearchFilters }) => {
   return (
     <div className="mb-3">
       <Form.Group>
@@ -13,8 +13,8 @@ const SearchBar = ({ searchTerm, onSearch, showAdvancedFilters, setShowAdvancedF
             onChange={(e) => onSearch(e.target.value)}
           />
           <Button
-            variant={showAdvancedFilters ? "secondary" : "outline-secondary"}
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            variant={showSearchFilters ? "secondary" : "outline-secondary"}
+            onClick={() => setShowSearchFilters(!showSearchFilters)}
           >
             <i className="bi bi-sliders me-1"></i>
             Filtros avanzados

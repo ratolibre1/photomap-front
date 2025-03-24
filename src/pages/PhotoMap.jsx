@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner, Alert, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import MapComponent from '../components/map/MapComponent';
-import SearchBar from '../components/gallery/SearchBar';
-import AdvancedFilters from '../components/gallery/AdvancedFilters';
+import SearchFilters from '../components/gallery/SearchFilters';
 import { photoService } from '../services/api';
 
 const PhotoMap = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
@@ -24,16 +21,14 @@ const PhotoMap = () => {
 
   useEffect(() => {
     fetchPhotos();
-  }, [searchTerm, filters]);
+  }, [filters]);
 
   const fetchPhotos = async () => {
     try {
       setLoading(true);
 
-      // Crear objeto base con filtros no relacionados con ubicación
+      // Crear objeto base con filtros
       const queryParams = {};
-
-      if (searchTerm) queryParams.search = searchTerm;
 
       // Añadir filtros de fecha correctamente
       if (filters.startDate) queryParams.startDate = filters.startDate;
@@ -70,11 +65,7 @@ const PhotoMap = () => {
     }
   };
 
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-  };
-
-  const handleAdvancedFilterChange = (field, value) => {
+  const handleFilterChange = (field, value) => {
     console.log(`💡 Actualizando filtro: ${field} = `, value);
 
     setFilters(prevFilters => ({
@@ -99,19 +90,10 @@ const PhotoMap = () => {
         <Col>
           <Card className="shadow-sm">
             <Card.Body className="py-3">
-              <SearchBar
-                searchTerm={searchTerm}
-                onSearch={handleSearch}
-                showAdvancedFilters={showAdvancedFilters}
-                setShowAdvancedFilters={setShowAdvancedFilters}
+              <SearchFilters
+                filters={filters}
+                onFilterChange={handleFilterChange}
               />
-
-              {showAdvancedFilters && (
-                <AdvancedFilters
-                  filters={filters}
-                  onFilterChange={handleAdvancedFilterChange}
-                />
-              )}
             </Card.Body>
           </Card>
         </Col>

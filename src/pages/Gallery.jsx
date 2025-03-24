@@ -79,7 +79,7 @@ const Gallery = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState('success');
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showSearchFilters, setShowSearchFilters] = useState(false);
   const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
   const [locationFilter, setLocationFilter] = useState({ country: '', region: '', city: '' });
   const [geoSearch, setGeoSearch] = useState({ lat: '', lng: '', distance: 10000 });
@@ -499,9 +499,9 @@ const Gallery = () => {
           <Button
             variant="link"
             className="text-decoration-none"
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            onClick={() => setShowSearchFilters(!showSearchFilters)}
           >
-            {showAdvancedFilters ? '✨ Filtros simples' : '✨ Filtros avanzados'}
+            {showSearchFilters ? '✨ Filtros simples' : '✨ Filtros avanzados'}
           </Button>
 
           <Button
@@ -521,7 +521,7 @@ const Gallery = () => {
       </div>
 
       {/* Filtros avanzados - versión limpia y simple */}
-      {showAdvancedFilters && (
+      {showSearchFilters && (
         <Card className="mb-4 shadow-sm">
           <Card.Body>
             <h6 className="mb-3 text-muted">Filtros avanzados</h6>
