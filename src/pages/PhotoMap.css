@@ -1,0 +1,113 @@
+/* Estilos para los skeletons del PhotoMap */
+
+/* Base para todos los skeletons */
+.skeleton-title,
+.skeleton-label,
+.skeleton-input,
+.skeleton-tags,
+.skeleton-calendar,
+.skeleton-map {
+  background-color: var(--bs-light);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.375rem;
+}
+
+/* Animación de pulso */
+.skeleton-title::after,
+.skeleton-label::after,
+.skeleton-input::after,
+.skeleton-tags::after,
+.skeleton-calendar::after,
+.skeleton-map::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.5) 60%,
+      rgba(255, 255, 255, 0));
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Tamaños específicos */
+.skeleton-title {
+  height: 1.5rem;
+  width: 30%;
+}
+
+.skeleton-label {
+  height: 1rem;
+  width: 30%;
+}
+
+.skeleton-input {
+  height: 38px;
+  width: 100%;
+}
+
+.skeleton-tags {
+  height: 100px;
+  width: 100%;
+}
+
+.skeleton-calendar {
+  height: 320px;
+  width: 100%;
+}
+
+.skeleton-map {
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.skeleton-map-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--bs-primary);
+  font-size: 2rem;
+  z-index: 1;
+}
+
+.skeleton-map-overlay p {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Estilos para tags skeleton específicos */
+.skeleton-tag {
+  display: inline-block;
+  height: 28px;
+  border-radius: 14px;
+  background-color: var(--bs-light);
+  margin: 4px;
+}
+
+.skeleton-tag-small {
+  width: 60px;
+}
+
+.skeleton-tag-medium {
+  width: 90px;
+}
+
+.skeleton-tag-large {
+  width: 120px;
+}
