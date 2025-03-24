@@ -60,7 +60,7 @@ const MapComponent = ({ photos, loading }) => {
 
       // Crear las capas base para cada estilo
       const baseLayers = {};
-      for (const [key, style] of Object.entries(mapStyles)) {
+      for (const [_, style] of Object.entries(mapStyles)) {
         baseLayers[style.title] = L.tileLayer(style.url, {
           attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
           maxZoom: 20,
@@ -81,68 +81,29 @@ const MapComponent = ({ photos, loading }) => {
       // Crear capa para marcadores de fotos
       markersLayerRef.current = L.layerGroup().addTo(map);
 
-      // Intentar obtener ubicación del usuario
-      setUserLocationLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
+      // Agregar botón de localización
+      const locationButton = L.control({ position: 'topright' });
+      locationButton.onAdd = function () {
+        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        div.innerHTML = `
+          <a href="#" title="Encontrar mi ubicación" class="leaflet-control-locate leaflet-bar-part">
+            <i class="bi bi-person-circle"></i>
+          </a>
+        `;
 
-          // Centrar mapa en ubicación del usuario
-          map.setView([latitude, longitude], 12);
+        // Prevenir que el clic se propague al mapa para evitar comportamientos inesperados
+        const link = div.querySelector('a');
+        L.DomEvent.disableClickPropagation(link);
+        L.DomEvent.on(link, 'click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          findUserLocation();
+          return false;
+        });
 
-          // Obtener la inicial del usuario de forma segura
-          const userInitial = user && user.name ? user.name.charAt(0).toUpperCase() : '👤';
-
-          // Añadir marcador para el usuario
-          const userMarker = L.marker([latitude, longitude], {
-            icon: L.divIcon({
-              className: 'custom-user-marker',
-              html: `
-                <div class="marker-container">
-                  <div class="marker-pin user-pin">
-                    <div class="marker-thumbnail-container user-location-container">
-                      <div class="user-initial">${navigator.onLine ? userInitial : '👤'}</div>
-                    </div>
-                  </div>
-                </div>
-              `,
-              iconSize: [50, 60],
-              iconAnchor: [25, 55]
-            })
-          }).addTo(map);
-
-          // Agregar popup con información y botón para ir al perfil
-          userMarker.bindPopup(`
-            <div class="user-location-popup text-center">
-              <h6 class="mb-2">Tu ubicación actual</h6>
-              <p class="coordinates mb-2">${latitude.toFixed(5)}, ${longitude.toFixed(5)}</p>
-              <a href="/profile" class="btn btn-primary btn-sm">
-                <i class="bi bi-person"></i> Ver perfil
-              </a>
-            </div>
-          `);
-
-          // Agregar evento para estilizar el popup cuando se abre
-          userMarker.on('click', function () {
-            // Aplicar estilos al popup después de que se abre
-            setTimeout(() => {
-              const popups = document.querySelectorAll('.leaflet-popup-content-wrapper');
-              popups.forEach(popup => {
-                popup.style.padding = '10px';
-                popup.style.borderRadius = '10px';
-              });
-            }, 10);
-          });
-
-          setUserLocationLoading(false);
-        },
-        (error) => {
-          console.error('Error obteniendo ubicación:', error);
-          setUserLocationLoading(false);
-        },
-        { timeout: 10000, enableHighAccuracy: true }
-      );
+        return div;
+      };
+      locationButton.addTo(map);
     }
 
     return () => {
@@ -153,6 +114,125 @@ const MapComponent = ({ photos, loading }) => {
       }
     };
   }, [user]); // Agregar user como dependencia
+
+  // Función para encontrar la ubicación del usuario
+  const findUserLocation = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (!mapInstanceRef.current) return;
+
+    console.log("🔍 Iniciando búsqueda de ubicación...");
+    setUserLocationLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log("✅ Ubicación encontrada:", position.coords);
+        const { latitude, longitude } = position.coords;
+        setUserLocation([latitude, longitude]);
+
+        // Centrar mapa en ubicación del usuario con animación
+        console.log("🗺️ Centrando mapa en:", latitude, longitude);
+
+        // Forzar navegación y centrado con timeout
+        setTimeout(() => {
+          if (mapInstanceRef.current) {
+            // Primero hacer zoom
+            mapInstanceRef.current.setZoom(18);
+
+            // Luego centrar en la ubicación
+            mapInstanceRef.current.panTo([latitude, longitude], {
+              animate: true,
+              duration: 1
+            });
+
+            console.log("📍 Mapa centrado en coordenadas");
+          }
+        }, 100);
+
+        // Obtener la inicial del usuario de forma segura
+        const userInitial = user && user.name ? user.name.charAt(0).toUpperCase() : '👤';
+
+        // Limpiar marcadores de usuario anteriores
+        if (markersLayerRef.current) {
+          const userMarkers = document.querySelectorAll('.custom-user-marker');
+          userMarkers.forEach(marker => {
+            const parent = marker.parentElement;
+            if (parent && parent.parentElement) {
+              parent.parentElement.removeChild(parent);
+            }
+          });
+        }
+
+        // Añadir marcador para el usuario
+        const userMarker = L.marker([latitude, longitude], {
+          icon: L.divIcon({
+            className: 'custom-user-marker',
+            html: `
+              <div class="marker-container">
+                <div class="marker-pin user-pin">
+                  <div class="marker-thumbnail-container user-location-container">
+                    <div class="user-initial">${navigator.onLine ? userInitial : '👤'}</div>
+                  </div>
+                </div>
+              </div>
+            `,
+            iconSize: [50, 60],
+            iconAnchor: [25, 55]
+          })
+        }).addTo(mapInstanceRef.current);
+
+        // Agregar popup con información
+        userMarker.bindPopup(`
+          <div class="user-location-popup text-center">
+            <h6 class="mb-2">Tu ubicación actual</h6>
+            <p class="coordinates mb-2">${latitude.toFixed(5)}, ${longitude.toFixed(5)}</p>
+          </div>
+        `);
+
+        // Aplicar estilos al popup
+        setTimeout(() => {
+          const popups = document.querySelectorAll('.leaflet-popup-content-wrapper');
+          popups.forEach(popup => {
+            popup.style.padding = '10px';
+            popup.style.borderRadius = '10px';
+          });
+        }, 10);
+
+        setUserLocationLoading(false);
+      },
+      (error) => {
+        console.error("❌ Error obteniendo ubicación:", error);
+        setUserLocationLoading(false);
+
+        // Mostrar alerta al usuario con más detalles
+        let errorMsg = 'No pudimos acceder a tu ubicación. ';
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMsg += 'Has denegado el permiso para acceder a tu ubicación.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMsg += 'La información de ubicación no está disponible.';
+            break;
+          case error.TIMEOUT:
+            errorMsg += 'La solicitud para obtener tu ubicación ha expirado.';
+            break;
+          default:
+            errorMsg += 'Ha ocurrido un error desconocido.';
+        }
+
+        alert(errorMsg);
+      },
+      {
+        timeout: 10000,
+        enableHighAccuracy: true,
+        maximumAge: 0 // Forzar a obtener una posición actualizada
+      }
+    );
+  };
 
   // Actualizar marcadores cuando cambian las fotos
   useEffect(() => {
@@ -247,7 +327,7 @@ const MapComponent = ({ photos, loading }) => {
       <div className="mt-2 text-muted">
         <small>
           {photos.length > 0 ? (
-            `Mostrando ${photos.length} ${photos.length === 1 ? 'foto' : 'fotos'} en el mapa${userLocation ? ' · Mapa centrado en tu ubicación' : ''}`
+            `Mostrando ${photos.length} ${photos.length === 1 ? 'foto' : 'fotos'} en el mapa${userLocation ? ' · Ubicación detectada' : ''}`
           ) : (
             'No hay fotos para mostrar en el mapa'
           )}
@@ -345,6 +425,61 @@ const MapComponent = ({ photos, loading }) => {
           margin: 5px 0 0;
           font-family: monospace;
           font-size: 0.9em;
+        }
+
+        /* Estilos para el botón de localización */
+        .leaflet-control-locate {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 44px !important;
+          height: 44px !important;
+          background: white !important;
+          color: #333 !important;
+          box-shadow: none !important;
+          border-radius: 4px !important;
+          text-decoration: none !important;
+        }
+        .leaflet-control-locate:hover {
+          background: #f8f8f8 !important;
+        }
+        .leaflet-control-locate i {
+          font-size: 22px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        /* Icono personalizado de localización */
+        .location-icon {
+          position: relative !important;
+          width: 24px !important;
+          height: 24px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        .location-dot {
+          width: 10px !important;
+          height: 10px !important;
+          background-color: black !important;
+          border-radius: 50% !important;
+          position: absolute !important;
+          top: 5px !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+        }
+        .location-pin {
+          width: 16px !important;
+          height: 16px !important;
+          border: 2px solid black !important;
+          border-radius: 50% !important;
+          position: absolute !important;
+          top: 2px !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
         }
       `}</style>
     </div>

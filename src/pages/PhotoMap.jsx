@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import MapComponent from '../components/map/MapComponent';
 import SearchFilters from '../components/gallery/SearchFilters';
 import { photoService } from '../services/api';
+import './PhotoMap.css'; // Importar estilos para skeletons
 
 const PhotoMap = () => {
   const [filters, setFilters] = useState({
@@ -90,10 +91,59 @@ const PhotoMap = () => {
         <Col>
           <Card className="shadow-sm">
             <Card.Body className="py-3">
-              <SearchFilters
-                filters={filters}
-                onFilterChange={handleFilterChange}
-              />
+              {loading ? (
+                <div>
+                  <h6 className="mb-3 skeleton-title"></h6>
+                  <Row>
+                    {/* COLUMNA IZQUIERDA: Skeletons de ubicación y etiquetas */}
+                    <Col md={5} lg={4}>
+                      <div className="mb-3">
+                        <div className="skeleton-label mb-2"></div>
+                        <div className="skeleton-input"></div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="skeleton-label mb-2"></div>
+                        <div className="skeleton-input"></div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="skeleton-label mb-2"></div>
+                        <div className="skeleton-input"></div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="skeleton-label mb-2"></div>
+                        <div className="skeleton-input"></div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="skeleton-label mb-2"></div>
+                        <div className="skeleton-tags">
+                          <div className="d-flex flex-wrap mt-2">
+                            <div className="skeleton-tag skeleton-tag-small"></div>
+                            <div className="skeleton-tag skeleton-tag-medium"></div>
+                            <div className="skeleton-tag skeleton-tag-large"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+
+                    {/* COLUMNA DERECHA: Skeleton de calendario */}
+                    <Col md={7} lg={8}>
+                      <div className="mb-3">
+                        <div className="skeleton-label mb-2"></div>
+                        <div className="d-flex mb-2">
+                          <div className="skeleton-input me-2"></div>
+                          <div className="skeleton-input"></div>
+                        </div>
+                        <div className="skeleton-calendar"></div>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              ) : (
+                <SearchFilters
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                />
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -103,6 +153,13 @@ const PhotoMap = () => {
         <Card.Body>
           {error ? (
             <Alert variant="danger">{error}</Alert>
+          ) : loading ? (
+            <div className="skeleton-map">
+              <div className="skeleton-map-overlay">
+                <i className="bi bi-map"></i>
+                <p>Cargando mapa...</p>
+              </div>
+            </div>
           ) : (
             <MapComponent
               photos={photos}
