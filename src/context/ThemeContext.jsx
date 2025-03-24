@@ -16,6 +16,20 @@ export const THEMES = {
       danger: '#e92f10',
     }
   },
+  caterpie: {
+    name: 'Caterpie',
+    icon: '🐛',
+    colors: {
+      light: '#c6fbda',
+      dark: '#00060a',
+      primary: '#034d4c',
+      secondary: '#824d39',
+      info: '#c1a423',
+      success: '#05a145',
+      warning: '#ecc605',
+      danger: '#f20232',
+    }
+  },
   farfetchd: {
     name: 'Farfetch\'d',
     icon: '🦆',
