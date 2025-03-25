@@ -1,0 +1,31 @@
+{
+  "title": "Filtros de Búsqueda",
+  "location": {
+    "title": "Ubicación",
+    "country": "País",
+    "region": "Región",
+    "province": "Provincia",
+    "city": "Ciudad",
+    "select_country": "Seleccionar país",
+    "select_region": "Seleccionar región",
+    "select_province": "Seleccionar provincia",
+    "select_city": "Seleccionar ciudad",
+    "loading_countries": "Cargando países...",
+    "loading_regions": "Cargando regiones...",
+    "loading_provinces": "Cargando provincias...",
+    "loading_cities": "Cargando ciudades...",
+    "no_regions": "No hay regiones disponibles",
+    "no_provinces": "No hay provincias disponibles",
+    "no_cities": "No hay ciudades disponibles"
+  },
+  "date": {
+    "title": "Rango de fechas",
+    "start": "Fecha inicial",
+    "end": "Fecha final"
+  },
+  "labels": {
+    "title": "Etiquetas",
+    "none_selected": "Sin etiquetas seleccionadas",
+    "select": "Seleccionar etiquetas"
+  }
+}

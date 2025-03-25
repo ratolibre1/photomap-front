@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
-import { Dropdown, Button, Spinner } from 'react-bootstrap';
+import { Dropdown, Button } from 'react-bootstrap';
 import { useLabels } from '../../context/LabelContext';
 import LabelBadge from './LabelBadge';
+import { useTranslation } from 'react-i18next';
 
 const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, showPhotoCount = false }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { t } = useTranslation(['labels', 'common']);
   const { categoriesWithLabels, loading: labelsLoading } = useLabels();
 
-  // Filtrar categorías para mostrar solo las que tienen etiquetas
-  const categoriesWithValidLabels = categoriesWithLabels
-    .filter(category => category.labels && category.labels.length > 0);
-
-  console.log("LabelSelector renderizado con:", {
-    selectedLabels,
-    categoriesWithLabels: categoriesWithLabels?.length || 0,
-    filteredCategories: categoriesWithValidLabels.length,
-    dropdownOpen
-  });
+  // Filtrar categorías que tienen etiquetas
+  const categoriesWithValidLabels = categoriesWithLabels.filter(category =>
+    Array.isArray(category.labels) && category.labels.length > 0
+  );
 
   return (
     <div>
       {/* Mostrar etiquetas seleccionadas */}
       <div className="d-flex flex-wrap gap-2 mb-2">
         {selectedLabels.length === 0 ? (
-          <span className="text-muted fst-italic">Sin etiquetas seleccionadas</span>
+          <span className="text-muted fst-italic">{t('dropdown.none_selected')}</span>
         ) : (
           selectedLabels.map(label => (
             <LabelBadge
@@ -48,7 +44,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
         style={{ zIndex: 9999 }}
       >
         <Dropdown.Toggle variant="outline-secondary" size="sm" id="label-dropdown">
-          <i className="bi bi-tag me-1"></i> Seleccionar etiquetas
+          <i className="bi bi-tag me-1"></i> {t('dropdown.select')}
         </Dropdown.Toggle>
         <Dropdown.Menu
           style={{
@@ -58,7 +54,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
           }}
         >
           {labelsLoading ? (
-            <Dropdown.Item disabled>Cargando etiquetas...</Dropdown.Item>
+            <Dropdown.Item disabled>{t('dropdown.loading')}</Dropdown.Item>
           ) : categoriesWithValidLabels.length > 0 ? (
             categoriesWithValidLabels.map(category => (
               <div key={category._id || category.id}>
@@ -101,7 +97,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
               </div>
             ))
           ) : (
-            <Dropdown.Item disabled>No hay categorías con etiquetas disponibles</Dropdown.Item>
+            <Dropdown.Item disabled>{t('dropdown.no_labels')}</Dropdown.Item>
           )}
 
           <div className="d-grid gap-2 px-2 mt-2 mb-2">
@@ -110,7 +106,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
               size="sm"
               onClick={() => setDropdownOpen(false)}
             >
-              <i className="bi bi-check2-all me-1"></i> Listo
+              <i className="bi bi-check2-all me-1"></i> {t('common:buttons.close')}
             </Button>
           </div>
         </Dropdown.Menu>

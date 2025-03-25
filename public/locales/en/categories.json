@@ -1,0 +1,28 @@
+{
+  "title": "Categories and Labels",
+  "category": {
+    "title": "Categories",
+    "new": "New Category",
+    "edit": "Edit Category",
+    "name": "Name",
+    "description": "Description",
+    "description_placeholder": "Description (optional)",
+    "no_labels": "No labels"
+  },
+  "label": {
+    "new": "New Label",
+    "edit": "Edit Label",
+    "name": "Label name",
+    "color": "Color",
+    "random_color": "Random",
+    "preview": "Preview"
+  },
+  "delete": {
+    "confirm_category": "Are you sure you want to delete the category {{name}}?",
+    "confirm_label": "Are you sure you want to delete the label {{name}}?",
+    "photos_affected": "This label will be removed from {{count}} photo",
+    "photos_affected_plural": "This label will be removed from {{count}} photos",
+    "no_photos": "This label is not being used in any photos",
+    "labels_to_delete": "The following labels will be deleted:"
+  }
+}

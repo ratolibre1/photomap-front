@@ -1,0 +1,28 @@
+{
+  "title": "Mapa de Recuerdos",
+  "description": "Visualiza tus fotos distribuidas geográficamente",
+  "info": {
+    "showing_photos_one": "Mostrando {{count}} foto en el mapa{{location}}",
+    "showing_photos_other": "Mostrando {{count}} fotos en el mapa{{location}}",
+    "location_detected": " · Ubicación detectada",
+    "no_photos": "No hay fotos para mostrar en el mapa"
+  },
+  "layers": {
+    "title": "Capas del mapa",
+    "voyager": "Voyager",
+    "streets": "Calles",
+    "basic": "Básico",
+    "outdoor": "Outdoor",
+    "toner": "Toner"
+  },
+  "location": {
+    "button_title": "Encontrar mi ubicación",
+    "current": "Estás aquí",
+    "coordinates": "Lat: {{lat}}, Lng: {{lng}}"
+  },
+  "photo": {
+    "no_title": "Sin título",
+    "no_image": "Sin imagen",
+    "view_details": "Ver detalle"
+  }
+}

@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import MapComponent from '../components/map/MapComponent';
 import SearchFilters from '../components/gallery/SearchFilters';
 import { photoService } from '../services/api';
+import { useTranslation } from 'react-i18next';
 import './PhotoMap.css'; // Importar estilos para skeletons
 
 const PhotoMap = () => {
@@ -19,6 +20,7 @@ const PhotoMap = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation(['map']);
 
   useEffect(() => {
     fetchPhotos();
@@ -80,12 +82,8 @@ const PhotoMap = () => {
 
   return (
     <Container fluid className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1>Mapa de Recuerdos</h1>
-          <p className="text-muted">Visualiza tus fotos distribuidas geográficamente</p>
-        </Col>
-      </Row>
+      <h1>{t('title')}</h1>
+      <p className="text-muted">{t('description')}</p>
 
       <Row className="mb-3">
         <Col>

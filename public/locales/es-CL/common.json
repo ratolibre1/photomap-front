@@ -1,0 +1,49 @@
+{
+  "buttons": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "close": "Listo",
+    "upload": "Subir",
+    "confirm": "Confirmar"
+  },
+  "loading": {
+    "default": "Cargando...",
+    "photos": "Cargando fotos...",
+    "map": "Cargando mapa...",
+    "location": "Detectando tu ubicación..."
+  },
+  "errors": {
+    "default": "Ha ocurrido un error",
+    "location_denied": "Has denegado el permiso para acceder a tu ubicación",
+    "location_unavailable": "La información de ubicación no está disponible",
+    "location_timeout": "La solicitud para obtener tu ubicación ha expirado",
+    "location_unknown": "Ha ocurrido un error desconocido al obtener tu ubicación"
+  },
+  "success": {
+    "saved": "Guardado correctamente",
+    "deleted": "Eliminado correctamente",
+    "uploaded": "Subido correctamente"
+  },
+  "confirmations": {
+    "delete": "¿Estás seguro que quieres eliminar esto?",
+    "delete_photo": "¿Estás seguro que quieres eliminar esta foto?",
+    "delete_photos": "¿Estás seguro que quieres eliminar {{count}} fotos?",
+    "irreversible": "Esta acción no se puede deshacer"
+  },
+  "language": {
+    "title": "Idioma",
+    "es-CL": "Español (Chile)",
+    "en": "English"
+  },
+  "theme": {
+    "title": "Tema"
+  },
+  "photo": {
+    "singular": "foto",
+    "plural": "fotos",
+    "unknown": "? fotos"
+  }
+}

@@ -5,12 +5,14 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Estilos principales
 import 'react-date-range/dist/theme/default.css'; // Tema por defecto
 import es from 'date-fns/locale/es'; // Importar localización española
+import { useTranslation } from 'react-i18next';
 import { photoService } from '../../services/api';
 import LabelSelector from '../common/LabelSelector';
 
 const SearchFilters = ({ filters, onFilterChange }) => {
   // Obtenemos funciones y datos del contexto de ubicación
   const { locations: filteredLocations, loading, selectLocation } = useLocation();
+  const { t, i18n } = useTranslation(['filters', 'labels']);
 
   // Estado para controlar si se ha inicializado el calendario
   const [calendarInitialized, setCalendarInitialized] = useState(false);
@@ -31,14 +33,9 @@ const SearchFilters = ({ filters, onFilterChange }) => {
   // Formatear la fecha actual para usarla como placeholder
   const formatCurrentDate = () => {
     const today = new Date();
-
-    // Usar toLocaleDateString para formato corto de mes en español
     const options = { month: 'short', day: '2-digit', year: 'numeric' };
-    let formattedDate = today.toLocaleDateString('es-ES', options);
-
-    // Convertir primera letra del mes a minúscula (ej: "Ene" -> "ene")
+    let formattedDate = today.toLocaleDateString(i18n.language, options);
     formattedDate = formattedDate.replace(/^[A-Z]/, match => match.toLowerCase());
-
     return formattedDate;
   };
 
@@ -220,85 +217,85 @@ const SearchFilters = ({ filters, onFilterChange }) => {
 
   return (
     <div className="search-filters p-3 bg-light border rounded mb-3">
-      <h6 className="mb-3">Filtros de Búsqueda</h6>
+      <h6 className="mb-3">{t('title')}</h6>
 
       <Row>
         {/* COLUMNA IZQUIERDA: Filtros de ubicación y etiquetas */}
         <Col md={5} lg={4}>
           {/* Filtros de ubicación en vertical */}
           <Form.Group className="mb-3">
-            <Form.Label>País</Form.Label>
+            <Form.Label>{t('location.country')}</Form.Label>
             <Form.Select
               value={filters.country || ''}
               onChange={(e) => handleLocationChange('country', e.target.value)}
             >
-              <option value="">Seleccionar país</option>
+              <option value="">{t('location.select_country')}</option>
               {filteredLocations.countries.map(country => (
                 <option key={country.id || country._id} value={country.id || country._id}>
                   {country.name}
                 </option>
               ))}
             </Form.Select>
-            {loading.countries && <small className="text-muted">Cargando países...</small>}
+            {loading.countries && <small className="text-muted">{t('location.loading_countries')}</small>}
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Región</Form.Label>
+            <Form.Label>{t('location.region')}</Form.Label>
             <Form.Select
               value={filters.region || ''}
               onChange={(e) => handleLocationChange('region', e.target.value)}
             >
-              <option value="">Seleccionar región</option>
+              <option value="">{t('location.select_region')}</option>
               {filteredLocations.regions.map(region => (
                 <option key={region.id || region._id} value={region.id || region._id}>
                   {region.name}
                 </option>
               ))}
             </Form.Select>
-            {loading.regions && <small className="text-muted">Cargando regiones...</small>}
+            {loading.regions && <small className="text-muted">{t('location.loading_regions')}</small>}
             {filteredLocations.regions.length === 0 && filters.country &&
-              <small className="text-muted">No hay regiones disponibles</small>}
+              <small className="text-muted">{t('location.no_regions')}</small>}
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Provincia</Form.Label>
+            <Form.Label>{t('location.province')}</Form.Label>
             <Form.Select
               value={filters.county || ''}
               onChange={(e) => handleLocationChange('county', e.target.value)}
             >
-              <option value="">Seleccionar provincia</option>
+              <option value="">{t('location.select_province')}</option>
               {filteredLocations.counties.map(county => (
                 <option key={county.id || county._id} value={county.id || county._id}>
                   {county.name}
                 </option>
               ))}
             </Form.Select>
-            {loading.counties && <small className="text-muted">Cargando provincias...</small>}
+            {loading.counties && <small className="text-muted">{t('location.loading_provinces')}</small>}
             {filteredLocations.counties.length === 0 && filters.region &&
-              <small className="text-muted">No hay provincias disponibles</small>}
+              <small className="text-muted">{t('location.no_provinces')}</small>}
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Ciudad</Form.Label>
+            <Form.Label>{t('location.city')}</Form.Label>
             <Form.Select
               value={filters.city || ''}
               onChange={(e) => handleLocationChange('city', e.target.value)}
             >
-              <option value="">Seleccionar ciudad</option>
+              <option value="">{t('location.select_city')}</option>
               {filteredLocations.cities.map(city => (
                 <option key={city.id || city._id} value={city.id || city._id}>
                   {city.name}
                 </option>
               ))}
             </Form.Select>
-            {loading.cities && <small className="text-muted">Cargando ciudades...</small>}
+            {loading.cities && <small className="text-muted">{t('location.loading_cities')}</small>}
             {filteredLocations.cities.length === 0 && filters.county &&
-              <small className="text-muted">No hay ciudades disponibles</small>}
+              <small className="text-muted">{t('location.no_cities')}</small>}
           </Form.Group>
 
           {/* Selector de etiquetas */}
           <Form.Group className="mb-3">
-            <Form.Label>Etiquetas</Form.Label>
+            <Form.Label>{t('labels:title')}</Form.Label>
             <LabelSelector
               selectedLabels={filters.labels || []}
               onLabelSelect={handleLabelSelect}
@@ -311,7 +308,7 @@ const SearchFilters = ({ filters, onFilterChange }) => {
         {/* COLUMNA DERECHA: Calendario */}
         <Col md={7} lg={8}>
           <Form.Group>
-            <Form.Label>Rango de fechas</Form.Label>
+            <Form.Label>{t('date.title')}</Form.Label>
             <div className="date-range-container">
               <DateRange
                 editableDateInputs={true}
@@ -320,7 +317,7 @@ const SearchFilters = ({ filters, onFilterChange }) => {
                 ranges={dateRangeState}
                 months={2}
                 direction="horizontal"
-                locale={es}
+                locale={i18n.language.startsWith('es') ? es : undefined}
                 weekdayDisplayFormat="EEEEE"
                 rangeColors={["var(--secondary)"]}
                 showMonthAndYearPickers={true}
@@ -338,49 +335,75 @@ const SearchFilters = ({ filters, onFilterChange }) => {
 
       {/* Estilos para ajustar el calendario */}
       <style jsx>{`
-        .date-range-container .rdrCalendarWrapper {
+        .date-range-container {
           width: 100%;
-          font-size: 14px;
+          max-width: 100%;
+          overflow-x: auto;
         }
-        .date-range-container .rdrMonth {
-          width: 100%;
-        }
-        .date-range-container .rdrMonthName {
-          font-size: 16px;
-          font-weight: 600;
-        }
-        .date-range-container .rdrDayNumber {
-          font-size: 14px;
-        }
-        .date-range-container .rdrDateDisplayItem {
-          font-size: 14px;
-        }
+
         .calendar-day-with-photos {
           position: relative;
           display: flex;
-          justify-content: center;
+          flex-direction: column;
           align-items: center;
+          justify-content: center;
+          height: 100%;
         }
-        
+
         .photo-indicator {
-          position: absolute;
-          bottom: -2px;
-          right: -2px;
-          background-color: var(--primary);
+          font-size: 0.7em;
+          background-color: var(--bs-secondary);
           color: white;
-          border-radius: 50%;
-          font-size: 10px;
-          width: 16px;
-          height: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
+          border-radius: 10px;
+          padding: 1px 4px;
+          margin-top: 2px;
+          line-height: 1;
         }
-        @media (max-width: 768px) {
-          .date-range-container .rdrMonths {
-            flex-direction: column;
-          }
+
+        /* Ajustes para el calendario */
+        :global(.rdrCalendarWrapper) {
+          width: 100% !important;
+          font-size: 14px !important;
+        }
+
+        :global(.rdrMonth) {
+          width: 100% !important;
+          max-width: none !important;
+        }
+
+        :global(.rdrMonthAndYearWrapper) {
+          padding-top: 5px !important;
+          height: auto !important;
+        }
+
+        :global(.rdrMonthAndYearPickers select) {
+          padding: 5px 25px 5px 10px !important;
+        }
+
+        :global(.rdrNextPrevButton) {
+          margin: 0 5px !important;
+        }
+
+        :global(.rdrDateDisplayWrapper) {
+          background-color: transparent !important;
+        }
+
+        :global(.rdrDateDisplay) {
+          margin: 0.5rem !important;
+        }
+
+        :global(.rdrDateDisplayItem) {
+          border-radius: 4px !important;
+          background-color: white !important;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+        }
+
+        :global(.rdrDateDisplayItemActive) {
+          border-color: var(--bs-secondary) !important;
+        }
+
+        :global(.rdrDayToday .rdrDayNumber span:after) {
+          background: var(--bs-secondary) !important;
         }
       `}</style>
     </div>

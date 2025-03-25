@@ -1,0 +1,69 @@
+{
+  "title": "Subir Fotos",
+  "tabs": {
+    "photos": "Fotos Individuales",
+    "zip": "Archivo ZIP"
+  },
+  "dropzone": {
+    "title": "Selecciona las fotos a subir",
+    "subtitle": "Arrastra y suelta tus fotos aquí, o haz clic para seleccionarlas",
+    "formats": "Formatos aceptados: JPG, JPEG, PNG, GIF",
+    "max_size": "Tamaño máximo: {{size}}MB"
+  },
+  "preview": {
+    "count_one": "{{count}} foto seleccionada",
+    "count_other": "{{count}} fotos seleccionadas"
+  },
+  "details": {
+    "title": "Detalles de las fotos"
+  },
+  "form": {
+    "title": "Título (opcional)",
+    "title_placeholder": "Agregar un título para todas las fotos",
+    "title_help": "Se usará el nombre del archivo si no se especifica un título",
+    "description": "Descripción (opcional)",
+    "description_placeholder": "Agregar una descripción",
+    "labels": "Etiquetas",
+    "no_labels": "Ninguna etiqueta seleccionada"
+  },
+  "labels": {
+    "add": "Agregar etiqueta",
+    "loading": "Cargando etiquetas..."
+  },
+  "visibility": {
+    "title": "Visibilidad",
+    "public": "Pública",
+    "private": "Privada"
+  },
+  "buttons": {
+    "upload_one": "Subir {{count}} foto",
+    "upload_other": "Subir {{count}} fotos",
+    "uploading": "Subiendo..."
+  },
+  "progress": {
+    "uploading": "Subiendo archivos..."
+  },
+  "error": {
+    "no_files": "Por favor, selecciona al menos una foto para subir",
+    "partial_upload": "Hubo problemas al subir algunas imágenes. Por favor, intenta de nuevo",
+    "upload_failed": "Error al subir las imágenes. Por favor, verifica tu conexión e intenta de nuevo"
+  },
+  "zip": {
+    "title": "Importar fotos desde archivo ZIP",
+    "description": "Sube un archivo ZIP con tus fotos para importarlas de forma masiva",
+    "success": "¡Éxito! 🎉",
+    "success_message": "El archivo ZIP se ha subido correctamente y está siendo procesado. Las fotos aparecerán en tu galería cuando el procesamiento termine.",
+    "file_selected": "Archivo seleccionado:",
+    "processing": "Este proceso puede tardar varios minutos dependiendo del tamaño del archivo",
+    "file_label": "Archivo ZIP",
+    "help_text": "Selecciona un archivo ZIP que contenga tus fotos",
+    "max_size": "Tamaño máximo: {{size}}MB",
+    "upload_button": "Importar Fotos",
+    "error": {
+      "invalid_file": "Por favor selecciona un archivo ZIP válido",
+      "no_file": "Por favor selecciona un archivo ZIP para subir",
+      "upload_failed": "Error al subir archivo: {{message}}",
+      "try_again": "Intenta nuevamente más tarde"
+    }
+  }
+}

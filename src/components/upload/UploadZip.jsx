@@ -1,8 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { Card, Form, Button, ProgressBar, Alert, Spinner } from 'react-bootstrap';
 import { photoService } from '../../services/api';
+import { useTranslation } from 'react-i18next';
+import { FILE_UPLOAD_CONFIG } from '../../config';
 
 const UploadZip = () => {
+  const { t } = useTranslation(['upload', 'common']);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -17,13 +20,13 @@ const UploadZip = () => {
       setError(null);
     } else {
       setFile(null);
-      setError('Por favor selecciona un archivo ZIP válido');
+      setError(t('zip.error.invalid_file'));
     }
   };
 
   const handleUpload = async () => {
     if (!file) {
-      setError('Por favor selecciona un archivo ZIP para subir');
+      setError(t('zip.error.no_file'));
       return;
     }
 
@@ -49,7 +52,7 @@ const UploadZip = () => {
       }
     } catch (err) {
       console.error('Error al subir archivo ZIP:', err);
-      setError(`Error al subir archivo: ${err.message || 'Intenta nuevamente más tarde'}`);
+      setError(t('zip.error.upload_failed', { message: err.message || t('zip.error.try_again') }));
     } finally {
       setUploading(false);
     }
@@ -58,17 +61,16 @@ const UploadZip = () => {
   return (
     <Card className="shadow-sm">
       <Card.Body>
-        <h4 className="mb-3">Importar fotos desde archivo ZIP</h4>
+        <h4 className="mb-3">{t('zip.title')}</h4>
 
         <p className="text-muted">
-          Sube un archivo ZIP con tus fotos para importarlas de forma masiva.
+          {t('zip.description')}
         </p>
 
         {success && (
           <Alert variant="success" dismissible onClose={() => setSuccess(false)}>
-            <Alert.Heading>¡Éxito! 🎉</Alert.Heading>
-            El archivo ZIP se ha subido correctamente y está siendo procesado.
-            Las fotos aparecerán en tu galería cuando el procesamiento termine.
+            <Alert.Heading>{t('zip.success')}</Alert.Heading>
+            {t('zip.success_message')}
           </Alert>
         )}
 
@@ -79,7 +81,7 @@ const UploadZip = () => {
         )}
 
         <Form.Group className="mb-3">
-          <Form.Label>Archivo ZIP</Form.Label>
+          <Form.Label>{t('zip.file_label')}</Form.Label>
           <Form.Control
             type="file"
             accept=".zip"
@@ -88,13 +90,16 @@ const UploadZip = () => {
             ref={fileInputRef}
           />
           <Form.Text className="text-muted">
-            Selecciona un archivo ZIP que contenga tus fotos
+            {t('zip.help_text')}
+            {FILE_UPLOAD_CONFIG.maxZipSize && (
+              <span> {t('zip.max_size', { size: FILE_UPLOAD_CONFIG.maxZipSize / (1024 * 1024) })}</span>
+            )}
           </Form.Text>
         </Form.Group>
 
         {file && (
           <div className="mb-3">
-            <strong>Archivo seleccionado:</strong> {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+            <strong>{t('zip.file_selected')}</strong> {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
           </div>
         )}
 
@@ -107,7 +112,7 @@ const UploadZip = () => {
               animated
             />
             <div className="text-center mt-2 text-muted">
-              <small>Este proceso puede tardar varios minutos dependiendo del tamaño del archivo</small>
+              <small>{t('zip.processing')}</small>
             </div>
           </div>
         )}
@@ -121,12 +126,12 @@ const UploadZip = () => {
             {uploading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
-                Subiendo...
+                {t('common:buttons.uploading')}
               </>
             ) : (
               <>
                 <i className="bi bi-cloud-upload me-2"></i>
-                Importar Fotos
+                {t('zip.upload_button')}
               </>
             )}
           </Button>

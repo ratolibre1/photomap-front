@@ -1,0 +1,18 @@
+{
+  "title": "Labels",
+  "dropdown": {
+    "add": "Add label",
+    "select": "Select labels",
+    "loading": "Loading labels...",
+    "none_selected": "No labels selected",
+    "no_labels": "No labels"
+  },
+  "buttons": {
+    "edit": "Edit label",
+    "delete": "Delete label"
+  },
+  "photo_count": {
+    "one": "{{count}} public photo",
+    "other": "{{count}} public photos"
+  }
+}

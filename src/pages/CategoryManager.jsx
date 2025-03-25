@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Form, Table, Spinner, Alert, Modal, 
 import { categoryService, labelService } from '../services/api';
 import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
+import { useTranslation } from 'react-i18next';
 
 const CategoryManager = () => {
   const [loading, setLoading] = useState(false);
@@ -11,9 +12,9 @@ const CategoryManager = () => {
   const [currentCategory, setCurrentCategory] = useState({ name: '', description: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const { t } = useTranslation(['categories', 'common']);
 
   // Estados para etiquetas
-  const [newLabel, setNewLabel] = useState({ name: '', categoryId: '' });
   const [editingLabel, setEditingLabel] = useState(null);
   const { categoriesWithLabels, loading: contextLoading, error: contextError, refreshData } = useLabels();
 
@@ -70,10 +71,13 @@ const CategoryManager = () => {
   };
 
   // Función para asegurar que el color esté en formato correcto
+  // Esta función no se usa actualmente pero podría ser útil en el futuro
+  /* 
   const formatColor = (color) => {
     if (!color) return '#6c757d';
     return color.startsWith('#') ? color : `#${color}`;
   };
+  */
 
   // Abrir modal para crear nueva categoría
   const handleNewCategory = () => {
@@ -136,32 +140,6 @@ const CategoryManager = () => {
     } catch (err) {
       console.error('Error al eliminar categoría:', err);
       setError('No se pudo eliminar la categoría');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Manejar creación de nueva etiqueta
-  const handleCreateLabel = async (e) => {
-    e.preventDefault();
-    if (!newLabel.name.trim() || !newLabel.categoryId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Crear la etiqueta
-      await labelService.createLabel(newLabel);
-
-      // Limpiar el formulario
-      setNewLabel({ name: '', categoryId: '' });
-
-      // Recargar datos desde el contexto
-      await refreshData();
-
-    } catch (err) {
-      console.error('Error al crear etiqueta:', err);
-      setError('No se pudo crear la etiqueta');
     } finally {
       setLoading(false);
     }
@@ -315,7 +293,7 @@ const CategoryManager = () => {
 
   return (
     <Container className="py-4" style={{ maxWidth: '1200px' }}>
-      <h1 className="mb-4">Gestor de Categorías y Etiquetas</h1>
+      <h1 className="mb-4">{t('title')}</h1>
 
       {error && <Alert variant="danger">{error}</Alert>}
 
@@ -324,13 +302,13 @@ const CategoryManager = () => {
         <Col className="mb-4">
           <Card>
             <Card.Header>
-              <h4>Categorías</h4>
+              <h4>{t('category.title', 'Categorías')}</h4>
             </Card.Header>
             <Card.Body>
               <div className="mb-4">
                 <Button variant="primary" onClick={handleNewCategory}>
                   <i className="bi bi-plus-circle me-2"></i>
-                  Nueva Categoría
+                  {t('category.new')}
                 </Button>
               </div>
 
@@ -380,7 +358,7 @@ const CategoryManager = () => {
                           className="mb-3"
                           onClick={() => handleNewLabel(category._id || category.id)}
                         >
-                          <i className="bi bi-plus-circle me-1"></i> Nueva etiqueta
+                          <i className="bi bi-plus-circle me-1"></i> {t('label.new')}
                         </Button>
 
                         {/* Mostrar etiquetas de esta categoría como pills */}
@@ -405,7 +383,7 @@ const CategoryManager = () => {
                                   return <LabelBadge key={label._id || label.id} label={label} onEdit={handleEditLabel} onDelete={handleDeleteLabelClick} />;
                                 });
                               } else {
-                                return <span className="text-muted fst-italic">No hay etiquetas</span>;
+                                return <span className="text-muted fst-italic">{t('category.no_labels')}</span>;
                               }
                             })()
                           }
@@ -423,25 +401,25 @@ const CategoryManager = () => {
       {/* Modal para editar etiqueta */}
       <Modal show={showLabelModal} onHide={() => setShowLabelModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{editingLabel ? 'Editar Etiqueta' : 'Nueva Etiqueta'}</Modal.Title>
+          <Modal.Title>{editingLabel ? t('label.edit') : t('label.new')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {previewLabel && (
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>Nombre de la etiqueta</Form.Label>
+                <Form.Label>{t('label.name')}</Form.Label>
                 <Form.Control
                   ref={labelNameInputRef}
                   type="text"
                   value={previewLabel.name}
                   onChange={(e) => setPreviewLabel({ ...previewLabel, name: e.target.value })}
-                  placeholder="Nombre de la etiqueta"
+                  placeholder={t('label.name')}
                   autoFocus
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Color</Form.Label>
+                <Form.Label>{t('label.color')}</Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     type="color"
@@ -461,7 +439,7 @@ const CategoryManager = () => {
                     variant="outline-secondary"
                     onClick={handleRandomizeColor}
                   >
-                    Aleatorio
+                    {t('label.random_color')}
                   </Button>
                 </div>
               </Form.Group>
@@ -469,7 +447,7 @@ const CategoryManager = () => {
               {/* Vista previa */}
               {previewLabel && (
                 <div className="mb-3">
-                  <Form.Label>Vista previa:</Form.Label>
+                  <Form.Label>{t('label.preview')}:</Form.Label>
                   <div>
                     <LabelBadge
                       label={previewLabel}
@@ -484,7 +462,7 @@ const CategoryManager = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowLabelModal(false)}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -494,9 +472,9 @@ const CategoryManager = () => {
             {isLoading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-1" />
-                Guardando...
+                {t('common:loading.default')}
               </>
-            ) : 'Guardar cambios'}
+            ) : t('common:buttons.save')}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -504,38 +482,38 @@ const CategoryManager = () => {
       {/* Modal para crear/editar categoría */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditing ? 'Editar Categoría' : 'Nueva Categoría'}</Modal.Title>
+          <Modal.Title>{isEditing ? t('category.edit') : t('category.new')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Nombre</Form.Label>
+              <Form.Label>{t('category.name')}</Form.Label>
               <Form.Control
                 ref={categoryNameInputRef}
                 type="text"
                 value={currentCategory.name}
                 onChange={(e) => setCurrentCategory({ ...currentCategory, name: e.target.value })}
-                placeholder="Nombre de la categoría"
+                placeholder={t('category.name')}
                 required
                 autoFocus
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Descripción</Form.Label>
+              <Form.Label>{t('category.description')}</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 value={currentCategory.description || ''}
                 onChange={(e) => setCurrentCategory({ ...currentCategory, description: e.target.value })}
-                placeholder="Descripción (opcional)"
+                placeholder={t('category.description_placeholder')}
               />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -545,9 +523,9 @@ const CategoryManager = () => {
             {isLoading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-1" />
-                Guardando...
+                {t('common:loading.default')}
               </>
-            ) : isEditing ? 'Guardar cambios' : 'Crear categoría'}
+            ) : isEditing ? t('common:buttons.save') : t('common:buttons.save')}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -558,29 +536,29 @@ const CategoryManager = () => {
         setLabelToDelete(null);
       }}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar eliminación</Modal.Title>
+          <Modal.Title>{t('common:confirmations.delete')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>¿Estás seguro de que quieres eliminar la etiqueta <strong>{labelToDelete?.name}</strong>?</p>
+          <p>{t('delete.confirm_label', { name: labelToDelete?.name })}</p>
 
           {labelToDelete && typeof labelToDelete.photoCount !== 'undefined' && (
             <>
               {labelToDelete.photoCount > 0 ? (
                 <p className="text-warning">
                   <i className="bi bi-exclamation-triangle me-2"></i>
-                  Esta etiqueta se eliminará de <strong>{labelToDelete.photoCount} {labelToDelete.photoCount === 1 ? 'foto' : 'fotos'}</strong>.
+                  {t('delete.photos_affected', { count: labelToDelete.photoCount })}
                 </p>
               ) : (
                 <p className="text-info">
                   <i className="bi bi-info-circle me-2"></i>
-                  Esta etiqueta no está siendo utilizada en ninguna foto.
+                  {t('delete.no_photos')}
                 </p>
               )}
             </>
           )}
 
           <p className="text-danger mt-3">
-            <strong>Esta acción no se puede deshacer.</strong>
+            <strong>{t('common:confirmations.irreversible')}</strong>
           </p>
         </Modal.Body>
         <Modal.Footer>
@@ -588,7 +566,7 @@ const CategoryManager = () => {
             setDeleteLabelConfirm(null);
             setLabelToDelete(null);
           }}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button
             variant="danger"
@@ -598,9 +576,9 @@ const CategoryManager = () => {
             {isLoading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-1" />
-                Eliminando...
+                {t('common:loading.default')}
               </>
-            ) : 'Eliminar etiqueta'}
+            ) : t('common:buttons.delete')}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -611,14 +589,14 @@ const CategoryManager = () => {
         setCategoryToDelete(null);
       }}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar eliminación</Modal.Title>
+          <Modal.Title>{t('common:confirmations.delete')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>¿Estás seguro de que quieres eliminar la categoría <strong>{categoryToDelete?.name}</strong>?</p>
+          <p>{t('delete.confirm_category', { name: categoryToDelete?.name })}</p>
 
           {categoryToDelete && Array.isArray(categoryToDelete.labels) && categoryToDelete.labels.length > 0 ? (
             <>
-              <p className="mb-2">Se eliminarán las siguientes etiquetas:</p>
+              <p className="mb-2">{t('delete.labels_to_delete')}</p>
               <div className="bg-light p-2 rounded mb-3" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                 <ListGroup variant="flush">
                   {categoryToDelete.labels.map(label => (
@@ -629,10 +607,10 @@ const CategoryManager = () => {
                       <div>
                         {typeof label.photoCount !== 'undefined' ? (
                           <Badge bg={label.photoCount > 0 ? "warning" : "secondary"} text={label.photoCount > 0 ? "dark" : "light"}>
-                            {label.photoCount} {label.photoCount === 1 ? 'foto' : 'fotos'}
+                            {label.photoCount} {label.photoCount === 1 ? t('common:photo.singular', 'foto') : t('common:photo.plural', 'fotos')}
                           </Badge>
                         ) : (
-                          <Badge bg="secondary">? fotos</Badge>
+                          <Badge bg="secondary">{t('common:photo.unknown', '? fotos')}</Badge>
                         )}
                       </div>
                     </ListGroup.Item>
@@ -641,11 +619,11 @@ const CategoryManager = () => {
               </div>
             </>
           ) : (
-            <p className="text-info">Esta categoría no tiene etiquetas.</p>
+            <p className="text-info">{t('category.no_labels')}</p>
           )}
 
           <p className="text-danger mt-3">
-            <strong>Esta acción no se puede deshacer.</strong>
+            <strong>{t('common:confirmations.irreversible')}</strong>
           </p>
         </Modal.Body>
         <Modal.Footer>
@@ -653,7 +631,7 @@ const CategoryManager = () => {
             setDeleteConfirm(null);
             setCategoryToDelete(null);
           }}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button
             variant="danger"
@@ -663,9 +641,9 @@ const CategoryManager = () => {
             {isLoading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-1" />
-                Eliminando...
+                {t('common:loading.default')}
               </>
-            ) : 'Eliminar categoría'}
+            ) : t('common:buttons.delete')}
           </Button>
         </Modal.Footer>
       </Modal>

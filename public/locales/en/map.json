@@ -1,0 +1,28 @@
+{
+  "title": "Memory Map",
+  "description": "View your photos distributed geographically",
+  "info": {
+    "showing_photos_one": "Showing {{count}} photo on the map{{location}}",
+    "showing_photos_other": "Showing {{count}} photos on the map{{location}}",
+    "location_detected": " · Location detected",
+    "no_photos": "No photos to show on the map"
+  },
+  "layers": {
+    "title": "Map Layers",
+    "voyager": "Voyager",
+    "streets": "Streets",
+    "basic": "Basic",
+    "outdoor": "Outdoor",
+    "toner": "Toner"
+  },
+  "location": {
+    "button_title": "Find my location",
+    "current": "You are here",
+    "coordinates": "Lat: {{lat}}, Lng: {{lng}}"
+  },
+  "photo": {
+    "no_title": "No title",
+    "no_image": "No image",
+    "view_details": "View details"
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -18,6 +19,7 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = ({ photos, loading }) => {
+  const { t } = useTranslation(['map', 'common']);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
@@ -37,23 +39,23 @@ const MapComponent = ({ photos, loading }) => {
       // Definir los diferentes estilos de mapa disponibles
       const mapStyles = {
         voyager: {
-          title: 'Voyager',
+          title: t('layers.voyager'),
           url: `https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?key=${apiKey}`
         },
         streets: {
-          title: 'Calles',
+          title: t('layers.streets'),
           url: `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${apiKey}`
         },
         basic: {
-          title: 'Básico',
+          title: t('layers.basic'),
           url: `https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=${apiKey}`
         },
         outdoor: {
-          title: 'Outdoor',
+          title: t('layers.outdoor'),
           url: `https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=${apiKey}`
         },
         toner: {
-          title: 'Toner',
+          title: t('layers.toner'),
           url: `https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=${apiKey}`
         }
       };
@@ -70,7 +72,7 @@ const MapComponent = ({ photos, loading }) => {
       }
 
       // Agregar la capa inicial (Voyager por defecto)
-      baseLayers['Voyager'].addTo(map);
+      baseLayers[t('layers.voyager')].addTo(map);
 
       // Agregar el control para cambiar entre capas
       L.control.layers(baseLayers, {}, { position: 'topright' }).addTo(map);
@@ -86,7 +88,7 @@ const MapComponent = ({ photos, loading }) => {
       locationButton.onAdd = function () {
         const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
         div.innerHTML = `
-          <a href="#" title="Encontrar mi ubicación" class="leaflet-control-locate leaflet-bar-part">
+          <a href="#" title="${t('location.button_title')}" class="leaflet-control-locate leaflet-bar-part">
             <i class="bi bi-person-circle"></i>
           </a>
         `;
@@ -113,7 +115,7 @@ const MapComponent = ({ photos, loading }) => {
         mapInstanceRef.current = null;
       }
     };
-  }, [user]); // Agregar user como dependencia
+  }, [user, t]); // Agregar t como dependencia
 
   // Función para encontrar la ubicación del usuario
   const findUserLocation = (e) => {
@@ -140,7 +142,7 @@ const MapComponent = ({ photos, loading }) => {
         setTimeout(() => {
           if (mapInstanceRef.current) {
             // Primero hacer zoom
-            mapInstanceRef.current.setZoom(18);
+            mapInstanceRef.current.setZoom(16);
 
             // Luego centrar en la ubicación
             mapInstanceRef.current.panTo([latitude, longitude], {
@@ -180,15 +182,16 @@ const MapComponent = ({ photos, loading }) => {
               </div>
             `,
             iconSize: [50, 60],
-            iconAnchor: [25, 55]
+            iconAnchor: [25, 55],
+            popupAnchor: [0, -45] // Ajustado para que coincida con los tooltips de las fotos
           })
         }).addTo(mapInstanceRef.current);
 
         // Agregar popup con información
         userMarker.bindPopup(`
           <div class="user-location-popup text-center">
-            <h6 class="mb-2">Tu ubicación actual</h6>
-            <p class="coordinates mb-2">${latitude.toFixed(5)}, ${longitude.toFixed(5)}</p>
+            <h6 class="mb-2">${t('location.current')}</h6>
+            <p class="coordinates mb-2">${t('location.coordinates', { lat: latitude.toFixed(5), lng: longitude.toFixed(5) })}</p>
           </div>
         `);
 
@@ -208,20 +211,20 @@ const MapComponent = ({ photos, loading }) => {
         setUserLocationLoading(false);
 
         // Mostrar alerta al usuario con más detalles
-        let errorMsg = 'No pudimos acceder a tu ubicación. ';
+        let errorMsg = t('common:errors.location_general');
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMsg += 'Has denegado el permiso para acceder a tu ubicación.';
+            errorMsg += ' ' + t('common:errors.location_denied');
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMsg += 'La información de ubicación no está disponible.';
+            errorMsg += ' ' + t('common:errors.location_unavailable');
             break;
           case error.TIMEOUT:
-            errorMsg += 'La solicitud para obtener tu ubicación ha expirado.';
+            errorMsg += ' ' + t('common:errors.location_timeout');
             break;
           default:
-            errorMsg += 'Ha ocurrido un error desconocido.';
+            errorMsg += ' ' + t('common:errors.location_unknown');
         }
 
         alert(errorMsg);
@@ -265,8 +268,8 @@ const MapComponent = ({ photos, loading }) => {
                     <div class="marker-pin">
                       <div class="marker-thumbnail-container">
                         ${photo.thumbnailUrl
-                    ? `<img src="${photo.thumbnailUrl}" alt="${photo.title || 'Sin título'}" class="marker-thumbnail">`
-                    : '<div class="marker-thumbnail no-image"><i class="bi bi-camera"></i></div>'
+                    ? `<img src="${photo.thumbnailUrl}" alt="${photo.title || t('photo.no_title')}" class="marker-thumbnail">`
+                    : `<div class="marker-thumbnail no-image"><i class="bi bi-camera"></i></div>`
                   }
                       </div>
                     </div>
@@ -280,13 +283,13 @@ const MapComponent = ({ photos, loading }) => {
               .addTo(markersLayerRef.current)
               .bindPopup(`
               <div style="width: 200px; text-align: center;">
-                <h6>${photo.title || 'Sin título'}</h6>
+                <h6>${photo.title || t('photo.no_title')}</h6>
                 ${photo.thumbnailUrl ?
-                  `<img src="${photo.thumbnailUrl}" alt="${photo.title}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 5px;">` :
-                  '<div class="no-image-placeholder">Sin imagen</div>'
+                  `<img src="${photo.thumbnailUrl}" alt="${photo.title || t('photo.no_title')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 5px;">` :
+                  `<div class="no-image-placeholder">${t('photo.no_image')}</div>`
                 }
                 <p class="mt-2">${photo.description || ''}</p>
-                <a href="/photo/${photo._id}" class="btn btn-sm btn-primary">Ver detalle</a>
+                <a href="/photo/${photo._id}" class="btn btn-sm btn-primary">${t('photo.view_details')}</a>
               </div>
             `);
           }
@@ -301,7 +304,7 @@ const MapComponent = ({ photos, loading }) => {
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
       }
     }
-  }, [photos, loading, userLocation]);
+  }, [photos, loading, userLocation, t]); // Agregar t como dependencia
 
   // Estilo CSS para el mapa
   const mapStyle = {
@@ -316,7 +319,11 @@ const MapComponent = ({ photos, loading }) => {
       {(loading || userLocationLoading) && (
         <div className="map-loading-overlay">
           <Spinner animation="border" variant="primary" />
-          <p className="mt-2">{userLocationLoading ? 'Detectando tu ubicación...' : 'Cargando fotos en el mapa...'}</p>
+          <p className="mt-2">
+            {userLocationLoading
+              ? t('common:loading.location')
+              : t('common:loading.map')}
+          </p>
         </div>
       )}
 
@@ -327,9 +334,12 @@ const MapComponent = ({ photos, loading }) => {
       <div className="mt-2 text-muted">
         <small>
           {photos.length > 0 ? (
-            `Mostrando ${photos.length} ${photos.length === 1 ? 'foto' : 'fotos'} en el mapa${userLocation ? ' · Ubicación detectada' : ''}`
+            t('info.showing_photos', {
+              count: photos.length,
+              location: userLocation ? t('info.location_detected') : ''
+            })
           ) : (
-            'No hay fotos para mostrar en el mapa'
+            t('info.no_photos')
           )}
         </small>
       </div>
@@ -460,26 +470,6 @@ const MapComponent = ({ photos, loading }) => {
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-        }
-        .location-dot {
-          width: 10px !important;
-          height: 10px !important;
-          background-color: black !important;
-          border-radius: 50% !important;
-          position: absolute !important;
-          top: 5px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-        }
-        .location-pin {
-          width: 16px !important;
-          height: 16px !important;
-          border: 2px solid black !important;
-          border-radius: 50% !important;
-          position: absolute !important;
-          top: 2px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
         }
       `}</style>
     </div>

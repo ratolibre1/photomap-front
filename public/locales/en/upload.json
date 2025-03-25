@@ -1,0 +1,69 @@
+{
+  "title": "Upload Photos",
+  "tabs": {
+    "photos": "Individual Photos",
+    "zip": "ZIP File"
+  },
+  "dropzone": {
+    "title": "Select photos to upload",
+    "subtitle": "Drop your photos here, or click to select",
+    "formats": "Accepted formats: JPG, JPEG, PNG, GIF",
+    "max_size": "Maximum size: {{size}}MB"
+  },
+  "preview": {
+    "count_one": "{{count}} photo selected",
+    "count_other": "{{count}} photos selected"
+  },
+  "details": {
+    "title": "Photo details"
+  },
+  "form": {
+    "title": "Title (optional)",
+    "title_placeholder": "Add a title for all photos",
+    "title_help": "File name will be used if no title is specified",
+    "description": "Description (optional)",
+    "description_placeholder": "Add a description",
+    "labels": "Labels",
+    "no_labels": "No labels selected"
+  },
+  "labels": {
+    "add": "Add label",
+    "loading": "Loading labels..."
+  },
+  "visibility": {
+    "title": "Visibility",
+    "public": "Public",
+    "private": "Private"
+  },
+  "buttons": {
+    "upload_one": "Upload {{count}} photo",
+    "upload_other": "Upload {{count}} photos",
+    "uploading": "Uploading..."
+  },
+  "progress": {
+    "uploading": "Uploading files..."
+  },
+  "error": {
+    "no_files": "Please select at least one photo to upload",
+    "partial_upload": "There were problems uploading some images. Please try again",
+    "upload_failed": "Error uploading images. Please check your connection and try again"
+  },
+  "zip": {
+    "title": "Import photos from ZIP file",
+    "description": "Upload a ZIP file with your photos to import them in bulk",
+    "success": "Success! 🎉",
+    "success_message": "The ZIP file has been uploaded successfully and is being processed. Photos will appear in your gallery when processing is complete.",
+    "file_selected": "Selected file:",
+    "processing": "This process may take several minutes depending on the file size",
+    "file_label": "ZIP File",
+    "help_text": "Select a ZIP file that contains your photos",
+    "max_size": "Maximum size: {{size}}MB",
+    "upload_button": "Import Photos",
+    "error": {
+      "invalid_file": "Please select a valid ZIP file",
+      "no_file": "Please select a ZIP file to upload",
+      "upload_failed": "Error uploading file: {{message}}",
+      "try_again": "Please try again later"
+    }
+  }
+}

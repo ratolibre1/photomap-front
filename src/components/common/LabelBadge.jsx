@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LabelBadge = ({ label, onEdit, onDelete, showEditButton = true, disabled = false, preview = false, showPhotoCount = false }) => {
   const bgColor = label.color || '#000000';
   const txtColor = label.textColor || '#ffffff';
+  const { t } = useTranslation(['labels']);
 
   return (
     <div
@@ -43,7 +45,7 @@ const LabelBadge = ({ label, onEdit, onDelete, showEditButton = true, disabled =
               alignItems: 'center',
               whiteSpace: 'nowrap',
             }}
-            title={`${label.publicPhotoCount} foto${label.publicPhotoCount !== 1 ? 's' : ''} pública${label.publicPhotoCount !== 1 ? 's' : ''}`}
+            title={t('photo_count', { count: label.publicPhotoCount })}
           >
             <i className="bi bi-camera me-1" style={{ fontSize: '0.65rem' }}></i>
             {label.publicPhotoCount}
@@ -64,7 +66,7 @@ const LabelBadge = ({ label, onEdit, onDelete, showEditButton = true, disabled =
             height: '100%',
           }}
           onClick={() => onEdit(label)}
-          title="Editar etiqueta"
+          title={t('buttons.edit')}
         >
           <i className="bi bi-pencil-fill"></i>
         </button>
@@ -82,7 +84,7 @@ const LabelBadge = ({ label, onEdit, onDelete, showEditButton = true, disabled =
             height: '100%',
           }}
           onClick={() => onDelete(label)}
-          title="Eliminar etiqueta"
+          title={t('buttons.delete')}
         >
           <i className="bi bi-x-circle"></i>
         </button>

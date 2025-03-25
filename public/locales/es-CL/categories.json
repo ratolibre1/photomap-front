@@ -1,0 +1,28 @@
+{
+  "title": "Categorías y Etiquetas",
+  "category": {
+    "title": "Categorías",
+    "new": "Nueva Categoría",
+    "edit": "Editar Categoría",
+    "name": "Nombre",
+    "description": "Descripción",
+    "description_placeholder": "Descripción (opcional)",
+    "no_labels": "No hay etiquetas"
+  },
+  "label": {
+    "new": "Nueva Etiqueta",
+    "edit": "Editar Etiqueta",
+    "name": "Nombre de la etiqueta",
+    "color": "Color",
+    "random_color": "Aleatorio",
+    "preview": "Vista previa"
+  },
+  "delete": {
+    "confirm_category": "¿Estás seguro de que quieres eliminar la categoría {{name}}?",
+    "confirm_label": "¿Estás seguro de que quieres eliminar la etiqueta {{name}}?",
+    "photos_affected": "Esta etiqueta se eliminará de {{count}} foto",
+    "photos_affected_plural": "Esta etiqueta se eliminará de {{count}} fotos",
+    "no_photos": "Esta etiqueta no está siendo utilizada en ninguna foto",
+    "labels_to_delete": "Se eliminarán las siguientes etiquetas:"
+  }
+}

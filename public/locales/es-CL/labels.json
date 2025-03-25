@@ -1,0 +1,18 @@
+{
+  "title": "Etiquetas",
+  "dropdown": {
+    "add": "Agregar etiqueta",
+    "select": "Seleccionar etiquetas",
+    "loading": "Cargando etiquetas...",
+    "none_selected": "Sin etiquetas seleccionadas",
+    "no_labels": "Sin etiquetas"
+  },
+  "buttons": {
+    "edit": "Editar etiqueta",
+    "delete": "Eliminar etiqueta"
+  },
+  "photo_count": {
+    "one": "{{count}} foto pública",
+    "other": "{{count}} fotos públicas"
+  }
+}

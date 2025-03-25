@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Nav, Button, Alert, ProgressBar, Form, Spinner, Dropdown } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Row, Col, Card, Nav, Button, Alert, ProgressBar, Form, Spinner } from 'react-bootstrap';
 import UploadPhotos from '../components/upload/UploadPhotos';
 import UploadZip from '../components/upload/UploadZip';
 import { useDropzone } from 'react-dropzone';
-import { photoService, categoryService } from '../services/api';
-import { useLabels } from '../context/LabelContext';
-import LabelBadge from '../components/common/LabelBadge';
+import { photoService } from '../services/api';
+import LabelSelector from '../components/common/LabelSelector';
+import { useTranslation } from 'react-i18next';
 
 const Upload = () => {
+  const { t } = useTranslation(['upload', 'common']);
   const [activeTab, setActiveTab] = useState('photos');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
@@ -22,33 +23,6 @@ const Upload = () => {
   const [description, setDescription] = useState('');
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [visibility, setVisibility] = useState('public');
-
-  // Estado para categorías disponibles
-  const [categories, setCategories] = useState([]);
-  const [loadingCategories, setLoadingCategories] = useState(false);
-  const [categoriesError, setCategoriesError] = useState(null);
-
-  const { categoriesWithLabels, loading: labelsLoading } = useLabels();
-
-  // Cargar categorías al montar el componente
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoadingCategories(true);
-        setCategoriesError(null);
-
-        const response = await categoryService.getCategories();
-        setCategories(response.data.data.categories || []);
-      } catch (error) {
-        console.error('Error al cargar categorías:', error);
-        setCategoriesError('No se pudieron cargar las categorías. Por favor, intenta de nuevo más tarde.');
-      } finally {
-        setLoadingCategories(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
 
   // Configuración de dropzone para subida de archivos
   const { getRootProps, getInputProps } = useDropzone({
@@ -72,13 +46,13 @@ const Upload = () => {
   };
 
   // Funciones para manejar etiquetas
-  const handleAddLabel = (label) => {
+  const handleLabelSelect = (label) => {
     if (!selectedLabels.some(item => (item._id || item.id) === (label._id || label.id))) {
       setSelectedLabels([...selectedLabels, label]);
     }
   };
 
-  const handleRemoveLabel = (labelToRemove) => {
+  const handleLabelRemove = (labelToRemove) => {
     setSelectedLabels(selectedLabels.filter(label =>
       (label._id || label.id) !== (labelToRemove._id || labelToRemove.id)
     ));
@@ -89,7 +63,7 @@ const Upload = () => {
     e.preventDefault();
 
     if (files.length === 0) {
-      setUploadError('Por favor, selecciona al menos una foto para subir.');
+      setUploadError(t('error.no_files'));
       return;
     }
 
@@ -149,11 +123,11 @@ const Upload = () => {
         setDescription('');
         setSelectedLabels([]);
       } else {
-        setUploadError('Hubo problemas al subir algunas imágenes. Por favor, intenta de nuevo.');
+        setUploadError(t('error.partial_upload'));
       }
     } catch (error) {
       console.error('Error durante la subida de fotos:', error);
-      setUploadError('Error al subir las imágenes. Por favor, verifica tu conexión e intenta de nuevo.');
+      setUploadError(t('error.upload_failed'));
     } finally {
       setUploading(false);
       // Limpiar progreso después de un tiempo
@@ -165,7 +139,7 @@ const Upload = () => {
 
   return (
     <Container className="py-4">
-      <h1 className="mb-4">Subir Fotos</h1>
+      <h1 className="mb-4">{t('title')}</h1>
 
       <Card className="mb-4 shadow-sm">
         <Card.Header>
@@ -176,7 +150,7 @@ const Upload = () => {
                 onClick={() => setActiveTab('photos')}
                 className="text-decoration-none"
               >
-                📷 Fotos Individuales
+                📷 {t('tabs.photos')}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -185,7 +159,7 @@ const Upload = () => {
                 onClick={() => setActiveTab('zip')}
                 className="text-decoration-none"
               >
-                📁 Archivo ZIP
+                📁 {t('tabs.zip')}
               </Nav.Link>
             </Nav.Item>
           </Nav>
@@ -193,7 +167,7 @@ const Upload = () => {
         <Card.Body>
           {uploadSuccess && (
             <Alert variant="success" className="mb-3">
-              ¡Archivos subidos correctamente!
+              {t('common:success.uploaded')}
             </Alert>
           )}
 
@@ -205,7 +179,7 @@ const Upload = () => {
 
           {uploading && (
             <div className="mb-3">
-              <p className="text-muted">Subiendo archivos...</p>
+              <p className="text-muted">{t('progress.uploading')}</p>
               <ProgressBar animated now={uploadProgress} label={`${uploadProgress}%`} />
             </div>
           )}
@@ -216,22 +190,26 @@ const Upload = () => {
                 <Col lg={8}>
                   <Card className="mb-4">
                     <Card.Body>
-                      <h5 className="mb-3">Selecciona las fotos a subir</h5>
+                      <h5 className="mb-3">{t('dropzone.title')}</h5>
 
                       {/* Zona de arrastrar y soltar */}
                       <div {...getRootProps({ className: 'dropzone' })}>
                         <input {...getInputProps()} />
                         <div className="text-center py-5">
                           <i className="bi bi-cloud-arrow-up display-3"></i>
-                          <p className="mt-3">Arrastra y suelta tus fotos aquí, o haz clic para seleccionarlas</p>
-                          <small className="text-muted">Formatos aceptados: JPG, JPEG, PNG, GIF</small>
+                          <p className="mt-3">
+                            {t('dropzone.subtitle')}
+                          </p>
+                          <small className="text-muted">
+                            {t('dropzone.formats')}
+                          </small>
                         </div>
                       </div>
 
                       {/* Previsualización de archivos */}
                       {files.length > 0 && (
                         <div className="mt-4">
-                          <h6>{files.length} foto(s) seleccionada(s)</h6>
+                          <h6>{t('preview.count', { count: files.length })}</h6>
                           <Row xs={2} md={3} lg={4} className="g-3 mt-2">
                             {files.map(file => (
                               <Col key={file.id}>
@@ -259,20 +237,17 @@ const Upload = () => {
                                       </div>
                                     )}
                                   </div>
-                                  <Card.Body className="p-2">
-                                    <small className="d-block text-truncate">{file.name}</small>
-                                    <small className="text-muted">
-                                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                                    </small>
-                                  </Card.Body>
-                                  <Button
-                                    variant="link"
-                                    className="position-absolute top-0 end-0 text-danger"
-                                    onClick={() => removeFile(file.id)}
-                                    disabled={uploading}
-                                  >
-                                    <i className="bi bi-x-circle"></i>
-                                  </Button>
+                                  <Card.Footer className="p-2 d-flex justify-content-between align-items-center bg-light">
+                                    <small className="text-truncate" style={{ maxWidth: '70%' }}>{file.name}</small>
+                                    <Button
+                                      variant="danger"
+                                      size="sm"
+                                      onClick={() => removeFile(file.id)}
+                                      className="py-0 px-1"
+                                    >
+                                      <i className="bi bi-x"></i>
+                                    </Button>
+                                  </Card.Footer>
                                 </Card>
                               </Col>
                             ))}
@@ -286,141 +261,130 @@ const Upload = () => {
                 <Col lg={4}>
                   <Card className="mb-4">
                     <Card.Body>
-                      <h5 className="mb-3">Detalles de las fotos</h5>
+                      <h5 className="mb-3">{t('details.title')}</h5>
 
                       <Form.Group className="mb-3">
-                        <Form.Label>Título (opcional)</Form.Label>
+                        <Form.Label>{t('form.title')}</Form.Label>
                         <Form.Control
                           type="text"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
-                          placeholder="Agrega un título para todas las fotos"
-                          disabled={uploading}
+                          placeholder={t('form.title_placeholder')}
                         />
                         <Form.Text className="text-muted">
-                          Se usará el nombre del archivo si no se especifica un título.
+                          {t('form.title_help')}
                         </Form.Text>
                       </Form.Group>
 
                       <Form.Group className="mb-3">
-                        <Form.Label>Descripción (opcional)</Form.Label>
+                        <Form.Label>{t('form.description')}</Form.Label>
                         <Form.Control
                           as="textarea"
                           rows={3}
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
-                          placeholder="Agrega una descripción"
-                          disabled={uploading}
+                          placeholder={t('form.description_placeholder')}
                         />
                       </Form.Group>
 
                       <Form.Group className="mb-3">
-                        <Form.Label>Etiquetas</Form.Label>
-
-                        <div className="d-flex flex-wrap gap-2 mb-2">
-                          {selectedLabels.length > 0 ? (
-                            selectedLabels.map(label => (
-                              <LabelBadge
-                                key={label._id || label.id}
-                                label={label}
-                                showEditButton={false}
-                                onDelete={handleRemoveLabel}
-                              />
-                            ))
-                          ) : (
-                            <span className="text-muted">Ninguna etiqueta seleccionada</span>
-                          )}
-                        </div>
-
-                        <Dropdown>
-                          <Dropdown.Toggle variant="outline-secondary" id="label-dropdown" className="mt-2">
-                            <i className="bi bi-tag me-1"></i> Agregar etiqueta
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                            {labelsLoading ? (
-                              <Dropdown.Item disabled>Cargando etiquetas...</Dropdown.Item>
-                            ) : (
-                              categoriesWithLabels.map(category => (
-                                <div key={category._id || category.id}>
-                                  <Dropdown.Header>{category.name}</Dropdown.Header>
-                                  {category.labels?.map(label => {
-                                    const isSelected = selectedLabels.some(selected =>
-                                      (selected._id || selected.id) === (label._id || label.id)
-                                    );
-
-                                    return (
-                                      <Dropdown.Item
-                                        key={label._id || label.id}
-                                        onClick={() => handleAddLabel(label)}
-                                        disabled={isSelected}
-                                      >
-                                        <LabelBadge
-                                          label={label}
-                                          showEditButton={false}
-                                          disabled={isSelected}
-                                        />
-                                      </Dropdown.Item>
-                                    );
-                                  })}
-                                  <Dropdown.Divider />
-                                </div>
-                              ))
-                            )}
-                          </Dropdown.Menu>
-                        </Dropdown>
+                        <Form.Label>{t('form.labels')}</Form.Label>
+                        <LabelSelector
+                          selectedLabels={selectedLabels}
+                          onLabelSelect={handleLabelSelect}
+                          onLabelRemove={handleLabelRemove}
+                        />
                       </Form.Group>
 
                       <Form.Group className="mb-3">
-                        <Form.Label>Visibilidad</Form.Label>
+                        <Form.Label>{t('visibility.title')}</Form.Label>
                         <div>
                           <Form.Check
                             type="radio"
-                            name="visibility"
                             id="visibility-public"
-                            label="Pública"
-                            value="public"
+                            name="visibility"
+                            label={t('visibility.public')}
                             checked={visibility === 'public'}
                             onChange={() => setVisibility('public')}
-                            disabled={uploading}
+                            className="mb-2"
                           />
                           <Form.Check
                             type="radio"
-                            name="visibility"
                             id="visibility-private"
-                            label="Privada"
-                            value="private"
+                            name="visibility"
+                            label={t('visibility.private')}
                             checked={visibility === 'private'}
                             onChange={() => setVisibility('private')}
-                            disabled={uploading}
                           />
                         </div>
                       </Form.Group>
-
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        className="w-100 mt-3"
-                        disabled={uploading || files.length === 0}
-                      >
-                        {uploading ? (
-                          <>
-                            <Spinner size="sm" animation="border" className="me-2" />
-                            Subiendo...
-                          </>
-                        ) : (
-                          <>Subir {files.length} foto{files.length !== 1 && 's'}</>
-                        )}
-                      </Button>
                     </Card.Body>
                   </Card>
+
+                  <div className="d-grid">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      disabled={files.length === 0 || uploading}
+                    >
+                      {uploading ? (
+                        <>
+                          <Spinner animation="border" size="sm" className="me-2" />
+                          {t('buttons.uploading')}
+                        </>
+                      ) : (
+                        <>{t('buttons.upload', { count: files.length })}</>
+                      )}
+                    </Button>
+                  </div>
                 </Col>
               </Row>
             </Form>
           ) : (
-            <UploadZip onUpload={handleUpload} isUploading={uploading} />
+            <UploadZip />
           )}
         </Card.Body>
       </Card>
+
+      <style jsx="true">{`
+        .dropzone {
+          border: 2px dashed #ccc;
+          border-radius: 8px;
+          padding: 20px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        .dropzone:hover, .dropzone:focus {
+          border-color: var(--bs-primary);
+          background-color: rgba(13, 110, 253, 0.05);
+        }
+        .upload-progress {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 24px;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .progress-bar {
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          background: rgba(13, 110, 253, 0.7);
+          z-index: 1;
+        }
+        .progress-text {
+          color: white;
+          font-size: 12px;
+          position: relative;
+          z-index: 2;
+          text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        }
+      `}</style>
     </Container>
   );
 };
