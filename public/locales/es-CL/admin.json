@@ -1,0 +1,20 @@
+{
+  "title": "Herramientas de Administración",
+  "subtitle": "Panel de control para tareas administrativas del sistema",
+  "geocoding": {
+    "title": "Procesar Geocodificación",
+    "badge": "Admin",
+    "description": "Esta herramienta procesa asíncronamente la ubicación de las fotos a partir de sus coordenadas GPS, obteniendo información como país, región y ciudad.",
+    "success": "Proceso iniciado correctamente.",
+    "photos_to_process": "Fotos a procesar: {{count}}",
+    "limit_label": "Límite de fotos a procesar",
+    "limit_help": "Cantidad máxima de fotos que serán procesadas en esta ejecución.",
+    "processing": "Procesando...",
+    "start_process": "Iniciar Proceso",
+    "error": "Error al procesar la geocodificación"
+  },
+  "colors": {
+    "title": "Paleta de Colores Activa",
+    "footer": "Estos colores provienen del tema \"{{name}}\" seleccionado."
+  }
+}

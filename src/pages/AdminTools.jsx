@@ -1,14 +1,17 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import GeocodingPanel from '../components/admin/GeocodingPanel';
 import ColorPalette from '../components/admin/ColorPalette';
+import { useTranslation } from 'react-i18next';
 
 const AdminTools = () => {
+  const { t } = useTranslation(['admin']);
+
   return (
     <Container fluid className="py-4">
       <Row className="mb-4">
         <Col>
-          <h1>Herramientas de Administración</h1>
-          <p className="text-muted">Panel de control para tareas administrativas del sistema</p>
+          <h1>{t('title')}</h1>
+          <p className="text-muted">{t('subtitle')}</p>
         </Col>
       </Row>
 

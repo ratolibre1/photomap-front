@@ -1,0 +1,35 @@
+{
+  "title": "Tu Perfil",
+  "avatar": {
+    "default_user": "Usuario",
+    "default_email": "correo@ejemplo.com"
+  },
+  "nav": {
+    "personal_info": "Información personal",
+    "security": "Seguridad"
+  },
+  "personal_info": {
+    "title": "Información Personal",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "email_help": "No puedes cambiar tu correo electrónico.",
+    "bio": "Biografía",
+    "bio_placeholder": "Cuéntanos un poco sobre ti...",
+    "save_button": "Guardar cambios",
+    "saving": "Guardando...",
+    "success": "Información actualizada correctamente",
+    "error": "Error al actualizar la información"
+  },
+  "password": {
+    "title": "Cambiar Contraseña",
+    "current": "Contraseña actual",
+    "new": "Nueva contraseña",
+    "confirm": "Confirmar nueva contraseña",
+    "requirements": "La contraseña debe tener al menos 6 caracteres.",
+    "save_button": "Cambiar contraseña",
+    "saving": "Actualizando...",
+    "success": "Contraseña actualizada correctamente",
+    "error": "Error al cambiar la contraseña",
+    "mismatch": "Las contraseñas no coinciden"
+  }
+}

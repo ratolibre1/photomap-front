@@ -1,0 +1,33 @@
+{
+  "title": "Dashboard",
+  "subtitle": "System activity summary",
+  "map": {
+    "title": "Explore your memories on the map 🗺️",
+    "description": "View all your photos geographically distributed and discover the places you've visited.",
+    "button": "View map"
+  },
+  "stats": {
+    "title": "Your stats 📊",
+    "loading": "Loading stats...",
+    "photos_total": "Total photos",
+    "categories": "Categories",
+    "photos_public": "Public photos",
+    "photos_private": "Private photos",
+    "last_updated": "Last updated"
+  },
+  "upload": {
+    "title": "Upload photos",
+    "description": "Share your moments by uploading new photos to the map.",
+    "button": "Upload now"
+  },
+  "gallery": {
+    "title": "Photo Gallery",
+    "description": "View all your photos organized in a gallery.",
+    "button": "View gallery"
+  },
+  "profile": {
+    "title": "Your profile",
+    "description": "Edit your personal information and preferences.",
+    "button": "View profile"
+  }
+}

@@ -47,6 +47,7 @@ api.interceptors.response.use(
 export const authService = {
   register: (userData) => api.post('/users/register', userData),
   login: (credentials) => api.post('/users/login', credentials),
+  updatePreferredLanguage: (languageCode) => api.patch('/users/language', { preferredLanguage: languageCode }),
 };
 
 // Servicios de fotos
@@ -185,7 +186,7 @@ export const categoryService = {
 
 // Agregar al final del archivo, antes de export default api
 export const statsService = {
-  getSystemStats: () => api.get('/stats/system')
+  getUserStats: () => api.get('/stats/me')
 };
 
 export const adminService = {

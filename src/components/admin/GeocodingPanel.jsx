@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Card, Button, Form, Alert, Spinner, Badge } from 'react-bootstrap';
 import { adminService } from '../../services/api';
+import { useTranslation } from 'react-i18next';
 
 const GeocodingPanel = () => {
   const [limit, setLimit] = useState(30);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const { t } = useTranslation(['admin']);
 
   const handleProcessGeocoding = async () => {
     try {
@@ -20,7 +22,7 @@ const GeocodingPanel = () => {
       setResult(response.data);
     } catch (error) {
       console.error('Error al procesar geocodificación:', error);
-      setError(error.response?.data?.message || 'Error al procesar la geocodificación');
+      setError(error.response?.data?.message || t('geocoding.error'));
     } finally {
       setLoading(false);
     }
@@ -29,15 +31,14 @@ const GeocodingPanel = () => {
   return (
     <Card className="mb-4">
       <Card.Header className="d-flex justify-content-between align-items-center">
-        <h5 className="mb-0">Procesar Geocodificación</h5>
+        <h5 className="mb-0">{t('geocoding.title')}</h5>
         <Badge bg="primary" className="ms-2">
-          Admin
+          {t('geocoding.badge')}
         </Badge>
       </Card.Header>
       <Card.Body>
         <p className="text-muted">
-          Esta herramienta procesa asíncronamente la ubicación de las fotos a partir de sus coordenadas GPS,
-          obteniendo información como país, región y ciudad.
+          {t('geocoding.description')}
         </p>
 
         {error && (
@@ -48,14 +49,14 @@ const GeocodingPanel = () => {
 
         {result && (
           <Alert variant="success" className="mb-3">
-            <strong>Proceso iniciado correctamente.</strong>
-            <div>Fotos a procesar: {result.count || '?'}</div>
+            <strong>{t('geocoding.success')}</strong>
+            <div>{t('geocoding.photos_to_process', { count: result.count || '?' })}</div>
             {result.message && <div>{result.message}</div>}
           </Alert>
         )}
 
         <Form.Group className="mb-3">
-          <Form.Label>Límite de fotos a procesar</Form.Label>
+          <Form.Label>{t('geocoding.limit_label')}</Form.Label>
           <Form.Control
             type="number"
             min="1"
@@ -64,7 +65,7 @@ const GeocodingPanel = () => {
             onChange={(e) => setLimit(parseInt(e.target.value))}
           />
           <Form.Text className="text-muted">
-            Cantidad máxima de fotos que serán procesadas en esta ejecución.
+            {t('geocoding.limit_help')}
           </Form.Text>
         </Form.Group>
 
@@ -76,12 +77,12 @@ const GeocodingPanel = () => {
           {loading ? (
             <>
               <Spinner animation="border" size="sm" className="me-2" />
-              Procesando...
+              {t('geocoding.processing')}
             </>
           ) : (
             <>
               <i className="bi bi-lightning-charge me-2"></i>
-              Iniciar Proceso
+              {t('geocoding.start_process')}
             </>
           )}
         </Button>

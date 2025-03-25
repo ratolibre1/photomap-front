@@ -5,8 +5,29 @@ import Backend from 'i18next-http-backend';
 
 console.log('🌎 Iniciando configuración de i18n...');
 
-// Limpiar cualquier configuración previa de idioma
-localStorage.removeItem('i18nextLng');
+// Ya no limpiamos la configuración previa de idioma para respetar preferencias
+// localStorage.removeItem('i18nextLng');
+
+// Función para obtener el idioma preferido del usuario (si hay sesión)
+const getUserPreferredLanguage = () => {
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user?.preferredLanguage) {
+        console.log(`📣 Idioma preferido del usuario: ${user.preferredLanguage}`);
+        return user.preferredLanguage;
+      }
+    }
+    return null;
+  } catch (e) {
+    console.error('Error al leer preferencia de idioma:', e);
+    return null;
+  }
+};
+
+// Verificar si hay un idioma preferido guardado
+const preferredLanguage = getUserPreferredLanguage();
 
 i18n
   .use(Backend)
@@ -16,7 +37,7 @@ i18n
     fallbackLng: 'es-CL',
     supportedLngs: ['es-CL', 'en'],
     defaultNS: 'common',
-    ns: ['common', 'auth', 'photos', 'map', 'categories', 'upload', 'labels'],
+    ns: ['common', 'auth', 'photos', 'map', 'categories', 'upload', 'labels', 'dashboard', 'admin', 'profile'],
     debug: true, // Activar logs de debug
 
     interpolation: {
@@ -33,12 +54,10 @@ i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
 
-    // Forzar español chileno
-    lng: 'es-CL',
+    // Usar idioma preferido del usuario si existe, sino español chileno
+    lng: preferredLanguage || 'es-CL',
   }).then(() => {
-    // Asegurar que el idioma sea español chileno
-    i18n.changeLanguage('es-CL');
-
+    // Ya no forzamos español, respetamos la configuración
     console.log('✅ i18n inicializado correctamente');
     console.log('🗣️ Idioma actual:', i18n.language);
     console.log('📦 Namespaces cargados:', i18n.options.ns);

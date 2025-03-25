@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Card, Form, Button, Row, Col, Alert, Tab, Nav } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('info');
+  const { t } = useTranslation(['profile', 'common']);
 
   // Estados para el formulario de información personal
   const [userInfo, setUserInfo] = useState({
@@ -55,12 +57,12 @@ const Profile = () => {
       // Por ahora simulamos éxito
       setTimeout(() => {
         console.log('Guardando:', userInfo);
-        setSuccess('Información actualizada correctamente');
+        setSuccess(t('personal_info.success'));
         setLoading(false);
       }, 1000);
     } catch (err) {
       console.error('Error al actualizar la información:', err);
-      setError('Error al actualizar la información');
+      setError(t('personal_info.error'));
       setLoading(false);
     }
   };
@@ -73,7 +75,7 @@ const Profile = () => {
 
     // Validar que las contraseñas coincidan
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setError(t('password.mismatch'));
       return;
     }
 
@@ -83,7 +85,7 @@ const Profile = () => {
       // Por ahora simulamos éxito
       setTimeout(() => {
         console.log('Cambiando contraseña');
-        setSuccess('Contraseña actualizada correctamente');
+        setSuccess(t('password.success'));
         setPasswordData({
           currentPassword: '',
           newPassword: '',
@@ -93,14 +95,14 @@ const Profile = () => {
       }, 1000);
     } catch (err) {
       console.error('Error al cambiar la contraseña:', err);
-      setError('Error al cambiar la contraseña');
+      setError(t('password.error'));
       setLoading(false);
     }
   };
 
   return (
     <div>
-      <h1 className="mb-4">Tu Perfil</h1>
+      <h1 className="mb-4">{t('title')}</h1>
 
       <Row>
         <Col lg={3} md={4} className="mb-4">
@@ -110,18 +112,18 @@ const Profile = () => {
                 style={{ width: '80px', height: '80px', fontSize: '2rem' }}>
                 {user?.name?.charAt(0).toUpperCase() || '?'}
               </div>
-              <h5>{user?.name || 'Usuario'}</h5>
-              <p className="text-muted small">{user?.email || 'correo@ejemplo.com'}</p>
+              <h5>{user?.name || t('avatar.default_user')}</h5>
+              <p className="text-muted small">{user?.email || t('avatar.default_email')}</p>
 
               <Nav variant="pills" className="flex-column mt-4" onSelect={(key) => setActiveTab(key)}>
                 <Nav.Item>
                   <Nav.Link eventKey="info" className={activeTab === 'info' ? 'active' : ''}>
-                    <i className="bi bi-person me-2"></i> Información personal
+                    <i className="bi bi-person me-2"></i> {t('nav.personal_info')}
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="security" className={activeTab === 'security' ? 'active' : ''}>
-                    <i className="bi bi-shield-lock me-2"></i> Seguridad
+                    <i className="bi bi-shield-lock me-2"></i> {t('nav.security')}
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
@@ -137,12 +139,12 @@ const Profile = () => {
 
               <Tab.Content>
                 <Tab.Pane active={activeTab === 'info'}>
-                  <h3 className="mb-4">Información Personal</h3>
+                  <h3 className="mb-4">{t('personal_info.title')}</h3>
                   <Form onSubmit={handleSaveInfo}>
                     <Row>
                       <Col md={6}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Nombre</Form.Label>
+                          <Form.Label>{t('personal_info.name')}</Form.Label>
                           <Form.Control
                             type="text"
                             name="name"
@@ -154,7 +156,7 @@ const Profile = () => {
                       </Col>
                       <Col md={6}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Correo electrónico</Form.Label>
+                          <Form.Label>{t('personal_info.email')}</Form.Label>
                           <Form.Control
                             type="email"
                             name="email"
@@ -164,21 +166,21 @@ const Profile = () => {
                             disabled
                           />
                           <Form.Text className="text-muted">
-                            No puedes cambiar tu correo electrónico.
+                            {t('personal_info.email_help')}
                           </Form.Text>
                         </Form.Group>
                       </Col>
                     </Row>
 
                     <Form.Group className="mb-3">
-                      <Form.Label>Biografía</Form.Label>
+                      <Form.Label>{t('personal_info.bio')}</Form.Label>
                       <Form.Control
                         as="textarea"
                         rows={3}
                         name="bio"
                         value={userInfo.bio}
                         onChange={handleInfoChange}
-                        placeholder="Cuéntanos un poco sobre ti..."
+                        placeholder={t('personal_info.bio_placeholder')}
                       />
                     </Form.Group>
 
@@ -188,17 +190,17 @@ const Profile = () => {
                         type="submit"
                         disabled={loading}
                       >
-                        {loading ? 'Guardando...' : 'Guardar cambios'}
+                        {loading ? t('personal_info.saving') : t('personal_info.save_button')}
                       </Button>
                     </div>
                   </Form>
                 </Tab.Pane>
 
                 <Tab.Pane active={activeTab === 'security'}>
-                  <h3 className="mb-4">Cambiar Contraseña</h3>
+                  <h3 className="mb-4">{t('password.title')}</h3>
                   <Form onSubmit={handleChangePassword}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Contraseña actual</Form.Label>
+                      <Form.Label>{t('password.current')}</Form.Label>
                       <Form.Control
                         type="password"
                         name="currentPassword"
@@ -209,7 +211,7 @@ const Profile = () => {
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                      <Form.Label>Nueva contraseña</Form.Label>
+                      <Form.Label>{t('password.new')}</Form.Label>
                       <Form.Control
                         type="password"
                         name="newPassword"
@@ -219,12 +221,12 @@ const Profile = () => {
                         minLength={6}
                       />
                       <Form.Text className="text-muted">
-                        La contraseña debe tener al menos 6 caracteres.
+                        {t('password.requirements')}
                       </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                      <Form.Label>Confirmar nueva contraseña</Form.Label>
+                      <Form.Label>{t('password.confirm')}</Form.Label>
                       <Form.Control
                         type="password"
                         name="confirmPassword"
@@ -241,7 +243,7 @@ const Profile = () => {
                         type="submit"
                         disabled={loading}
                       >
-                        {loading ? 'Actualizando...' : 'Cambiar contraseña'}
+                        {loading ? t('password.saving') : t('password.save_button')}
                       </Button>
                     </div>
                   </Form>

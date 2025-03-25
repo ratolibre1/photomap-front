@@ -1,5 +1,6 @@
 import { createContext, useState, useContext } from 'react';
 import { authService } from '../services/api';
+import i18n from '../i18n';
 
 const AuthContext = createContext();
 
@@ -24,6 +25,32 @@ export const AuthProvider = ({ children }) => {
   // Función para verificar si está autenticado (siempre lee directo de localStorage)
   const isAuthenticated = () => {
     return !!localStorage.getItem('token') && !!getUserFromStorage();
+  };
+
+  // Función para actualizar el idioma preferido del usuario
+  const updatePreferredLanguage = async (languageCode) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Llamada a la API para actualizar el idioma preferido
+      await authService.updatePreferredLanguage(languageCode);
+
+      // Actualizar el idioma en el objeto usuario de localStorage
+      const user = getUserFromStorage();
+      if (user) {
+        user.preferredLanguage = languageCode;
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+
+      return true;
+    } catch (err) {
+      console.error("Error al actualizar idioma preferido:", err);
+      setError(err.response?.data?.message || err.message || 'Error al actualizar idioma preferido');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Función de login
@@ -54,6 +81,12 @@ export const AuthProvider = ({ children }) => {
       // Verificar que se guardó correctamente
       console.log("Token guardado:", localStorage.getItem('token'));
 
+      // Configurar idioma preferido si el usuario tiene uno
+      if (user.preferredLanguage) {
+        i18n.changeLanguage(user.preferredLanguage);
+        console.log(`Idioma cambiado a: ${user.preferredLanguage}`);
+      }
+
       return true;
     } catch (err) {
       console.error("Error en login:", err);
@@ -80,6 +113,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: isAuthenticated(),
     getUser: getUserFromStorage,
+    updatePreferredLanguage
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Card, ListGroup, Badge } from 'react-bootstrap';
 import { useTheme } from '../../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const ColorPalette = () => {
   const { themeData } = useTheme();
+  const { t } = useTranslation(['admin']);
 
   // Usar directamente los colores del themeData en lugar de leerlos del CSS
   const colors = themeData.colors;
@@ -11,7 +13,7 @@ const ColorPalette = () => {
   return (
     <Card className="mb-4">
       <Card.Header className="d-flex justify-content-between align-items-center">
-        <h5 className="mb-0">Paleta de Colores Activa</h5>
+        <h5 className="mb-0">{t('colors.title')}</h5>
         <Badge bg="primary" className="ms-2">
           {themeData.icon} {themeData.name}
         </Badge>
@@ -38,7 +40,7 @@ const ColorPalette = () => {
       </ListGroup>
       <Card.Footer className="text-muted small">
         <i className="bi bi-info-circle me-1"></i>
-        Estos colores provienen del tema "{themeData.name}" seleccionado.
+        {t('colors.footer', { name: themeData.name })}
       </Card.Footer>
     </Card>
   );

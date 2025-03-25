@@ -1,0 +1,20 @@
+{
+  "title": "Admin Tools",
+  "subtitle": "Control panel for system administrative tasks",
+  "geocoding": {
+    "title": "Process Geocoding",
+    "badge": "Admin",
+    "description": "This tool asynchronously processes the location of photos based on their GPS coordinates, obtaining information such as country, region, and city.",
+    "success": "Process successfully started.",
+    "photos_to_process": "Photos to process: {{count}}",
+    "limit_label": "Limit of photos to process",
+    "limit_help": "Maximum number of photos that will be processed in this execution.",
+    "processing": "Processing...",
+    "start_process": "Start Process",
+    "error": "Error processing geocoding"
+  },
+  "colors": {
+    "title": "Active Color Palette",
+    "footer": "These colors come from the selected \"{{name}}\" theme."
+  }
+}

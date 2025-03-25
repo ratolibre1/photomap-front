@@ -23,7 +23,7 @@ const LANGUAGES = [
 const Sidebar = ({ expanded, toggleSidebar }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, updatePreferredLanguage } = useAuth();
   const { theme, setTheme } = useTheme();
   const { t, i18n } = useTranslation(['nav', 'common']);
 
@@ -56,6 +56,26 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Función para cambiar idioma y guardarlo en preferencias
+  const handleLanguageChange = async (langCode) => {
+    try {
+      // Cambiar el idioma en la interfaz
+      i18n.changeLanguage(langCode);
+
+      // Guardar la preferencia en el backend
+      await updatePreferredLanguage(langCode);
+      console.log(`Idioma actualizado a ${langCode} en el servidor`);
+
+      // Cerrar el menú desplegable si está colapsado
+      if (!expanded) {
+        document.getElementById('langMenu').style.display = 'none';
+      }
+    } catch (error) {
+      console.error('Error al actualizar idioma preferido:', error);
+      // El idioma de la interfaz ya se cambió, así que no hacemos rollback
+    }
+  };
 
   return (
     <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}
@@ -168,7 +188,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
               {LANGUAGES.map((lang) => (
                 <button
                   key={lang.code}
-                  onClick={() => i18n.changeLanguage(lang.code)}
+                  onClick={() => handleLanguageChange(lang.code)}
                   className={`btn btn-sm p-1`}
                   style={{
                     backgroundColor: 'var(--light)',
@@ -357,10 +377,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                 <button
                   key={lang.code}
                   className="dropdown-item d-flex align-items-center px-3 py-2"
-                  onClick={() => {
-                    i18n.changeLanguage(lang.code);
-                    document.getElementById('langMenu').style.display = 'none';
-                  }}
+                  onClick={() => handleLanguageChange(lang.code)}
                   style={{
                     backgroundColor: i18n.language === lang.code ? 'rgba(0,0,0,0.04)' : 'transparent',
                     transition: 'background-color 0.2s'
