@@ -1,0 +1,18 @@
+{
+  "title": "On This Day",
+  "subtitle": {
+    "start": "See your memories from",
+    "end": "throughout the years"
+  },
+  "refresh": "Refresh",
+  "photo": "photo",
+  "photos": "photos",
+  "errors": {
+    "loading": "We couldn't load your photos. Please try again later."
+  },
+  "no_photos": {
+    "title": "No photos on this date yet",
+    "message": "It seems you don't have any photos taken on {{date}} in previous years. Upload some photos to create memories for the future!",
+    "upload_button": "Upload photos"
+  }
+}

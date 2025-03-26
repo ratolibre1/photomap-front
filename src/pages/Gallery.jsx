@@ -413,7 +413,7 @@ const Gallery = () => {
   };
 
   return (
-    <Container className="py-4">
+    <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Galería de Fotos</h1>
 

@@ -46,7 +46,7 @@ const Login = () => {
   };
 
   return (
-    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+    <Container fluid className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Row className="w-100 justify-content-center">
         <Col xs={12} md={8} lg={6} xl={5}>
           <Card className="shadow border-0">

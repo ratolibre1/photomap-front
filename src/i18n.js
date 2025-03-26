@@ -37,7 +37,7 @@ i18n
     fallbackLng: 'es-CL',
     supportedLngs: ['es-CL', 'en'],
     defaultNS: 'common',
-    ns: ['common', 'auth', 'photos', 'map', 'categories', 'upload', 'labels', 'dashboard', 'admin', 'profile'],
+    ns: ['common', 'auth', 'photos', 'map', 'categories', 'upload', 'labels', 'dashboard', 'admin', 'profile', 'onthisday'],
     debug: true, // Activar logs de debug
 
     interpolation: {

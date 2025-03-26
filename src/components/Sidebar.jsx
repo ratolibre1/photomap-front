@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 const MENU_ITEMS = [
   { path: '/photo-map', label: 'nav:map', icon: '🗺️' },
   { path: '/gallery', label: 'nav:gallery', icon: '🖼️' },
+  { path: '/on-this-day', label: 'nav:onthisday', icon: '📅' },
   { path: '/upload', label: 'nav:upload', icon: '📤' },
   { path: '/categories', label: 'nav:categories', icon: '🏷️' },
   { path: '/profile', label: 'nav:profile', icon: '👤' },

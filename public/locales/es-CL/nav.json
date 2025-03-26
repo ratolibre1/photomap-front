@@ -1,6 +1,8 @@
 {
+  "dashboard": "Inicio",
   "map": "Mapa de Recuerdos",
   "gallery": "Galería de Fotos",
+  "onthisday": "Un Día como Hoy",
   "upload": "Subir Fotos",
   "categories": "Categorías",
   "profile": "Perfil",

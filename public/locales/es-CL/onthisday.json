@@ -1,0 +1,18 @@
+{
+  "title": "Un Día como Hoy",
+  "subtitle": {
+    "start": "Revisa tus recuerdos del",
+    "end": "a lo largo de los años"
+  },
+  "refresh": "Actualizar",
+  "photo": "foto",
+  "photos": "fotos",
+  "errors": {
+    "loading": "No pudimos cargar las fotos. Intenta nuevamente más tarde."
+  },
+  "no_photos": {
+    "title": "Aún no hay fotos para esta fecha",
+    "message": "Parece que no tienes fotos tomadas un {{date}} en años anteriores. ¡Sube algunas fotos para crear recuerdos para el futuro!",
+    "upload_button": "Subir fotos"
+  }
+}

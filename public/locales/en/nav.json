@@ -1,6 +1,8 @@
 {
-  "map": "Memory Map",
+  "dashboard": "Dashboard",
+  "map": "Memories Map",
   "gallery": "Photo Gallery",
+  "onthisday": "On This Day",
   "upload": "Upload Photos",
   "categories": "Categories",
   "profile": "Profile",

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Form, Button, Row, Col, Alert, Tab, Nav } from 'react-bootstrap';
+import { Card, Form, Button, Row, Col, Alert, Tab, Nav, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
@@ -101,7 +101,7 @@ const Profile = () => {
   };
 
   return (
-    <div>
+    <Container fluid className="py-4">
       <h1 className="mb-4">{t('title')}</h1>
 
       <Row>
@@ -253,7 +253,7 @@ const Profile = () => {
           </Card>
         </Col>
       </Row>
-    </div>
+    </Container>
   );
 };
 

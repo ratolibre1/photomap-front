@@ -4,6 +4,7 @@ import { categoryService, labelService } from '../services/api';
 import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
 import { useTranslation } from 'react-i18next';
+import '../pages/PhotoMap.css'; // Importar estilos para skeletons
 
 const CategoryManager = () => {
   const [loading, setLoading] = useState(false);
@@ -292,7 +293,7 @@ const CategoryManager = () => {
   }, [showLabelModal]);
 
   return (
-    <Container className="py-4" style={{ maxWidth: '1200px' }}>
+    <Container fluid className="py-4">
       <h1 className="mb-4">{t('title')}</h1>
 
       {error && <Alert variant="danger">{error}</Alert>}
@@ -306,16 +307,96 @@ const CategoryManager = () => {
             </Card.Header>
             <Card.Body>
               <div className="mb-4">
-                <Button variant="primary" onClick={handleNewCategory}>
-                  <i className="bi bi-plus-circle me-2"></i>
-                  {t('category.new')}
-                </Button>
+                {isLoading ? (
+                  <div className="skeleton-tag skeleton-tag-large" style={{ width: "150px", height: "38px" }}></div>
+                ) : (
+                  <Button variant="primary" onClick={handleNewCategory}>
+                    <i className="bi bi-plus-circle me-2"></i>
+                    {t('category.new')}
+                  </Button>
+                )}
               </div>
 
               {/* Lista de categorías con sus etiquetas */}
               {isLoading ? (
-                <div className="text-center py-3">
-                  <Spinner animation="border" />
+                <div>
+                  {/* Primera categoría skeleton con 2 etiquetas */}
+                  <Card className="mb-3">
+                    <Card.Header className="d-flex justify-content-between align-items-center">
+                      <div className="skeleton-title" style={{ width: '40%' }}></div>
+                      <div>
+                        <Button variant="outline-secondary" size="sm" className="me-2" disabled>
+                          <i className="bi bi-pencil"></i>
+                        </Button>
+                        <Button variant="outline-danger" size="sm" className="ms-1" disabled>
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      </div>
+                    </Card.Header>
+                    <Card.Body>
+                      <div className="skeleton-label mb-3" style={{ width: '80%' }}></div>
+                      <div className="mb-3">
+                        <div className="skeleton-tag skeleton-tag-small" style={{ width: "120px", height: "31px" }}></div>
+                      </div>
+                      <div className="d-flex flex-wrap gap-2">
+                        <div className="skeleton-tag skeleton-tag-small"></div>
+                        <div className="skeleton-tag skeleton-tag-medium"></div>
+                      </div>
+                    </Card.Body>
+                  </Card>
+
+                  {/* Segunda categoría skeleton con 4 etiquetas */}
+                  <Card className="mb-3">
+                    <Card.Header className="d-flex justify-content-between align-items-center">
+                      <div className="skeleton-title" style={{ width: '55%' }}></div>
+                      <div>
+                        <Button variant="outline-secondary" size="sm" className="me-2" disabled>
+                          <i className="bi bi-pencil"></i>
+                        </Button>
+                        <Button variant="outline-danger" size="sm" className="ms-1" disabled>
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      </div>
+                    </Card.Header>
+                    <Card.Body>
+                      <div className="skeleton-label mb-3" style={{ width: '70%' }}></div>
+                      <div className="mb-3">
+                        <div className="skeleton-tag skeleton-tag-small" style={{ width: "120px", height: "31px" }}></div>
+                      </div>
+                      <div className="d-flex flex-wrap gap-2">
+                        <div className="skeleton-tag skeleton-tag-small"></div>
+                        <div className="skeleton-tag skeleton-tag-medium"></div>
+                        <div className="skeleton-tag skeleton-tag-large"></div>
+                        <div className="skeleton-tag skeleton-tag-small"></div>
+                      </div>
+                    </Card.Body>
+                  </Card>
+
+                  {/* Tercera categoría skeleton con 3 etiquetas */}
+                  <Card className="mb-3">
+                    <Card.Header className="d-flex justify-content-between align-items-center">
+                      <div className="skeleton-title" style={{ width: '35%' }}></div>
+                      <div>
+                        <Button variant="outline-secondary" size="sm" className="me-2" disabled>
+                          <i className="bi bi-pencil"></i>
+                        </Button>
+                        <Button variant="outline-danger" size="sm" className="ms-1" disabled>
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      </div>
+                    </Card.Header>
+                    <Card.Body>
+                      <div className="skeleton-label mb-3" style={{ width: '60%' }}></div>
+                      <div className="mb-3">
+                        <div className="skeleton-tag skeleton-tag-small" style={{ width: "120px", height: "31px" }}></div>
+                      </div>
+                      <div className="d-flex flex-wrap gap-2">
+                        <div className="skeleton-tag skeleton-tag-medium"></div>
+                        <div className="skeleton-tag skeleton-tag-large"></div>
+                        <div className="skeleton-tag skeleton-tag-small"></div>
+                      </div>
+                    </Card.Body>
+                  </Card>
                 </div>
               ) : (
                 <div>

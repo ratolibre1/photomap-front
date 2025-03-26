@@ -6,6 +6,9 @@ import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { useAuth } from '../../context/AuthContext'; // Importar el contexto de autenticación
+import 'leaflet.markercluster/dist/leaflet.markercluster.js';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 // Corregir el ícono de marcador predeterminado de Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -23,6 +26,7 @@ const MapComponent = ({ photos, loading }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
+  const clusterLayerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [userLocationLoading, setUserLocationLoading] = useState(false);
   const { user } = useAuth(); // Obtener el usuario actual
@@ -80,7 +84,121 @@ const MapComponent = ({ photos, loading }) => {
       // Guardar referencia al mapa
       mapInstanceRef.current = map;
 
-      // Crear capa para marcadores de fotos
+      // Crear capa para marcadores de fotos usando MarkerClusterGroup
+      clusterLayerRef.current = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        // Función dinámica para el radio máximo de clustering
+        // A mayor zoom (más cerca), menor radio de agrupación = clusters más pequeños
+        maxClusterRadius: function (zoom) {
+          // Escala gradual de radio de clusters según el nivel de zoom
+          if (zoom <= 5) return 80;      // Zoom muy lejano: clusters grandes
+          else if (zoom <= 8) return 60; // Zoom medio-lejano
+          else if (zoom <= 10) return 50; // Zoom medio
+          else if (zoom <= 12) return 30; // Zoom medio-cercano
+          else return 20;                // Zoom cercano: clusters pequeños
+        },
+        zoomToBoundsOnClick: false, // Desactivamos el comportamiento por defecto para manejarlo nosotros
+        spiderfyOnMaxZoom: false,  // Desactivar el efecto spider en zoom máximo
+        disableClusteringAtZoom: 14, // Desagrupar a un nivel de zoom más bajo (antes era 15)
+        // Personalizar cómo se calcula el área a la que hacer zoom, con un padding mayor
+        iconCreateFunction: function (cluster) {
+          // Obtener el número de marcadores en el cluster
+          const count = cluster.getChildCount();
+
+          // Determinar la clase del cluster según el número de fotos
+          let className;
+          if (count < 10) {
+            className = 'cluster-small';
+          } else if (count < 50) {
+            className = 'cluster-medium';
+          } else {
+            className = 'cluster-large';
+          }
+
+          // Crear HTML personalizado para el icono del cluster
+          return L.divIcon({
+            html: `
+              <div class="marker-cluster ${className}">
+                <div class="marker-cluster-container">
+                  <span>${count}</span>
+                </div>
+              </div>
+            `,
+            className: `custom-cluster-icon ${className}`,
+            iconSize: new L.Point(42, 42),
+            iconAnchor: [21, 21]
+          });
+        }
+      }).addTo(map);
+
+      // Personalizar el comportamiento de zoom al hacer clic en un cluster
+      clusterLayerRef.current.on('clusterclick', function (e) {
+        // Obtener el cluster y los datos relacionados
+        const cluster = e.layer;
+        const childCount = cluster.getChildCount();
+        const childMarkers = cluster.getAllChildMarkers();
+        const currentZoom = map.getZoom();
+
+        // Crear límites para todos los marcadores en el cluster
+        const bounds = L.latLngBounds(childMarkers.map(marker => marker.getLatLng()));
+
+        // Calcular distancias entre marcadores para determinar cuán dispersos están
+        let maxDistance = 0;
+        if (childCount > 1) {
+          for (let i = 0; i < childCount - 1; i++) {
+            for (let j = i + 1; j < childCount; j++) {
+              const dist = childMarkers[i].getLatLng().distanceTo(childMarkers[j].getLatLng());
+              maxDistance = Math.max(maxDistance, dist);
+            }
+          }
+        }
+
+        // Determinar el padding necesario según la dispersión de puntos
+        // Más dispersos = más padding para asegurar que todos sean visibles
+        let zoomPadding;
+        if (maxDistance > 10000) { // Muy dispersos (> 10km)
+          zoomPadding = [150, 150];
+        } else if (maxDistance > 1000) { // Dispersión media (1-10km)
+          zoomPadding = [120, 120];
+        } else { // Cercanos entre sí
+          zoomPadding = [80, 80];
+        }
+
+        // Obtener el centro del cluster
+        const clusterCenter = cluster.getLatLng();
+
+        // Calcular el zoom óptimo con los límites
+        const boundsZoom = map.getBoundsZoom(bounds, false, zoomPadding);
+
+        // Si el cluster tiene menos de 3 marcadores y están muy cercanos, 
+        // aumentar el zoom significativamente
+        const targetZoom = (childCount <= 3 && maxDistance < 500)
+          ? Math.max(currentZoom + 2, 14)  // Al menos 2 niveles más o nivel 14
+          : Math.max(
+            Math.min(boundsZoom, currentZoom + 3), // No más de 3 niveles de aumento
+            Math.min(Math.ceil(currentZoom * 1.2), currentZoom + 1) // Al menos 1 nivel o 20% más
+          );
+
+        // Animar al nuevo zoom y centro
+        // Usamos flyTo para clusters pequeños (movimiento más suave)
+        // y flyToBounds para clusters más grandes (mejor visualización de área)
+        if (childCount <= 5) {
+          map.flyTo(clusterCenter, targetZoom, {
+            duration: 0.5,
+            easeLinearity: 0.5
+          });
+        } else {
+          map.flyToBounds(bounds, {
+            padding: zoomPadding,
+            maxZoom: targetZoom,
+            duration: 0.5
+          });
+        }
+
+        return false; // Prevenir el comportamiento predeterminado
+      });
+
+      // Capa para marcadores no agrupados (como el marcador de usuario)
       markersLayerRef.current = L.layerGroup().addTo(map);
 
       // Agregar botón de localización
@@ -185,7 +303,7 @@ const MapComponent = ({ photos, loading }) => {
             iconAnchor: [25, 55],
             popupAnchor: [0, -45] // Ajustado para que coincida con los tooltips de las fotos
           })
-        }).addTo(mapInstanceRef.current);
+        }).addTo(markersLayerRef.current);
 
         // Agregar popup con información
         userMarker.bindPopup(`
@@ -239,9 +357,9 @@ const MapComponent = ({ photos, loading }) => {
 
   // Actualizar marcadores cuando cambian las fotos
   useEffect(() => {
-    if (mapInstanceRef.current && markersLayerRef.current && photos && !loading) {
+    if (mapInstanceRef.current && clusterLayerRef.current && photos && !loading) {
       // Limpiar marcadores anteriores
-      markersLayerRef.current.clearLayers();
+      clusterLayerRef.current.clearLayers();
 
       // Añadir marcadores para cada foto con coordenadas
       const bounds = L.latLngBounds();
@@ -280,7 +398,6 @@ const MapComponent = ({ photos, loading }) => {
                 popupAnchor: [0, -45] // Posición del popup
               })
             })
-              .addTo(markersLayerRef.current)
               .bindPopup(`
               <div style="width: 200px; text-align: center;">
                 <h6>${photo.title || t('photo.no_title')}</h6>
@@ -292,13 +409,16 @@ const MapComponent = ({ photos, loading }) => {
                 <a href="/photo/${photo._id}" class="btn btn-sm btn-primary">${t('photo.view_details')}</a>
               </div>
             `);
+
+            // Agregar el marcador al grupo de clusters en lugar de directamente al mapa
+            clusterLayerRef.current.addLayer(marker);
           }
         }
       });
 
       // Ajustar vista si hay marcadores
       if (markersAdded > 0) {
-        mapInstanceRef.current.fitBounds(bounds, { padding: [50, 50] });
+        mapInstanceRef.current.fitBounds(bounds, { padding: [80, 80] });
       } else if (!userLocation) {
         // Si no hay marcadores ni ubicación de usuario, mostrar vista predeterminada
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
@@ -435,6 +555,76 @@ const MapComponent = ({ photos, loading }) => {
           margin: 5px 0 0;
           font-family: monospace;
           font-size: 0.9em;
+        }
+
+        /* Estilos para los clusters */
+        .marker-cluster {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--primary, #0d6efd);
+          border: 3px solid #fff;
+          box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        
+        /* Esto anula específicamente los márgenes que vienen por defecto de MarkerCluster.Default.css */
+        .marker-cluster div {
+          margin-left: 0 !important;
+          margin-top: 0 !important;
+        }
+        
+        .marker-cluster-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.95);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .marker-cluster span {
+          color: #333;
+          font-weight: bold;
+          font-size: 13px;
+          line-height: 0;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-bottom: 1px;
+        }
+        
+        .custom-cluster-icon {
+          background: transparent !important;
+          border: none !important;
+        }
+        
+        .cluster-small .marker-cluster-container {
+          width: 24px;
+          height: 24px;
+        }
+        
+        .cluster-small .marker-cluster span {
+          font-size: 11px;
+          padding-bottom: 1px;
+        }
+        
+        .cluster-large .marker-cluster-container {
+          width: 30px;
+          height: 30px;
+        }
+        
+        .cluster-large .marker-cluster span {
+          font-size: 15px;
+          padding-bottom: 2px;
         }
 
         /* Estilos para el botón de localización */

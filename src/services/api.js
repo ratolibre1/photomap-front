@@ -172,7 +172,8 @@ export const photoService = {
   },
   getPhotoCalendar: async (month, year) => {
     return await api.get(`/photos/calendar?month=${month}&year=${year}`);
-  }
+  },
+  getPhotosOnThisDay: () => api.get('/photos/on-this-day'),
 };
 
 // Servicios de categorías

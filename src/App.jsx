@@ -11,6 +11,7 @@ import Upload from './pages/Upload';
 import PhotoMap from './pages/PhotoMap';
 import { CategoryProvider } from './context/CategoryContext';
 import AdminTools from './pages/AdminTools';
+import OnThisDay from './pages/OnThisDay';
 import { LocationProvider } from './context/LocationContext';
 import { LabelProvider } from './context/LabelContext';
 import { AuthProvider } from './context/AuthContext';
@@ -104,6 +105,13 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <AdminTools />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/on-this-day" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <OnThisDay />
                       </Layout>
                     </ProtectedRoute>
                   } />
