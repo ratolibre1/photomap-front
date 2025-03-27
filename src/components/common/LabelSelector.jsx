@@ -48,7 +48,6 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
 
   // Limpiar búsqueda cuando se cierra el dropdown
   const handleToggleDropdown = (isOpen) => {
-    console.log("Dropdown toggle:", isOpen);
     setDropdownOpen(isOpen);
     if (!isOpen) {
       setSearchTerm('');
@@ -133,7 +132,6 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
                     <div
                       key={label._id || label.id}
                       onClick={() => {
-                        console.log("Clic en etiqueta:", label.name);
                         if (!isSelected) onLabelSelect(label);
                       }}
                       className={`dropdown-item custom-label-item ${isSelected ? 'disabled' : ''}`}
@@ -180,13 +178,14 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
       </Dropdown>
 
       {/* Estilo para evitar el highlight azul al hacer clic */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .custom-label-item:active,
         .custom-label-item.active {
           background-color: transparent !important;
           color: inherit !important;
         }
-      `}</style>
+      `}} />
     </div>
   );
 };

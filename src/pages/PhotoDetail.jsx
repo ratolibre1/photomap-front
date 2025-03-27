@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, ListGroup, Badge, Form, Dropdown, Toast } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, Form, Toast } from 'react-bootstrap';
 import { photoService } from '../services/api';
-import { useCategories } from '../context/CategoryContext';
 import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
 import LabelSelector from '../components/common/LabelSelector';
 import { useTranslation } from 'react-i18next';
+import ImageEditor from '../components/common/ImageEditor';
 
 const PhotoDetail = () => {
   const { id } = useParams();
@@ -33,8 +33,9 @@ const PhotoDetail = () => {
   const [nextPhotoId, setNextPhotoId] = useState(null);
   const [prevPhotoId, setPrevPhotoId] = useState(null);
   const [navLoading, setNavLoading] = useState(false);
-  const { categories } = useCategories();
   const { categoriesWithLabels, loading: labelsLoading, refreshData: refreshLabels } = useLabels();
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [imageTransformations, setImageTransformations] = useState({});
 
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -49,6 +50,11 @@ const PhotoDetail = () => {
         // Extraer la foto de la estructura correcta
         const currentPhoto = response.data.data.photo || response.data.data;
         setPhoto(currentPhoto);
+
+        // Si la foto tiene transformaciones guardadas, cargarlas
+        if (currentPhoto.transformations) {
+          setImageTransformations(currentPhoto.transformations);
+        }
 
         // Importante: agregamos log para ver las etiquetas
         console.log("Etiquetas de la foto:", currentPhoto.labels);
@@ -124,19 +130,9 @@ const PhotoDetail = () => {
   // Función para inicializar el formulario con los datos actuales
   const handleEditClick = async () => {
     if (photo) {
-      console.log('------ ABRIENDO MODAL DE EDICIÓN ------');
-      console.log('Datos completos de la foto:', photo);
-      console.log('Campo de visibilidad:', photo.visibility, typeof photo.visibility);
-      console.log('Campo isPublic:', photo.isPublic, typeof photo.isPublic);
-
-      console.log('Categorías disponibles actualizadas:', categories);
-      console.log('Categorías de la foto actual:', photo.labels);
-
       const formattedLabels = Array.isArray(photo.labels)
         ? photo.labels.map(cat => typeof cat === 'object' ? cat._id : cat)
         : photo.labels || [];
-
-      console.log('Categorías formateadas para el formulario:', formattedLabels);
 
       setEditForm({
         title: photo.title || '',
@@ -244,6 +240,18 @@ const PhotoDetail = () => {
         labels: [...editForm.labels, labelToAdd]
       });
     }
+  };
+
+  // Manejador para guardar transformaciones de imagen
+  const handleSaveImageTransformations = (transformations) => {
+    console.log("Transformaciones guardadas:", transformations);
+    setImageTransformations(transformations);
+    // Aquí eventualmente enviarías estas transformaciones al backend
+    setShowImageEditor(false);
+
+    // Mostrar mensaje de éxito
+    setToastMessage(t('photos:image_editor.saved'));
+    setShowToast(true);
   };
 
   if (loading) {
@@ -355,7 +363,7 @@ const PhotoDetail = () => {
           </Col>
 
           <Col lg={4}>
-            <Card className="shadow-sm">
+            <Card className="shadow-sm h-100">
               <Card.Body>
                 <h2>{photo.title || t('detail.no_title')}</h2>
 
@@ -432,6 +440,16 @@ const PhotoDetail = () => {
                     disabled={imageError}
                   >
                     {imageError ? t('detail.image_unavailable') : t('detail.view_full_size')}
+                  </Button>
+
+                  {/* Nuevo botón para editar la imagen */}
+                  <Button
+                    variant="outline-info"
+                    onClick={() => setShowImageEditor(true)}
+                    disabled={imageError}
+                  >
+                    <i className="bi bi-crop me-1"></i>
+                    {t('photos:image_editor.title')}
                   </Button>
                 </div>
 
@@ -590,6 +608,26 @@ const PhotoDetail = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Modal del editor de imagen */}
+      <Modal
+        show={showImageEditor}
+        onHide={() => setShowImageEditor(false)}
+        size="lg"
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{t('photos:image_editor.title')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ImageEditor
+            image={photo?.originalUrl}
+            initialTransformations={imageTransformations}
+            onSave={handleSaveImageTransformations}
+          />
+        </Modal.Body>
+      </Modal>
+
       {/* Toast para notificación de copia */}
       <Toast
         show={showToast}
@@ -611,13 +649,15 @@ const PhotoDetail = () => {
         <Toast.Body>{toastMessage}</Toast.Body>
       </Toast>
 
-      <style jsx>{`
-        .custom-label-item:active,
-        .custom-label-item.active {
-          background-color: transparent !important;
-          color: inherit !important;
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .custom-label-item:active,
+          .custom-label-item.active {
+            background-color: transparent !important;
+            color: inherit !important;
+          }
+        `
+      }} />
     </Container>
   );
 };

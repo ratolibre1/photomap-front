@@ -17,7 +17,7 @@ const MENU_ITEMS = [
 ];
 
 const LANGUAGES = [
-  { code: 'es-CL', name: 'language.es-CL', icon: '🇨🇱' },
+  { code: 'es', name: 'language.es', icon: '🇨🇱' },
   { code: 'en', name: 'language.en', icon: '🇬🇧' }
 ];
 

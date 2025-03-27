@@ -58,5 +58,25 @@
   "navigation": {
     "prev": "Previous Photo",
     "next": "Next Photo"
+  },
+  "image_editor": {
+    "title": "Edit Image",
+    "transformation": "Transformations",
+    "no_image": "No image available",
+    "rotation": "Rotation",
+    "scale": "Scale",
+    "position_x": "Horizontal position",
+    "position_y": "Vertical position",
+    "flip": "Flip",
+    "horizontal": "Horizontal",
+    "vertical": "Vertical",
+    "reset": "Reset",
+    "save": "Save changes",
+    "saved": "Changes saved successfully",
+    "crop_controls": "Crop adjustments",
+    "crop_width": "Crop width",
+    "crop_height": "Crop height",
+    "crop_position_x": "Crop X position",
+    "crop_position_y": "Crop Y position"
   }
 }

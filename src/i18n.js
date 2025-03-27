@@ -34,8 +34,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'es-CL',
-    supportedLngs: ['es-CL', 'en'],
+    fallbackLng: 'es',
+    supportedLngs: ['es', 'en'],
     defaultNS: 'common',
     ns: ['common', 'auth', 'photos', 'map', 'categories', 'upload', 'labels', 'dashboard', 'admin', 'profile', 'onthisday'],
     debug: true, // Activar logs de debug
@@ -55,7 +55,7 @@ i18n
     },
 
     // Usar idioma preferido del usuario si existe, sino español chileno
-    lng: preferredLanguage || 'es-CL',
+    lng: preferredLanguage || 'es'
   }).then(() => {
     // Ya no forzamos español, respetamos la configuración
     console.log('✅ i18n inicializado correctamente');
