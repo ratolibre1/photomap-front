@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -105,28 +106,21 @@ const MapComponent = ({ photos, loading }) => {
           // Obtener el número de marcadores en el cluster
           const count = cluster.getChildCount();
 
-          // Determinar la clase del cluster según el número de fotos
-          let className;
-          if (count < 10) {
-            className = 'cluster-small';
-          } else if (count < 50) {
-            className = 'cluster-medium';
-          } else {
-            className = 'cluster-large';
-          }
-
           // Crear HTML personalizado para el icono del cluster
           return L.divIcon({
             html: `
-              <div class="marker-cluster ${className}">
-                <div class="marker-cluster-container">
-                  <span>${count}</span>
+              <div class="marker-container">
+                <div class="marker-pin">
+                  <div class="marker-thumbnail-container">
+                    <span>${count}</span>
+                  </div>
                 </div>
               </div>
             `,
-            className: `custom-cluster-icon ${className}`,
-            iconSize: new L.Point(42, 42),
-            iconAnchor: [21, 21]
+            className: 'custom-photo-marker',
+            iconSize: [40, 60],
+            iconAnchor: [20, 55],
+            popupAnchor: [0, -45]
           });
         }
       }).addTo(map);
@@ -397,18 +391,61 @@ const MapComponent = ({ photos, loading }) => {
                 iconAnchor: [20, 55], // Punto central inferior del pin
                 popupAnchor: [0, -45] // Posición del popup
               })
-            })
-              .bindPopup(`
-              <div style="width: 200px; text-align: center;">
-                <h6>${photo.title || t('photo.no_title')}</h6>
-                ${photo.thumbnailUrl ?
-                  `<img src="${photo.thumbnailUrl}" alt="${photo.title || t('photo.no_title')}" style="max-width: 100%; height: auto; max-height: 150px; border-radius: 5px;">` :
-                  `<div class="no-image-placeholder">${t('photo.no_image')}</div>`
-                }
-                <p class="mt-2">${photo.description || ''}</p>
-                <a href="/photo/${photo._id}" class="btn btn-sm btn-primary">${t('photo.view_details')}</a>
-              </div>
-            `);
+            });
+
+            // Crear un contenido personalizado para el popup
+            const popupContent = document.createElement('div');
+            popupContent.style.width = '200px';
+            popupContent.style.textAlign = 'center';
+
+            // Crear el título
+            const title = document.createElement('h6');
+            title.textContent = photo.title || t('photo.no_title');
+            popupContent.appendChild(title);
+
+            // Crear la imagen
+            if (photo.thumbnailUrl) {
+              const img = document.createElement('img');
+              img.src = photo.thumbnailUrl;
+              img.alt = photo.title || t('photo.no_title');
+              img.style.maxWidth = '100%';
+              img.style.height = 'auto';
+              img.style.maxHeight = '150px';
+              img.style.borderRadius = '5px';
+              popupContent.appendChild(img);
+            } else {
+              const noImageDiv = document.createElement('div');
+              noImageDiv.className = 'no-image-placeholder';
+              noImageDiv.textContent = t('photo.no_image');
+              popupContent.appendChild(noImageDiv);
+            }
+
+            // Agregar descripción si existe
+            if (photo.description) {
+              const description = document.createElement('p');
+              description.className = 'mt-2';
+              description.textContent = photo.description;
+              popupContent.appendChild(description);
+            }
+
+            // Crear enlace como botón que use react-router-dom en lugar de un enlace absoluto
+            const linkButton = document.createElement('a');
+            linkButton.href = `#/photo/${photo._id}`; // Usar hash para que React Router lo capture
+            linkButton.className = 'btn btn-sm btn-primary';
+            linkButton.textContent = t('photo.view_details');
+            linkButton.style.marginTop = '8px';
+
+            // Agregar evento para evitar recarga de página y usar la navegación de React Router
+            linkButton.addEventListener('click', function (e) {
+              e.preventDefault();
+              window.history.pushState({}, '', `/photo/${photo._id}`);
+              window.dispatchEvent(new Event('popstate'));
+            });
+
+            popupContent.appendChild(linkButton);
+
+            // Asignar el contenido personalizado al popup
+            marker.bindPopup(popupContent);
 
             // Agregar el marcador al grupo de clusters en lugar de directamente al mapa
             clusterLayerRef.current.addLayer(marker);
@@ -557,74 +594,16 @@ const MapComponent = ({ photos, loading }) => {
           font-size: 0.9em;
         }
 
-        /* Estilos para los clusters */
-        .marker-cluster {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: var(--primary, #0d6efd);
-          border: 3px solid #fff;
-          box-shadow: 0 3px 6px rgba(0,0,0,0.4);
-          position: absolute;
-          top: 0;
-          left: 0;
-        }
-        
-        /* Esto anula específicamente los márgenes que vienen por defecto de MarkerCluster.Default.css */
-        .marker-cluster div {
-          margin-left: 0 !important;
-          margin-top: 0 !important;
-        }
-        
-        .marker-cluster-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.95);
-          border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .marker-cluster span {
+        /* Ajustes para el número en los clusters */
+        .marker-thumbnail-container span {
           color: #333;
           font-weight: bold;
-          font-size: 13px;
-          line-height: 0;
-          text-align: center;
+          font-size: 16px;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding-bottom: 1px;
-        }
-        
-        .custom-cluster-icon {
-          background: transparent !important;
-          border: none !important;
-        }
-        
-        .cluster-small .marker-cluster-container {
-          width: 24px;
-          height: 24px;
-        }
-        
-        .cluster-small .marker-cluster span {
-          font-size: 11px;
-          padding-bottom: 1px;
-        }
-        
-        .cluster-large .marker-cluster-container {
-          width: 30px;
-          height: 30px;
-        }
-        
-        .cluster-large .marker-cluster span {
-          font-size: 15px;
-          padding-bottom: 2px;
+          width: 100%;
+          height: 100%;
         }
 
         /* Estilos para el botón de localización */

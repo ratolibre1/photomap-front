@@ -1,43 +1,118 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Container, Row, Col, Card, Spinner, Alert, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { photoService } from '../services/api';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 
 const OnThisDay = () => {
   const [loading, setLoading] = useState(true);
   const [memories, setMemories] = useState([]);
   const [error, setError] = useState(null);
   const { t, i18n } = useTranslation(['onthisday', 'common']);
+  const { user } = useAuth();
+
+  // Estado para el formulario de búsqueda para administradores
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedDay, setSelectedDay] = useState('');
+  const [isCustomDate, setIsCustomDate] = useState(false);
 
   // Obtener y formatear la fecha actual según el idioma
   const today = new Date();
-  const formattedDate = new Intl.DateTimeFormat(i18n.language, {
-    day: 'numeric',
-    month: 'long'
-  }).format(today);
+  const currentMonth = today.getMonth() + 1; // getMonth() es 0-indexed
+  const currentDay = today.getDate();
+
+  // Función para calcular días en el mes seleccionado (teniendo en cuenta años bisiestos)
+  const getDaysInMonth = (month) => {
+    if (!month) return 31; // valor por defecto
+
+    const monthNum = parseInt(month);
+    // Para febrero (mes 2)
+    if (monthNum === 2) {
+      return 29;
+    }
+    // Para los demás meses
+    if ([4, 6, 9, 11].includes(monthNum)) {
+      return 30;
+    }
+    return 31;
+  };
+
+  // Calcular los días disponibles según el mes seleccionado
+  const daysInSelectedMonth = useMemo(() => {
+    return Array.from(
+      { length: getDaysInMonth(selectedMonth) },
+      (_, i) => i + 1
+    );
+  }, [selectedMonth]);
+
+  // Manejador para cambio de mes (resetea el día seleccionado)
+  const handleMonthChange = (e) => {
+    const newMonth = e.target.value;
+    setSelectedMonth(newMonth);
+    setSelectedDay(''); // Resetear el día al cambiar de mes
+  };
+
+  // Formatear la fecha actual para mostrar
+  const formatDate = (day, month) => {
+    // Usar un año bisiesto conocido (2020) para garantizar que el 29 de febrero se muestre correctamente
+    const date = new Date(2020, month - 1, day);
+    return new Intl.DateTimeFormat(i18n.language, {
+      day: 'numeric',
+      month: 'long'
+    }).format(date);
+  };
+
+  const formattedDate = isCustomDate && selectedMonth && selectedDay
+    ? formatDate(parseInt(selectedDay), parseInt(selectedMonth))
+    : formatDate(currentDay, currentMonth);
 
   useEffect(() => {
     fetchPhotosOnThisDay();
   }, []);
 
-  const fetchPhotosOnThisDay = async () => {
+  const fetchPhotosOnThisDay = async (params = {}) => {
     try {
       setLoading(true);
       setError(null);
 
-      // Usar el endpoint real para obtener las memorias de este día
-      const response = await photoService.getPhotosOnThisDay();
+      // Usar el endpoint con los parámetros opcionales
+      const response = await photoService.getPhotosOnThisDay(params);
 
       // Extraer datos de la respuesta
       const { memories } = response.data.data;
       setMemories(memories);
+
+      // Si se proporcionaron parámetros, marcar como fecha personalizada
+      if (params.day || params.month) {
+        setIsCustomDate(true);
+      } else {
+        setIsCustomDate(false);
+      }
     } catch (error) {
       console.error('Error al cargar fotos de "Un día como hoy":', error);
       setError(t('errors.loading'));
     } finally {
       setLoading(false);
     }
+  };
+
+  // Manejador para el formulario de búsqueda
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const params = {};
+
+    if (selectedMonth) params.month = parseInt(selectedMonth);
+    if (selectedDay) params.day = parseInt(selectedDay);
+
+    fetchPhotosOnThisDay(params);
+  };
+
+  // Manejador para resetear la búsqueda
+  const handleReset = () => {
+    setSelectedMonth('');
+    setSelectedDay('');
+    fetchPhotosOnThisDay();
   };
 
   // Calcular el total de fotos
@@ -53,14 +128,99 @@ const OnThisDay = () => {
     return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   };
 
+  // Verificar si el usuario es administrador
+  const isAdmin = user && user.role === 'admin';
+
+  // Determinar si el botón de búsqueda debe estar deshabilitado
+  const isSearchDisabled = !selectedMonth || !selectedDay;
+
   return (
     <Container fluid className="py-4">
       <div className="mb-4">
         <h1>{t('title')}</h1>
         <p className="text-muted">
-          {t('subtitle.start')} <span className="fw-bold">{formattedDate}</span> {t('subtitle.end')}
+          {isCustomDate
+            ? (
+              <>
+                {t('admin_search.custom_date', { date: '' })}
+                <span className="fw-bold">{formattedDate}</span>
+              </>
+            )
+            : (
+              <>
+                {t('subtitle.start')} <span className="fw-bold">{formattedDate}</span> {t('subtitle.end')}
+              </>
+            )
+          }
         </p>
       </div>
+
+      {/* Formulario de búsqueda para administradores */}
+      {isAdmin && (
+        <Card className="mb-4 shadow-sm">
+          <Card.Body>
+            <h5>{t('admin_search.title')}</h5>
+            <p className="text-muted">{t('admin_search.description')}</p>
+
+            <Form onSubmit={handleSearch}>
+              <Row className="align-items-end">
+                <Col md={4}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>{t('admin_search.month_label')}</Form.Label>
+                    <Form.Select
+                      value={selectedMonth}
+                      onChange={handleMonthChange}
+                    >
+                      <option value="">{t('admin_search.month_label')}...</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                        <option key={month} value={month}>
+                          {t(`admin_search.months.${month}`)}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>{t('admin_search.day_label')}</Form.Label>
+                    <Form.Select
+                      value={selectedDay}
+                      onChange={(e) => setSelectedDay(e.target.value)}
+                      disabled={!selectedMonth} // Deshabilitar hasta que se seleccione un mes
+                    >
+                      <option value="">{t('admin_search.day_label')}...</option>
+                      {daysInSelectedMonth.map(day => (
+                        <option key={day} value={day}>{day}</option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={5}>
+                  <div className="d-flex gap-2 mb-3">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      disabled={isSearchDisabled}
+                    >
+                      <i className="bi bi-search me-1"></i>
+                      {t('admin_search.search_button')}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline-secondary"
+                      onClick={handleReset}
+                    >
+                      <i className="bi bi-arrow-counterclockwise me-1"></i>
+                      {t('admin_search.reset_button')}
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Form>
+          </Card.Body>
+        </Card>
+      )}
 
       {loading ? (
         <div className="text-center py-5">
@@ -87,7 +247,10 @@ const OnThisDay = () => {
             <div key={memory.year} className="mb-5">
               <div className="d-flex align-items-center mb-3">
                 <h2 className="mb-0">{memory.year}</h2>
-                <div className="ms-3 badge bg-primary rounded-pill">
+                <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--info)', color: 'var(--dark)' }}>
+                  {new Date().getFullYear() - memory.year} {new Date().getFullYear() - memory.year === 1 ? t('year_ago') : t('years_ago')}
+                </div>
+                <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--secondary)', color: 'white' }}>
                   {memory.count} {memory.count === 1 ? t('photo') : t('photos')}
                 </div>
               </div>

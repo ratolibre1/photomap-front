@@ -1,0 +1,62 @@
+{
+  "detail": {
+    "title": "Detalles de la foto",
+    "loading": "Cargando detalles de la foto...",
+    "not_found": "No se encontró la foto solicitada 😕",
+    "back_to_gallery": "Volver a la galería",
+    "view_full_size": "Ver tamaño completo",
+    "image_unavailable": "Imagen no disponible",
+    "no_title": "Sin título",
+    "no_description": "Sin descripción",
+    "date": "Fecha",
+    "unknown_date": "Desconocida",
+    "location": "Ubicación",
+    "coordinates": "Coordenadas",
+    "copy_coordinates": "Copiar coordenadas",
+    "view_in_maps": "Ver en Google Maps",
+    "technical_details": "Detalles técnicos",
+    "camera": "Cámara",
+    "aperture": "Apertura",
+    "shutter_speed": "Velocidad",
+    "iso": "ISO",
+    "labels": "Etiquetas",
+    "no_labels": "Sin etiquetas",
+    "debug_info": "Información técnica (solo desarrollo)"
+  },
+  "edit": {
+    "title": "Editar foto",
+    "photo_title": "Título",
+    "description": "Descripción",
+    "labels": "Etiquetas",
+    "public": "Foto pública",
+    "public_description": "Las fotos públicas son visibles para cualquier persona con el enlace",
+    "coordinates": "Coordenadas",
+    "coordinates_placeholder": "Ej: -33.456789, -70.123456",
+    "coordinates_help": "Ingresa las coordenadas en formato \"latitud, longitud\"",
+    "saving": "Guardando...",
+    "save_changes": "Guardar cambios",
+    "save_error": "No se pudieron guardar los cambios. Por favor, intenta nuevamente.",
+    "save_success": "Foto actualizada correctamente"
+  },
+  "delete": {
+    "title": "Confirmar eliminación",
+    "confirm": "¿Estás seguro de que quieres eliminar esta foto?",
+    "warning": "Esta acción no se puede deshacer.",
+    "success": "Foto eliminada correctamente",
+    "redirecting": "Redirigiendo a la galería..."
+  },
+  "actions": {
+    "edit": "Editar foto",
+    "delete": "Eliminar foto"
+  },
+  "toast": {
+    "title": "Notificación",
+    "now": "ahora",
+    "coordinates_copied": "Coordenadas copiadas al portapapeles",
+    "coordinates_error": "No se pudieron copiar las coordenadas"
+  },
+  "navigation": {
+    "prev": "Foto anterior",
+    "next": "Foto siguiente"
+  }
+}

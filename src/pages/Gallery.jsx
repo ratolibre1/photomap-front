@@ -793,11 +793,20 @@ const Gallery = () => {
                     to={`/photo/${photo._id}`}
                     className="edit-pending"
                     title="Foto sin revisar"
-                    style={{
-                      top: '45px'
-                    }}
                   >
                     <i className="bi bi-pencil-square"></i>
+                  </Button>
+                )}
+
+                {/* Indicador de coordenadas inválidas */}
+                {photo.hasValidCoordinates === false && (
+                  <Button
+                    as={Link}
+                    to={`/photo/${photo._id}`}
+                    className="no-coordinates"
+                    title="Coordenadas inválidas - Requiere ubicación manual"
+                  >
+                    <i className="bi bi-geo-alt-fill"></i>
                   </Button>
                 )}
 

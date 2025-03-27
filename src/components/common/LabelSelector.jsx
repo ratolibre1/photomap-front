@@ -1,18 +1,59 @@
-import React, { useState } from 'react';
-import { Dropdown, Button } from 'react-bootstrap';
+import React, { useState, useMemo } from 'react';
+import { Dropdown, Button, Form, InputGroup } from 'react-bootstrap';
 import { useLabels } from '../../context/LabelContext';
 import LabelBadge from './LabelBadge';
 import { useTranslation } from 'react-i18next';
 
 const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, showPhotoCount = false }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation(['labels', 'common']);
   const { categoriesWithLabels, loading: labelsLoading } = useLabels();
 
-  // Filtrar categorías que tienen etiquetas
-  const categoriesWithValidLabels = categoriesWithLabels.filter(category =>
-    Array.isArray(category.labels) && category.labels.length > 0
+  // Filtrar categorías que tienen etiquetas (filtro base)
+  const categoriesWithValidLabels = useMemo(() =>
+    categoriesWithLabels.filter(category =>
+      Array.isArray(category.labels) && category.labels.length > 0
+    ),
+    [categoriesWithLabels]
   );
+
+  // Filtrar categorías y etiquetas según el término de búsqueda
+  const filteredCategories = useMemo(() => {
+    if (!searchTerm.trim()) return categoriesWithValidLabels;
+
+    const searchTermLower = searchTerm.trim().toLowerCase();
+
+    return categoriesWithValidLabels
+      .map(category => {
+        // Filtramos las etiquetas de esta categoría
+        const filteredLabels = category.labels.filter(label =>
+          label.name.toLowerCase().includes(searchTermLower)
+        );
+
+        // Si hay etiquetas que coinciden, devolvemos la categoría con esas etiquetas
+        if (filteredLabels.length > 0) {
+          return { ...category, labels: filteredLabels };
+        }
+        // Si no hay etiquetas que coincidan, no incluimos esta categoría
+        return null;
+      })
+      .filter(Boolean); // Eliminamos los nulls (categorías sin etiquetas coincidentes)
+  }, [categoriesWithValidLabels, searchTerm]);
+
+  // Manejador para actualizar el término de búsqueda
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Limpiar búsqueda cuando se cierra el dropdown
+  const handleToggleDropdown = (isOpen) => {
+    console.log("Dropdown toggle:", isOpen);
+    setDropdownOpen(isOpen);
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  };
 
   return (
     <div>
@@ -36,10 +77,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
       {/* Dropdown para seleccionar etiquetas */}
       <Dropdown
         show={dropdownOpen}
-        onToggle={(isOpen) => {
-          console.log("Dropdown toggle:", isOpen);
-          setDropdownOpen(isOpen);
-        }}
+        onToggle={handleToggleDropdown}
         autoClose={false}
         style={{ zIndex: 9999 }}
       >
@@ -50,13 +88,40 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
           style={{
             maxHeight: '300px',
             overflowY: 'auto',
-            zIndex: 9999 // Valor superior al de los controles de Leaflet
+            zIndex: 9999, // Valor superior al de los controles de Leaflet
+            minWidth: '250px' // Ancho mínimo para acomodar el buscador
           }}
         >
+          {/* Buscador */}
+          <div className="px-2 py-2 border-bottom">
+            <InputGroup size="sm">
+              <InputGroup.Text>
+                <i className="bi bi-search"></i>
+              </InputGroup.Text>
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder={t('dropdown.search')}
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onClick={(e) => e.stopPropagation()} // Evitar que el dropdown se cierre
+              />
+              {searchTerm && (
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => setSearchTerm('')}
+                  size="sm"
+                >
+                  <i className="bi bi-x"></i>
+                </Button>
+              )}
+            </InputGroup>
+          </div>
+
           {labelsLoading ? (
             <Dropdown.Item disabled>{t('dropdown.loading')}</Dropdown.Item>
-          ) : categoriesWithValidLabels.length > 0 ? (
-            categoriesWithValidLabels.map(category => (
+          ) : filteredCategories.length > 0 ? (
+            filteredCategories.map(category => (
               <div key={category._id || category.id}>
                 <Dropdown.Header>{category.name}</Dropdown.Header>
                 {category.labels.map(label => {
@@ -96,6 +161,8 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
                 <Dropdown.Divider />
               </div>
             ))
+          ) : searchTerm ? (
+            <Dropdown.Item disabled>{t('dropdown.no_results')}</Dropdown.Item>
           ) : (
             <Dropdown.Item disabled>{t('dropdown.no_labels')}</Dropdown.Item>
           )}

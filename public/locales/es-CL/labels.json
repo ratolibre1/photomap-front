@@ -5,7 +5,9 @@
     "select": "Seleccionar etiquetas",
     "loading": "Cargando etiquetas...",
     "none_selected": "Sin etiquetas seleccionadas",
-    "no_labels": "Sin etiquetas"
+    "no_labels": "Sin etiquetas",
+    "search": "Buscar etiqueta...",
+    "no_results": "No se encontraron etiquetas"
   },
   "buttons": {
     "edit": "Editar etiqueta",

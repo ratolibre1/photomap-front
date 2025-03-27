@@ -5,33 +5,35 @@ import { photoService } from '../services/api';
 import { useCategories } from '../context/CategoryContext';
 import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
+import LabelSelector from '../components/common/LabelSelector';
+import { useTranslation } from 'react-i18next';
 
 const PhotoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation(['photos', 'common']);
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [imageError, setImageError] = useState(false);
-  const [prevPhotoId, setPrevPhotoId] = useState(null);
-  const [nextPhotoId, setNextPhotoId] = useState(null);
-  const [navLoading, setNavLoading] = useState(false);
-  const [photoDeleted, setPhotoDeleted] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [photoDeleted, setPhotoDeleted] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState({
     title: '',
     description: '',
-    isPublic: false,
     labels: [],
+    isPublic: false,
     coordinates: ''
   });
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
-  const { categories } = useCategories();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const [nextPhotoId, setNextPhotoId] = useState(null);
+  const [prevPhotoId, setPrevPhotoId] = useState(null);
+  const [navLoading, setNavLoading] = useState(false);
+  const { categories } = useCategories();
   const { categoriesWithLabels, loading: labelsLoading, refreshData: refreshLabels } = useLabels();
 
   useEffect(() => {
@@ -64,14 +66,14 @@ const PhotoDetail = () => {
         }
       } catch (err) {
         console.error('Error al cargar la foto:', err);
-        setError('No se pudo cargar la foto. Por favor, intenta de nuevo.');
+        setError(t('detail.not_found'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchPhoto();
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     if (showEditModal && photo) {
@@ -115,7 +117,7 @@ const PhotoDetail = () => {
       setTimeout(() => navigate('/map'), 2000);
     } catch (error) {
       console.error('Error al eliminar la foto:', error);
-      setError('No se pudo eliminar la foto. Intenta de nuevo más tarde.');
+      setError(t('delete.error'));
     }
   };
 
@@ -192,12 +194,12 @@ const PhotoDetail = () => {
       setPhoto(updatedPhoto);
 
       // Mostrar notificación de éxito
-      setToastMessage('Foto actualizada correctamente');
+      setToastMessage(t('edit.save_success'));
       setShowToast(true);
 
     } catch (error) {
       console.error('Error al actualizar la foto:', error);
-      setSaveError('No se pudieron guardar los cambios. Por favor, intenta nuevamente.');
+      setSaveError(t('edit.save_error'));
     } finally {
       setSaving(false);
     }
@@ -208,12 +210,12 @@ const PhotoDetail = () => {
     const coordsText = `${photo.location.coordinates[1].toFixed(6)}, ${photo.location.coordinates[0].toFixed(6)}`;
     navigator.clipboard.writeText(coordsText)
       .then(() => {
-        setToastMessage('Coordenadas copiadas al portapapeles');
+        setToastMessage(t('toast.coordinates_copied'));
         setShowToast(true);
       })
       .catch(err => {
         console.error('Error al copiar: ', err);
-        setToastMessage('No se pudieron copiar las coordenadas');
+        setToastMessage(t('toast.coordinates_error'));
         setShowToast(true);
       });
   };
@@ -248,9 +250,9 @@ const PhotoDetail = () => {
     return (
       <div className="text-center my-5">
         <Spinner animation="border" role="status">
-          <span className="visually-hidden">Cargando...</span>
+          <span className="visually-hidden">{t('common:loading.default')}</span>
         </Spinner>
-        <p className="mt-2">Cargando detalles de la foto...</p>
+        <p className="mt-2">{t('detail.loading')}</p>
       </div>
     );
   }
@@ -261,7 +263,7 @@ const PhotoDetail = () => {
         {error}
         <div className="mt-3">
           <Button variant="outline-primary" onClick={() => navigate(-1)}>
-            Volver a la galería
+            {t('detail.back_to_gallery')}
           </Button>
         </div>
       </Alert>
@@ -273,15 +275,15 @@ const PhotoDetail = () => {
       <Container className="py-5 text-center">
         <div className="py-5">
           <i className="bi bi-check-circle-fill text-success fs-1 mb-3"></i>
-          <h3>Foto eliminada correctamente</h3>
-          <p>Redirigiendo a la galería...</p>
+          <h3>{t('delete.success')}</h3>
+          <p>{t('delete.redirecting')}</p>
           <Button
             as={Link}
             to="/map"
             variant="primary"
             className="mt-3"
           >
-            Volver a la galería
+            {t('detail.back_to_gallery')}
           </Button>
         </div>
       </Container>
@@ -295,7 +297,7 @@ const PhotoDetail = () => {
           variant="outline-secondary"
           onClick={() => navigate(-1)}
         >
-          ← Volver a la galería
+          ← {t('detail.back_to_gallery')}
         </Button>
 
         <div>
@@ -305,7 +307,7 @@ const PhotoDetail = () => {
             onClick={() => window.open(photo?.originalUrl, '_blank')}
             disabled={imageError || !photo}
           >
-            {imageError ? 'Imagen no disponible' : 'Ver tamaño completo'}
+            {imageError ? t('detail.image_unavailable') : t('detail.view_full_size')}
           </Button>
         </div>
       </div>
@@ -321,6 +323,7 @@ const PhotoDetail = () => {
                 style={{ zIndex: 10, opacity: 0.8 }}
                 onClick={goToPrevPhoto}
                 disabled={navLoading}
+                title={t('navigation.prev')}
               >
                 <i className="bi bi-chevron-left fs-3"></i>
               </Button>
@@ -329,7 +332,7 @@ const PhotoDetail = () => {
             <Card className="shadow-sm">
               <Card.Img
                 src={imageError ? 'https://via.placeholder.com/800x600?text=Imagen+no+disponible' : photo.originalUrl}
-                alt={photo.title}
+                alt={photo.title || t('detail.no_title')}
                 className="img-fluid"
                 style={{ maxHeight: '70vh', objectFit: 'contain' }}
                 onError={() => setImageError(true)}
@@ -344,6 +347,7 @@ const PhotoDetail = () => {
                 style={{ zIndex: 10, opacity: 0.8 }}
                 onClick={goToNextPhoto}
                 disabled={navLoading}
+                title={t('navigation.next')}
               >
                 <i className="bi bi-chevron-right fs-3"></i>
               </Button>
@@ -353,15 +357,15 @@ const PhotoDetail = () => {
           <Col lg={4}>
             <Card className="shadow-sm">
               <Card.Body>
-                <h2>{photo.title || 'Sin título'}</h2>
+                <h2>{photo.title || t('detail.no_title')}</h2>
 
                 <p className="text-muted mb-4">
-                  {photo.description || 'Sin descripción'}
+                  {photo.description || t('detail.no_description')}
                 </p>
 
-                <strong>Fecha:</strong> {photo.timestamp ? new Date(photo.timestamp).toLocaleString() : 'Desconocida'}
+                <strong>{t('detail.date')}:</strong> {photo.timestamp ? new Date(photo.timestamp).toLocaleString() : t('detail.unknown_date')}
                 <hr></hr>
-                <strong>Ubicación:</strong>
+                <strong>{t('detail.location')}:</strong>
                 {photo.geocodingDetails?.displayName && (
                   <p>{photo.geocodingDetails.displayName}</p>
                 )}
@@ -372,7 +376,7 @@ const PhotoDetail = () => {
                       variant="outline-secondary"
                       size="sm"
                       onClick={copyCoordinates}
-                      title="Copiar coordenadas"
+                      title={t('detail.copy_coordinates')}
                       className="ms-2 icon-button"
                     >
                       <i className="bi bi-clipboard"></i>
@@ -382,7 +386,7 @@ const PhotoDetail = () => {
                       variant="outline-secondary"
                       size="sm"
                       onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${photo.location.coordinates[1]},${photo.location.coordinates[0]}`, '_blank')}
-                      title="Ver en Google Maps"
+                      title={t('detail.view_in_maps')}
                       className="ms-1 icon-button"
                     >
                       <i className="bi bi-globe2"></i>
@@ -394,18 +398,18 @@ const PhotoDetail = () => {
 
                 {photo.metadata && (
                   <div className="mb-3">
-                    <strong>Detalles técnicos:</strong>
+                    <strong>{t('detail.technical_details')}:</strong>
                     <ul className="list-unstyled mt-2 small">
-                      {photo.metadata.camera && <li><strong>Cámara:</strong> {photo.metadata.camera}</li>}
-                      {photo.metadata.aperture && <li><strong>Apertura:</strong> {photo.metadata.aperture}</li>}
-                      {photo.metadata.shutterSpeed && <li><strong>Velocidad:</strong> {photo.metadata.shutterSpeed}</li>}
-                      {photo.metadata.iso && <li><strong>ISO:</strong> {photo.metadata.iso}</li>}
+                      {photo.metadata.camera && <li><strong>{t('detail.camera')}:</strong> {photo.metadata.camera}</li>}
+                      {photo.metadata.aperture && <li><strong>{t('detail.aperture')}:</strong> {photo.metadata.aperture}</li>}
+                      {photo.metadata.shutterSpeed && <li><strong>{t('detail.shutter_speed')}:</strong> {photo.metadata.shutterSpeed}</li>}
+                      {photo.metadata.iso && <li><strong>{t('detail.iso')}:</strong> {photo.metadata.iso}</li>}
                     </ul>
                   </div>
                 )}
 
                 <div className="mb-3">
-                  <strong>Etiquetas:</strong>
+                  <strong>{t('detail.labels')}:</strong>
                   <div className="d-flex flex-wrap gap-2">
                     {Array.isArray(photo.labels) && photo.labels.length > 0 ? (
                       photo.labels.map(label => (
@@ -416,7 +420,7 @@ const PhotoDetail = () => {
                         />
                       ))
                     ) : (
-                      <span className="text-muted">Sin etiquetas</span>
+                      <span className="text-muted">{t('detail.no_labels')}</span>
                     )}
                   </div>
                 </div>
@@ -427,13 +431,13 @@ const PhotoDetail = () => {
                     onClick={() => window.open(photo.originalUrl, '_blank')}
                     disabled={imageError}
                   >
-                    {imageError ? 'Imagen no disponible' : 'Ver tamaño completo'}
+                    {imageError ? t('detail.image_unavailable') : t('detail.view_full_size')}
                   </Button>
                 </div>
 
                 {window.location.hostname === 'localhost' && (
                   <div className="mt-4 border-top pt-3">
-                    <p className="text-muted small mb-1">Información técnica (solo desarrollo):</p>
+                    <p className="text-muted small mb-1">{t('detail.debug_info')}:</p>
                     <div className="bg-light p-2 rounded small">
                       <div>ID: {photo._id}</div>
                       <div>URL original: <a href={photo.originalUrl} target="_blank" rel="noreferrer">{photo.originalUrl}</a></div>
@@ -448,7 +452,7 @@ const PhotoDetail = () => {
                     onClick={handleEditClick}
                   >
                     <i className="bi bi-pencil-fill me-1"></i>
-                    Editar foto
+                    {t('actions.edit')}
                   </Button>
 
                   <Button
@@ -456,7 +460,7 @@ const PhotoDetail = () => {
                     onClick={() => setShowDeleteModal(true)}
                   >
                     <i className="bi bi-trash me-1"></i>
-                    Eliminar foto
+                    {t('actions.delete')}
                   </Button>
                 </div>
               </Card.Body>
@@ -465,27 +469,27 @@ const PhotoDetail = () => {
         </Row>
       ) : (
         <div className="text-center py-5">
-          <p className="text-muted">No se encontró la foto solicitada 😕</p>
+          <p className="text-muted">{t('detail.not_found')}</p>
           <Button variant="primary" onClick={() => navigate('/gallery')}>
-            Volver a la galería
+            {t('detail.back_to_gallery')}
           </Button>
         </div>
       )}
 
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar eliminación</Modal.Title>
+          <Modal.Title>{t('delete.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>¿Estás seguro de que quieres eliminar esta foto?</p>
-          <p className="text-danger"><strong>Esta acción no se puede deshacer.</strong></p>
+          <p>{t('delete.confirm')}</p>
+          <p className="text-danger"><strong>{t('delete.warning')}</strong></p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDeletePhoto}>
-            Eliminar
+            {t('common:buttons.delete')}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -493,14 +497,14 @@ const PhotoDetail = () => {
       {/* Modal de edición */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar foto</Modal.Title>
+          <Modal.Title>{t('edit.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {saveError && <Alert variant="danger">{saveError}</Alert>}
 
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Título</Form.Label>
+              <Form.Label>{t('edit.photo_title')}</Form.Label>
               <Form.Control
                 type="text"
                 name="title"
@@ -510,7 +514,7 @@ const PhotoDetail = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Descripción</Form.Label>
+              <Form.Label>{t('edit.description')}</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -521,126 +525,55 @@ const PhotoDetail = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Etiquetas</Form.Label>
+              <Form.Label>{t('edit.labels')}</Form.Label>
               {labelsLoading ? (
                 <Spinner animation="border" size="sm" />
               ) : (
-                <>
-                  <div className="d-flex flex-wrap gap-2 mb-2">
-                    {Array.isArray(editForm.labels) && editForm.labels.length > 0 ? (
-                      editForm.labels.map(label => (
-                        <LabelBadge
-                          key={typeof label === 'object' ? (label._id || label.id) : label}
-                          label={typeof label === 'object' ? label :
-                            categoriesWithLabels
-                              .flatMap(cat => cat.labels || [])
-                              .find(l => (l._id || l.id) === label) || { name: 'Etiqueta', _id: label }}
-                          showEditButton={false}
-                          onDelete={handleRemoveLabel}
-                        />
-                      ))
-                    ) : (
-                      <span className="text-muted">Sin etiquetas</span>
-                    )}
-                  </div>
-
-                  <Dropdown
-                    show={dropdownOpen}
-                    onToggle={(isOpen) => setDropdownOpen(isOpen)}
-                    autoClose={false}
-                  >
-                    <Dropdown.Toggle variant="outline-secondary" id="label-dropdown" className="mt-2">
-                      <i className="bi bi-tag me-1"></i> Agregar etiqueta
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                      {labelsLoading ? (
-                        <Dropdown.Item disabled>Cargando etiquetas...</Dropdown.Item>
-                      ) : (
-                        categoriesWithLabels.map(category => (
-                          <div key={category._id || category.id}>
-                            <Dropdown.Header>{category.name}</Dropdown.Header>
-                            {category.labels?.map(label => {
-                              const isSelected = editForm.labels.some(selected =>
-                                (selected._id || selected.id) === (label._id || label.id)
-                              );
-
-                              return (
-                                <div
-                                  key={label._id || label.id}
-                                  onClick={() => handleAddLabel(label)}
-                                  className={`dropdown-item custom-label-item ${isSelected ? 'disabled' : ''}`}
-                                  style={{
-                                    cursor: isSelected ? 'not-allowed' : 'pointer',
-                                    userSelect: 'none',
-                                    WebkitUserSelect: 'none',
-                                    MozUserSelect: 'none',
-                                    msUserSelect: 'none',
-                                    opacity: isSelected ? 0.65 : 1,
-                                    outline: 'none'
-                                  }}
-                                  onMouseDown={(e) => e.preventDefault()}
-                                  tabIndex="-1"
-                                >
-                                  <LabelBadge
-                                    label={label}
-                                    showEditButton={false}
-                                    disabled={isSelected}
-                                  />
-                                </div>
-                              );
-                            })}
-                            <Dropdown.Divider />
-                          </div>
-                        ))
-                      )}
-
-                      <div className="d-grid gap-2 px-2 mt-2 mb-2">
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          onClick={() => setDropdownOpen(false)}
-                        >
-                          <i className="bi bi-check2-all me-1"></i> Listo
-                        </Button>
-                      </div>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </>
+                <LabelSelector
+                  selectedLabels={editForm.labels.map(label =>
+                    typeof label === 'object' ? label :
+                      categoriesWithLabels
+                        .flatMap(cat => cat.labels || [])
+                        .find(l => (l._id || l.id) === label) || { name: 'Etiqueta', _id: label }
+                  )}
+                  onLabelSelect={handleAddLabel}
+                  onLabelRemove={handleRemoveLabel}
+                />
               )}
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Check
                 type="checkbox"
-                label="Foto pública"
+                label={t('edit.public')}
                 name="isPublic"
                 id="photo-public-switch"
                 checked={editForm.isPublic}
                 onChange={handleFormChange}
               />
               <Form.Text className="text-muted">
-                Las fotos públicas son visibles para cualquier persona con el enlace
+                {t('edit.public_description')}
               </Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Coordenadas</Form.Label>
+              <Form.Label>{t('edit.coordinates')}</Form.Label>
               <Form.Control
                 type="text"
                 name="coordinates"
                 value={editForm.coordinates}
                 onChange={handleFormChange}
-                placeholder="Ej: -33.456789, -70.123456"
+                placeholder={t('edit.coordinates_placeholder')}
               />
               <Form.Text className="text-muted">
-                Ingresa las coordenadas en formato "latitud, longitud"
+                {t('edit.coordinates_help')}
               </Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -650,9 +583,9 @@ const PhotoDetail = () => {
             {saving ? (
               <>
                 <Spinner animation="border" size="sm" className="me-1" />
-                Guardando...
+                {t('edit.saving')}
               </>
-            ) : 'Guardar cambios'}
+            ) : t('edit.save_changes')}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -672,8 +605,8 @@ const PhotoDetail = () => {
       >
         <Toast.Header>
           <i className="bi bi-info-circle me-2"></i>
-          <strong className="me-auto">Notificación</strong>
-          <small>ahora</small>
+          <strong className="me-auto">{t('toast.title')}</strong>
+          <small>{t('toast.now')}</small>
         </Toast.Header>
         <Toast.Body>{toastMessage}</Toast.Body>
       </Toast>

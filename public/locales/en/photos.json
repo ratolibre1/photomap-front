@@ -1,0 +1,62 @@
+{
+  "detail": {
+    "title": "Photo Details",
+    "loading": "Loading photo details...",
+    "not_found": "Requested photo not found 😕",
+    "back_to_gallery": "Back to Gallery",
+    "view_full_size": "View Full Size",
+    "image_unavailable": "Image Unavailable",
+    "no_title": "No title",
+    "no_description": "No description",
+    "date": "Date",
+    "unknown_date": "Unknown",
+    "location": "Location",
+    "coordinates": "Coordinates",
+    "copy_coordinates": "Copy coordinates",
+    "view_in_maps": "View in Google Maps",
+    "technical_details": "Technical Details",
+    "camera": "Camera",
+    "aperture": "Aperture",
+    "shutter_speed": "Shutter Speed",
+    "iso": "ISO",
+    "labels": "Labels",
+    "no_labels": "No labels",
+    "debug_info": "Technical Information (development only)"
+  },
+  "edit": {
+    "title": "Edit Photo",
+    "photo_title": "Title",
+    "description": "Description",
+    "labels": "Labels",
+    "public": "Public Photo",
+    "public_description": "Public photos are visible to anyone with the link",
+    "coordinates": "Coordinates",
+    "coordinates_placeholder": "E.g: -33.456789, -70.123456",
+    "coordinates_help": "Enter coordinates in \"latitude, longitude\" format",
+    "saving": "Saving...",
+    "save_changes": "Save Changes",
+    "save_error": "Could not save changes. Please try again.",
+    "save_success": "Photo updated successfully"
+  },
+  "delete": {
+    "title": "Confirm Deletion",
+    "confirm": "Are you sure you want to delete this photo?",
+    "warning": "This action cannot be undone.",
+    "success": "Photo deleted successfully",
+    "redirecting": "Redirecting to gallery..."
+  },
+  "actions": {
+    "edit": "Edit Photo",
+    "delete": "Delete Photo"
+  },
+  "toast": {
+    "title": "Notification",
+    "now": "now",
+    "coordinates_copied": "Coordinates copied to clipboard",
+    "coordinates_error": "Could not copy coordinates"
+  },
+  "navigation": {
+    "prev": "Previous Photo",
+    "next": "Next Photo"
+  }
+}

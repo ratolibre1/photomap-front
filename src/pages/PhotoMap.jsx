@@ -20,7 +20,7 @@ const PhotoMap = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { t } = useTranslation(['map']);
+  const { t } = useTranslation(['map', 'common']);
 
   useEffect(() => {
     fetchPhotos();
@@ -155,7 +155,7 @@ const PhotoMap = () => {
             <div className="skeleton-map">
               <div className="skeleton-map-overlay">
                 <i className="bi bi-map"></i>
-                <p>Cargando mapa...</p>
+                <p>{t('common:loading.map')}</p>
               </div>
             </div>
           ) : (

@@ -89,7 +89,8 @@
 
 /* Estilos base limpios para el botón de visibilidad */
 .visibility-toggle,
-.edit-pending {
+.edit-pending,
+.no-coordinates {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -111,9 +112,19 @@
   color: red;
 }
 
+/* Posicionamiento específico para cada botón */
+.edit-pending {
+  top: 45px;
+}
+
+.no-coordinates {
+  top: 80px;
+}
+
 /* Los íconos usan el color primario del tema */
 .visibility-toggle i,
-.edit-pending i {
+.edit-pending i,
+.no-coordinates i {
   color: var(--info);
   display: flex;
   align-items: center;
@@ -121,6 +132,11 @@
   height: 100%;
   line-height: 1;
   margin: 0;
+}
+
+/* Color específico para el ícono de coordenadas faltantes */
+.no-coordinates i {
+  color: var(--warning);
 }
 
 /* Estilos para la paginación */

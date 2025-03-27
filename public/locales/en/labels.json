@@ -5,7 +5,9 @@
     "select": "Select labels",
     "loading": "Loading labels...",
     "none_selected": "No labels selected",
-    "no_labels": "No labels"
+    "no_labels": "No labels",
+    "search": "Search labels...",
+    "no_results": "No labels found"
   },
   "buttons": {
     "edit": "Edit label",

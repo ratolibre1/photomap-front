@@ -1,18 +1,43 @@
 {
   "title": "On This Day",
   "subtitle": {
-    "start": "See your memories from",
+    "start": "Check your memories on",
     "end": "throughout the years"
   },
   "refresh": "Refresh",
   "photo": "photo",
   "photos": "photos",
+  "year_ago": "year ago",
+  "years_ago": "years ago",
   "errors": {
-    "loading": "We couldn't load your photos. Please try again later."
+    "loading": "We couldn't load the photos. Please try again later."
   },
   "no_photos": {
-    "title": "No photos on this date yet",
+    "title": "No photos yet for this date",
     "message": "It seems you don't have any photos taken on {{date}} in previous years. Upload some photos to create memories for the future!",
     "upload_button": "Upload photos"
+  },
+  "admin_search": {
+    "title": "Admin Search",
+    "description": "As an admin, you can search for photos from any specific date.",
+    "month_label": "Month",
+    "day_label": "Day",
+    "search_button": "Search",
+    "reset_button": "Back to today",
+    "months": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    },
+    "custom_date": "Showing photos from "
   }
 }

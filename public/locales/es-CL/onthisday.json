@@ -7,6 +7,8 @@
   "refresh": "Actualizar",
   "photo": "foto",
   "photos": "fotos",
+  "year_ago": "año atrás",
+  "years_ago": "años atrás",
   "errors": {
     "loading": "No pudimos cargar las fotos. Intenta nuevamente más tarde."
   },
@@ -14,5 +16,28 @@
     "title": "Aún no hay fotos para esta fecha",
     "message": "Parece que no tienes fotos tomadas un {{date}} en años anteriores. ¡Sube algunas fotos para crear recuerdos para el futuro!",
     "upload_button": "Subir fotos"
+  },
+  "admin_search": {
+    "title": "Búsqueda para administradores",
+    "description": "Como administrador, puedes buscar fotos de cualquier fecha específica.",
+    "month_label": "Mes",
+    "day_label": "Día",
+    "search_button": "Buscar",
+    "reset_button": "Volver a hoy",
+    "months": {
+      "1": "Enero",
+      "2": "Febrero",
+      "3": "Marzo",
+      "4": "Abril",
+      "5": "Mayo",
+      "6": "Junio",
+      "7": "Julio",
+      "8": "Agosto",
+      "9": "Septiembre",
+      "10": "Octubre",
+      "11": "Noviembre",
+      "12": "Diciembre"
+    },
+    "custom_date": "Mostrando fotos del "
   }
 }
