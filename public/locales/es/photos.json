@@ -77,6 +77,7 @@
     "crop_width": "Ancho del recorte",
     "crop_height": "Alto del recorte",
     "crop_position_x": "Posición X del recorte",
-    "crop_position_y": "Posición Y del recorte"
+    "crop_position_y": "Posición Y del recorte",
+    "crop_rotation": "Rotación del recorte"
   }
 }

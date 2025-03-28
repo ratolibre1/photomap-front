@@ -122,6 +122,9 @@ export const photoService = {
     // La API ahora espera labels en vez de categories
     return api.patch(`/photos/${id}`, photoData);
   },
+  updatePhotoTransform: (id, cssTransform) => {
+    return api.patch(`/photos/${id}/css-transform`, { cssTransform });
+  },
   deletePhoto: (id) => api.delete(`/photos/${id}`),
   deleteAllPhotos: () => api.delete('/photos/delete-all-photos'),
   getPhotoNavigation: async (photoId) => {

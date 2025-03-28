@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Form, Button, Row, Col, ButtonGroup, Card, Accordion, Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { photoService } from '../../services/api';
 
 const DEFAULT_TRANSFORMATIONS = {
   rotation: 0,
@@ -13,7 +14,8 @@ const DEFAULT_TRANSFORMATIONS = {
     width: 100,  // porcentaje del ancho original
     height: 100, // porcentaje del alto original
     x: 50,       // posición X del centro (50% = centrado)
-    y: 50        // posición Y del centro (50% = centrado)
+    y: 50,       // posición Y del centro (50% = centrado)
+    rotation: 0  // rotación del recuadro de recorte en grados
   }
 };
 
@@ -27,7 +29,7 @@ const CROP_PRESETS = [
   { name: '9:16', ratio: 9 / 16, icon: 'bi-aspect-ratio-fill' },
 ];
 
-const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
+const ImageEditor = ({ image, photoId, initialTransformations = {}, onSave }) => {
   const { t } = useTranslation(['photos', 'common']);
   const [transformations, setTransformations] = useState({
     ...DEFAULT_TRANSFORMATIONS,
@@ -38,6 +40,7 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
     }
   });
   const [activeCropPreset, setActiveCropPreset] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Referencias para la interacción de arrastre
   const cropBoxRef = useRef(null);
@@ -88,7 +91,32 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
     const newCrop = { ...dragState.startCrop };
 
     // Aplicar cambios según tipo de arrastre
-    if (dragState.dragType === 'move') {
+    if (dragState.dragType === 'rotate') {
+      // Calcular el ángulo de rotación
+      // El centro del crop es el punto de referencia
+      const cropCenterX = container.left + (container.width * transformations.crop.x / 100);
+      const cropCenterY = container.top + (container.height * transformations.crop.y / 100);
+
+      // Calcular ángulo desde el centro del crop al punto inicial
+      const startAngle = Math.atan2(
+        dragState.startY - cropCenterY,
+        dragState.startX - cropCenterX
+      ) * 180 / Math.PI;
+
+      // Calcular ángulo desde el centro del crop al punto actual
+      const currentAngle = Math.atan2(
+        currentY - cropCenterY,
+        currentX - cropCenterX
+      ) * 180 / Math.PI;
+
+      // La diferencia entre ambos ángulos es la rotación aplicada
+      let rotation = dragState.startCrop.rotation + (currentAngle - startAngle);
+
+      // Normalizar la rotación entre 0 y 360 grados
+      rotation = ((rotation % 360) + 360) % 360;
+
+      newCrop.rotation = rotation;
+    } else if (dragState.dragType === 'move') {
       // Mover la caja completa
       newCrop.x = Math.min(Math.max(dragState.startCrop.x + deltaX, newCrop.width / 2), 100 - newCrop.width / 2);
       newCrop.y = Math.min(Math.max(dragState.startCrop.y + deltaY, newCrop.height / 2), 100 - newCrop.height / 2);
@@ -227,9 +255,22 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
     setActiveCropPreset(null);
   };
 
-  const handleSave = () => {
-    // Llamar a la función onSave con el objeto de transformaciones
-    onSave && onSave(transformations);
+  const handleSave = async () => {
+    if (!photoId) {
+      console.error('No photoId provided to ImageEditor');
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      await photoService.updatePhotoTransform(photoId, transformations);
+      onSave && onSave(transformations);
+    } catch (error) {
+      console.error('Error saving transformations:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Aplicar un preset de relación de aspecto
@@ -262,8 +303,6 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
   const getTransformStyle = () => ({
     transform: `
       translate(${transformations.offsetX}%, ${transformations.offsetY}%)
-      rotate(${transformations.rotation}deg)
-      scale(${transformations.scale})
       scaleX(${transformations.flipHorizontal})
       scaleY(${transformations.flipVertical})
     `,
@@ -300,7 +339,9 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
     zIndex: 10,
     touchAction: 'none',
     userSelect: 'none',
-    WebkitUserSelect: 'none'
+    WebkitUserSelect: 'none',
+    transform: `rotate(${transformations.crop.rotation}deg)`,
+    transformOrigin: 'center center'
   });
 
   // Renderizar los manejadores (handles) para redimensionar
@@ -318,6 +359,20 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
       boxShadow: '0 0 5px rgba(0,0,0,0.5)'
     };
 
+    // Estilo para el controlador de rotación
+    const rotationHandleStyle = {
+      ...handleStyle,
+      top: '-50px', // Posicionado arriba del cuadro de recorte
+      left: '50%',
+      transform: 'translateX(-50%)',
+      cursor: 'grab',
+      backgroundColor: '#2196F3',
+      color: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    };
+
     // Evento combinado para mouse y touch
     const handlePointerDown = (e, type) => {
       e.stopPropagation();  // Evitar que afecte al drag de la caja
@@ -326,6 +381,16 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
 
     return (
       <>
+        {/* Controlador de rotación */}
+        <div
+          style={rotationHandleStyle}
+          onMouseDown={(e) => handlePointerDown(e, 'rotate')}
+          onTouchStart={(e) => handlePointerDown(e, 'rotate')}
+          className="rotate-handle"
+        >
+          <i className="bi bi-arrow-repeat" style={{ fontSize: '14px' }}></i>
+        </div>
+
         {/* Esquina superior izquierda */}
         <div
           style={{ ...handleStyle, top: '-12px', left: '-12px', cursor: 'nw-resize' }}
@@ -493,44 +558,7 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
               </Accordion.Header>
               <Accordion.Body>
                 <Form>
-                  {/* Grupo: Rotación y Escala */}
-                  <div className="border-bottom pb-3 mb-3">
-                    {/* Rotación */}
-                    <Form.Group className="mb-3">
-                      <Form.Label className="d-flex align-items-center">
-                        <i className="bi bi-arrow-repeat me-2"></i>
-                        {t('image_editor.rotation')}
-                        <span className="ms-auto badge bg-light text-dark">{transformations.rotation}°</span>
-                      </Form.Label>
-                      <Form.Range
-                        name="rotation"
-                        min="-180"
-                        max="180"
-                        step="1"
-                        value={transformations.rotation}
-                        onChange={handleSliderChange}
-                      />
-                    </Form.Group>
-
-                    {/* Escala (Zoom) */}
-                    <Form.Group className="mb-3">
-                      <Form.Label className="d-flex align-items-center">
-                        <i className="bi bi-zoom-in me-2"></i>
-                        {t('image_editor.scale')}
-                        <span className="ms-auto badge bg-light text-dark">{transformations.scale.toFixed(1)}x</span>
-                      </Form.Label>
-                      <Form.Range
-                        name="scale"
-                        min="0.1"
-                        max="3"
-                        step="0.1"
-                        value={transformations.scale}
-                        onChange={handleSliderChange}
-                      />
-                    </Form.Group>
-                  </div>
-
-                  {/* Botones de volteo - ahora en el panel lateral */}
+                  {/* Grupo: Rotación y Escala - eliminados */}
                   <div className="mb-3">
                     <Form.Label className="d-flex align-items-center mb-2">
                       <i className="bi bi-symmetry-horizontal me-2"></i>
@@ -554,7 +582,22 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
                     </ButtonGroup>
                   </div>
 
-                  {/* Grupos de controles de posicionamiento que ya no son necesarios (removidos) */}
+                  {/* Control de rotación del recuadro */}
+                  <div className="mb-3">
+                    <Form.Label className="d-flex align-items-center">
+                      <i className="bi bi-arrow-repeat me-2"></i>
+                      {t('image_editor.crop_rotation')}
+                      <span className="ms-auto badge bg-light text-dark">{transformations.crop.rotation.toFixed(0)}°</span>
+                    </Form.Label>
+                    <Form.Range
+                      name="crop.rotation"
+                      min="0"
+                      max="359"
+                      step="1"
+                      value={transformations.crop.rotation}
+                      onChange={handleSliderChange}
+                    />
+                  </div>
                 </Form>
               </Accordion.Body>
             </Accordion.Item>
@@ -562,13 +605,29 @@ const ImageEditor = ({ image, initialTransformations = {}, onSave }) => {
 
           {/* Botones de acción */}
           <div className="d-flex justify-content-between">
-            <Button variant="outline-secondary" onClick={handleReset}>
+            <Button
+              variant="outline-secondary"
+              onClick={handleReset}
+              disabled={isSaving}
+            >
               <i className="bi bi-arrow-counterclockwise me-1"></i>
               {t('image_editor.reset')}
             </Button>
-            <Button variant="primary" onClick={handleSave}>
-              <i className="bi bi-save me-1"></i>
-              {t('image_editor.save')}
+            <Button
+              variant="primary"
+              onClick={handleSave}
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <>
+                  <i className="bi bi-hourglass-split"></i> {t('common:saving')}...
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-save me-1"></i>
+                  {t('image_editor.save')}
+                </>
+              )}
             </Button>
           </div>
         </Col>

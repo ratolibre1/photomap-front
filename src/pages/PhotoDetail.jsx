@@ -246,7 +246,7 @@ const PhotoDetail = () => {
   const handleSaveImageTransformations = (transformations) => {
     console.log("Transformaciones guardadas:", transformations);
     setImageTransformations(transformations);
-    // Aquí eventualmente enviarías estas transformaciones al backend
+    // La llamada al API ya se realiza desde el componente ImageEditor
     setShowImageEditor(false);
 
     // Mostrar mensaje de éxito
@@ -622,6 +622,7 @@ const PhotoDetail = () => {
         <Modal.Body>
           <ImageEditor
             image={photo?.originalUrl}
+            photoId={id}
             initialTransformations={imageTransformations}
             onSave={handleSaveImageTransformations}
           />
