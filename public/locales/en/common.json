@@ -9,6 +9,10 @@
     "upload": "Upload",
     "confirm": "Confirm"
   },
+  "actions": {
+    "reset": "Reset",
+    "save": "Save"
+  },
   "loading": {
     "default": "Loading...",
     "photos": "Loading photos...",

@@ -9,6 +9,10 @@
     "upload": "Subir",
     "confirm": "Confirmar"
   },
+  "actions": {
+    "reset": "Restaurar",
+    "save": "Guardar"
+  },
   "loading": {
     "default": "Cargando...",
     "photos": "Cargando fotos...",

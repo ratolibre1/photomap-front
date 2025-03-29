@@ -6,7 +6,8 @@ import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
 import LabelSelector from '../components/common/LabelSelector';
 import { useTranslation } from 'react-i18next';
-import ImageEditor from '../components/common/ImageEditor';
+import DisplayCroppedImage from '../components/common/DisplayCroppedImage';
+import SimpleImageEditor from '../components/common/SimpleImageEditor';
 
 const PhotoDetail = () => {
   const { id } = useParams();
@@ -36,6 +37,7 @@ const PhotoDetail = () => {
   const { categoriesWithLabels, loading: labelsLoading, refreshData: refreshLabels } = useLabels();
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [imageTransformations, setImageTransformations] = useState({});
+  const [showOriginalPhoto, setShowOriginalPhoto] = useState(false);
 
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -52,7 +54,9 @@ const PhotoDetail = () => {
         setPhoto(currentPhoto);
 
         // Si la foto tiene transformaciones guardadas, cargarlas
-        if (currentPhoto.transformations) {
+        if (currentPhoto.cssTransform) {
+          setImageTransformations(currentPhoto.cssTransform);
+        } else if (currentPhoto.transformations) { // Para mantener compatibilidad con nombre antiguo si existe
           setImageTransformations(currentPhoto.transformations);
         }
 
@@ -246,6 +250,13 @@ const PhotoDetail = () => {
   const handleSaveImageTransformations = (transformations) => {
     console.log("Transformaciones guardadas:", transformations);
     setImageTransformations(transformations);
+
+    // Actualizar también en el objeto photo para que se refleje en la UI
+    setPhoto(prevPhoto => ({
+      ...prevPhoto,
+      cssTransform: transformations
+    }));
+
     // La llamada al API ya se realiza desde el componente ImageEditor
     setShowImageEditor(false);
 
@@ -337,16 +348,6 @@ const PhotoDetail = () => {
               </Button>
             )}
 
-            <Card className="shadow-sm">
-              <Card.Img
-                src={imageError ? 'https://via.placeholder.com/800x600?text=Imagen+no+disponible' : photo.originalUrl}
-                alt={photo.title || t('detail.no_title')}
-                className="img-fluid"
-                style={{ maxHeight: '70vh', objectFit: 'contain' }}
-                onError={() => setImageError(true)}
-              />
-            </Card>
-
             {/* Botón de navegación derecha */}
             {nextPhotoId && (
               <Button
@@ -360,6 +361,29 @@ const PhotoDetail = () => {
                 <i className="bi bi-chevron-right fs-3"></i>
               </Button>
             )}
+
+            {/* Botón para alternar entre original y editada - solo visible si hay transformaciones */}
+            {photo.cssTransform && (
+              <div className="w-100 mb-2">
+                <Button
+                  variant="outline-primary"
+                  className="w-100"
+                  onClick={() => setShowOriginalPhoto(!showOriginalPhoto)}
+                >
+                  {showOriginalPhoto ? t('photos:image_editor.show_edited') : t('photos:image_editor.show_original')}
+                </Button>
+              </div>
+            )}
+
+            <Card className="shadow-sm">
+              <div style={{ maxHeight: '70vh', overflow: 'hidden' }}>
+                <DisplayCroppedImage
+                  imageUrl={photo.originalUrl}
+                  transformations={showOriginalPhoto ? null : photo.cssTransform}
+                  showOriginal={showOriginalPhoto}
+                />
+              </div>
+            </Card>
           </Col>
 
           <Col lg={4}>
@@ -620,9 +644,8 @@ const PhotoDetail = () => {
           <Modal.Title>{t('photos:image_editor.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ImageEditor
-            image={photo?.originalUrl}
-            photoId={id}
+          <SimpleImageEditor
+            imageUrl={photo?.originalUrl}
             initialTransformations={imageTransformations}
             onSave={handleSaveImageTransformations}
           />
