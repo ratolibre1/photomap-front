@@ -9,7 +9,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
     scale: 1,
     flipHorizontal: 1,
     flipVertical: 1,
-    crop: { x: 50, y: 50, width: 80, height: 80 }
+    crop: { x: 50, y: 50, width: 100, height: 100 }
   });
   const [loading, setLoading] = useState(true);
   const [previewMode, setPreviewMode] = useState(false);
@@ -27,7 +27,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
         scale: initialTransformations.scale || 1,
         flipHorizontal: initialTransformations.flipHorizontal || 1,
         flipVertical: initialTransformations.flipVertical || 1,
-        crop: initialTransformations.crop || { x: 50, y: 50, width: 80, height: 80 }
+        crop: initialTransformations.crop || { x: 50, y: 50, width: 100, height: 100 }
       });
     }
   }, [initialTransformations]);
@@ -129,7 +129,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
         ctx.scale(flipHorizontal, flipVertical);
         ctx.scale(imgScale, imgScale);
 
-        if (crop) {
+        if (crop && (crop.width < 100 || crop.height < 100 || crop.x !== 50 || crop.y !== 50)) {
           // Calcular dimensiones y posición del recorte
           const cropX = (crop.x / 100) * img.width - (crop.width / 100) * img.width / 2;
           const cropY = (crop.y / 100) * img.height - (crop.height / 100) * img.height / 2;
@@ -143,7 +143,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
             -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height
           );
         } else {
-          // Si no hay crop, dibujamos toda la imagen
+          // Si todo está en valores por defecto, dibujamos toda la imagen
           ctx.drawImage(img, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
         }
 
@@ -212,7 +212,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       scale: 1,
       flipHorizontal: 1,
       flipVertical: 1,
-      crop: { x: 50, y: 50, width: 80, height: 80 }
+      crop: { x: 50, y: 50, width: 100, height: 100 }
     });
   };
 
@@ -286,9 +286,9 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
             <h5 className="mb-3">{t('photos:image_editor.transformations')}</h5>
 
             <div className="mb-3">
-              <label className="form-label d-flex justify-content-between">
+              <label className="form-label d-flex justify-content-between align-items-center">
                 <span>{t('photos:image_editor.rotation')}</span>
-                <span className={`badge ${isAtSnapPoint(transformations.rotation) ? 'bg-success' : 'bg-secondary'}`}>
+                <span className={`badge fs-6 ${isAtSnapPoint(transformations.rotation) ? 'bg-success' : 'bg-primary'}`} style={{ minWidth: '60px', textAlign: 'center' }}>
                   {formatRotationAngle(transformations.rotation)}
                 </span>
               </label>
@@ -319,9 +319,9 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
             </div>
 
             <div className="mb-3">
-              <label className="form-label d-flex justify-content-between">
+              <label className="form-label d-flex justify-content-between align-items-center">
                 <span>{t('photos:image_editor.zoom')}</span>
-                <span className="badge bg-secondary">{transformations.scale.toFixed(1)}x</span>
+                <span className="badge bg-primary fs-6" style={{ minWidth: '60px', textAlign: 'center' }}>{transformations.scale.toFixed(1)}x</span>
               </label>
               <Form.Range
                 min="0.5"
@@ -356,53 +356,53 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
               <label className="form-label">{t('photos:image_editor.crop')}</label>
 
               <Form.Group className="mb-2">
-                <Form.Label className="d-flex justify-content-between">
+                <Form.Label className="d-flex justify-content-between align-items-center">
                   <span>X (%)</span>
-                  <span className="badge bg-secondary">{transformations.crop.x}%</span>
+                  <span className="badge bg-primary fs-6" style={{ minWidth: '60px', textAlign: 'center' }}>{transformations.crop?.x || 0}%</span>
                 </Form.Label>
                 <Form.Range
                   min="0"
                   max="100"
-                  value={transformations.crop.x}
+                  value={transformations.crop?.x || 0}
                   onChange={(e) => handleCropChange('x', e.target.value)}
                 />
               </Form.Group>
 
               <Form.Group className="mb-2">
-                <Form.Label className="d-flex justify-content-between">
+                <Form.Label className="d-flex justify-content-between align-items-center">
                   <span>Y (%)</span>
-                  <span className="badge bg-secondary">{transformations.crop.y}%</span>
+                  <span className="badge bg-primary fs-6" style={{ minWidth: '60px', textAlign: 'center' }}>{transformations.crop?.y || 0}%</span>
                 </Form.Label>
                 <Form.Range
                   min="0"
                   max="100"
-                  value={transformations.crop.y}
+                  value={transformations.crop?.y || 0}
                   onChange={(e) => handleCropChange('y', e.target.value)}
                 />
               </Form.Group>
 
               <Form.Group className="mb-2">
-                <Form.Label className="d-flex justify-content-between">
+                <Form.Label className="d-flex justify-content-between align-items-center">
                   <span>{t('photos:image_editor.width')} (%)</span>
-                  <span className="badge bg-secondary">{transformations.crop.width}%</span>
+                  <span className="badge bg-primary fs-6" style={{ minWidth: '60px', textAlign: 'center' }}>{transformations.crop?.width || 0}%</span>
                 </Form.Label>
                 <Form.Range
                   min="10"
                   max="100"
-                  value={transformations.crop.width}
+                  value={transformations.crop?.width || 0}
                   onChange={(e) => handleCropChange('width', e.target.value)}
                 />
               </Form.Group>
 
               <Form.Group className="mb-2">
-                <Form.Label className="d-flex justify-content-between">
+                <Form.Label className="d-flex justify-content-between align-items-center">
                   <span>{t('photos:image_editor.height')} (%)</span>
-                  <span className="badge bg-secondary">{transformations.crop.height}%</span>
+                  <span className="badge bg-primary fs-6" style={{ minWidth: '60px', textAlign: 'center' }}>{transformations.crop?.height || 0}%</span>
                 </Form.Label>
                 <Form.Range
                   min="10"
                   max="100"
-                  value={transformations.crop.height}
+                  value={transformations.crop?.height || 0}
                   onChange={(e) => handleCropChange('height', e.target.value)}
                 />
               </Form.Group>

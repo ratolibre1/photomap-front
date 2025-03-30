@@ -47,7 +47,8 @@
   },
   "actions": {
     "edit": "Editar foto",
-    "delete": "Eliminar foto"
+    "delete": "Eliminar foto",
+    "edit_image": "Editar imagen"
   },
   "toast": {
     "title": "Notificación",

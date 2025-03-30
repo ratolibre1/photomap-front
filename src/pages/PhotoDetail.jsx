@@ -51,16 +51,26 @@ const PhotoDetail = () => {
 
         // Extraer la foto de la estructura correcta
         const currentPhoto = response.data.data.photo || response.data.data;
-        setPhoto(currentPhoto);
 
-        // Si la foto tiene transformaciones guardadas, cargarlas
-        if (currentPhoto.cssTransform) {
-          setImageTransformations(currentPhoto.cssTransform);
-        } else if (currentPhoto.transformations) { // Para mantener compatibilidad con nombre antiguo si existe
-          setImageTransformations(currentPhoto.transformations);
+        // Si no hay transformaciones, establecemos los valores por defecto
+        if (!currentPhoto.cssTransform) {
+          currentPhoto.cssTransform = {
+            rotation: 0,
+            scale: 1,
+            flipHorizontal: 1,
+            flipVertical: 1
+            // crop estará ausente si no se ha configurado
+          };
         }
 
-        // Importante: agregamos log para ver las etiquetas
+        // Guardamos la foto en el estado
+        setPhoto(currentPhoto);
+
+        // Establecer las transformaciones en el estado
+        setImageTransformations(currentPhoto.cssTransform);
+
+        // Logs para depuración
+        console.log("cssTransform cargado:", currentPhoto.cssTransform);
         console.log("Etiquetas de la foto:", currentPhoto.labels);
         console.log("Tipo de etiquetas:", Array.isArray(currentPhoto.labels) ? "Array" : typeof currentPhoto.labels);
 
@@ -247,22 +257,33 @@ const PhotoDetail = () => {
   };
 
   // Manejador para guardar transformaciones de imagen
-  const handleSaveImageTransformations = (transformations) => {
-    console.log("Transformaciones guardadas:", transformations);
-    setImageTransformations(transformations);
+  const handleSaveImageTransformations = async (transformations) => {
+    console.log("Transformaciones a guardar:", transformations);
 
-    // Actualizar también en el objeto photo para que se refleje en la UI
-    setPhoto(prevPhoto => ({
-      ...prevPhoto,
-      cssTransform: transformations
-    }));
+    try {
+      // Actualizamos el estado local primero para mejor UX
+      setImageTransformations(transformations);
 
-    // La llamada al API ya se realiza desde el componente ImageEditor
-    setShowImageEditor(false);
+      // Actualizar también en el objeto photo para que se refleje en la UI
+      setPhoto(prevPhoto => ({
+        ...prevPhoto,
+        cssTransform: transformations
+      }));
 
-    // Mostrar mensaje de éxito
-    setToastMessage(t('photos:image_editor.saved'));
-    setShowToast(true);
+      // Hacer la llamada al API para guardar las transformaciones
+      await photoService.updatePhotoTransform(id, transformations);
+
+      // Cerrar el editor
+      setShowImageEditor(false);
+
+      // Mostrar mensaje de éxito
+      setToastMessage(t('photos:image_editor.saved'));
+      setShowToast(true);
+    } catch (error) {
+      console.error("Error al guardar transformaciones:", error);
+      setToastMessage("Error al guardar las transformaciones. Intenta nuevamente.");
+      setShowToast(true);
+    }
   };
 
   if (loading) {
@@ -327,6 +348,16 @@ const PhotoDetail = () => {
             disabled={imageError || !photo}
           >
             {imageError ? t('detail.image_unavailable') : t('detail.view_full_size')}
+          </Button>
+
+          {/* Botón para editar imagen */}
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowImageEditor(true)}
+            disabled={imageError || !photo}
+          >
+            <i className="bi bi-crop me-1"></i>
+            {t('actions.edit_image')}
           </Button>
         </div>
       </div>
