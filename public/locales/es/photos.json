@@ -61,11 +61,16 @@
     "next": "Foto siguiente"
   },
   "image_editor": {
-    "title": "Editar Imagen",
-    "transformations": "Transformaciones",
-    "no_image": "No hay imagen disponible",
-    "rotation": "Rotación",
+    "title": "Editor de Imagen",
+    "rotate_left": "Rotar a la izquierda",
+    "rotate_right": "Rotar a la derecha",
     "zoom": "Zoom",
+    "reset": "Restaurar",
+    "save": "Guardar",
+    "aspect_ratio": "Relación de aspecto",
+    "free": "Libre",
+    "square": "Cuadrado",
+    "rotation": "Rotación",
     "flip": "Voltear",
     "flip_horizontal": "Horizontal",
     "flip_vertical": "Vertical",
@@ -74,6 +79,8 @@
     "width": "Ancho",
     "height": "Alto",
     "show_original": "Ver Foto Original",
-    "show_edited": "Ver Foto Editada"
+    "show_edited": "Ver Foto Editada",
+    "restore_original": "Restaurar foto original",
+    "transformations": "Transformaciones"
   }
 }

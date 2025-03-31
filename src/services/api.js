@@ -122,8 +122,17 @@ export const photoService = {
     // La API ahora espera labels en vez de categories
     return api.patch(`/photos/${id}`, photoData);
   },
-  updatePhotoTransform: (id, cssTransform) => {
-    return api.patch(`/photos/${id}/css-transform`, { cssTransform });
+  updatePhotoTransform: (id, cssTransformData) => {
+    // Extraemos el flag edited y el resto de las transformaciones
+    const { edited, ...cssTransform } = cssTransformData;
+
+    // Si edited es false, solo enviamos el flag
+    if (edited === false) {
+      return api.patch(`/photos/${id}/css-transform`, { edited });
+    }
+
+    // Si no, enviamos todo (incluyendo el flag y las transformaciones)
+    return api.patch(`/photos/${id}/css-transform`, { cssTransform, edited });
   },
   deletePhoto: (id) => api.delete(`/photos/${id}`),
   deleteAllPhotos: () => api.delete('/photos/delete-all-photos'),

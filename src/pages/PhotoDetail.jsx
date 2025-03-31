@@ -261,13 +261,17 @@ const PhotoDetail = () => {
     console.log("Transformaciones a guardar:", transformations);
 
     try {
+      // Extraemos el flag edited
+      const { edited, ...cssTransform } = transformations;
+
       // Actualizamos el estado local primero para mejor UX
-      setImageTransformations(transformations);
+      setImageTransformations(cssTransform);
 
       // Actualizar también en el objeto photo para que se refleje en la UI
       setPhoto(prevPhoto => ({
         ...prevPhoto,
-        cssTransform: transformations
+        cssTransform,
+        edited // Guardamos el flag en el objeto photo
       }));
 
       // Hacer la llamada al API para guardar las transformaciones
@@ -393,8 +397,8 @@ const PhotoDetail = () => {
               </Button>
             )}
 
-            {/* Botón para alternar entre original y editada - solo visible si hay transformaciones */}
-            {photo.cssTransform && (
+            {/* Botón para alternar entre original y editada - solo visible si hay transformaciones y el flag edited es true */}
+            {photo.cssTransform && photo.edited && (
               <div className="w-100 mb-2">
                 <Button
                   variant="outline-primary"
@@ -678,6 +682,7 @@ const PhotoDetail = () => {
           <SimpleImageEditor
             imageUrl={photo?.originalUrl}
             initialTransformations={imageTransformations}
+            edited={photo?.edited || false}
             onSave={handleSaveImageTransformations}
           />
         </Modal.Body>

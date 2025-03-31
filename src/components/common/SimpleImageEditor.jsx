@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) => {
+const SimpleImageEditor = ({ imageUrl, edited = false, initialTransformations = {}, onSave }) => {
   const { t } = useTranslation(['photos', 'common']);
   const [transformations, setTransformations] = useState({
     rotation: 0,
@@ -13,6 +13,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
   });
   const [loading, setLoading] = useState(true);
   const [previewMode, setPreviewMode] = useState(false);
+  const [isEdited, setIsEdited] = useState(false);
   const canvasRef = useRef(null);
   const imgRef = useRef(null);
   const [error, setError] = useState(false);
@@ -29,6 +30,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
         flipVertical: initialTransformations.flipVertical || 1,
         crop: initialTransformations.crop || { x: 50, y: 50, width: 100, height: 100 }
       });
+      setIsEdited(edited !== undefined ? edited : false);
     }
   }, [initialTransformations]);
 
@@ -161,6 +163,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       ...prev,
       rotation: prev.rotation + (direction === 'right' ? 90 : -90)
     }));
+    markAsEdited();
   };
 
   const handleRotationChange = (e) => {
@@ -169,6 +172,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       ...prev,
       rotation: newValue
     }));
+    markAsEdited();
   };
 
   const handleRotationEnd = () => {
@@ -179,6 +183,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       ...prev,
       rotation: snapToNearestAngle(prev.rotation)
     }));
+    markAsEdited();
   };
 
   const handleFlip = (direction) => {
@@ -187,6 +192,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       [direction === 'horizontal' ? 'flipHorizontal' : 'flipVertical']:
         prev[direction === 'horizontal' ? 'flipHorizontal' : 'flipVertical'] * -1
     }));
+    markAsEdited();
   };
 
   const handleZoom = (value) => {
@@ -194,6 +200,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       ...prev,
       scale: parseFloat(value)
     }));
+    markAsEdited();
   };
 
   const handleCropChange = (property, value) => {
@@ -204,6 +211,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
         [property]: parseFloat(value)
       }
     }));
+    markAsEdited();
   };
 
   const handleReset = () => {
@@ -214,15 +222,21 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
       flipVertical: 1,
       crop: { x: 50, y: 50, width: 100, height: 100 }
     });
+    setIsEdited(false);
   };
 
   const handleSave = () => {
     // Solo imprimimos en consola
     console.log('Guardando transformaciones:', transformations);
+    console.log('Estado de edición:', isEdited);
 
-    // Si hay un callback onSave, lo llamamos
+    // Si hay un callback onSave, lo llamamos con transformaciones y el flag edited
     if (onSave) {
-      onSave(transformations);
+      const transformationsWithFlag = {
+        ...transformations,
+        edited: isEdited
+      };
+      onSave(transformationsWithFlag);
     }
   };
 
@@ -237,6 +251,11 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
   const isAtSnapPoint = (angle) => {
     const normalizedAngle = ((angle % 360) + 360) % 360;
     return [0, 90, 180, 270].some(snap => Math.abs(normalizedAngle - snap) < 0.1);
+  };
+
+  // Función para marcar como editada
+  const markAsEdited = () => {
+    setIsEdited(true);
   };
 
   if (error) {
@@ -414,7 +433,7 @@ const SimpleImageEditor = ({ imageUrl, initialTransformations = {}, onSave }) =>
                 onClick={handleReset}
               >
                 <i className="bi bi-arrow-counterclockwise me-1"></i>
-                {t('common:actions.reset')}
+                {t('photos:image_editor.restore_original')}
               </Button>
 
               <Button
