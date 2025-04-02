@@ -1,5 +1,6 @@
 {
   "title": "Filtros de Búsqueda",
+  "reset_filters": "Reiniciar filtros",
   "location": {
     "title": "Ubicación",
     "country": "País",

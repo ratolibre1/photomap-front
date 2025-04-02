@@ -41,23 +41,20 @@ const SearchFilters = ({ filters, onFilterChange }) => {
 
   // Estado para manejar el rango de fechas con la fecha actual
   const [dateRangeState, setDateRangeState] = useState(() => {
-    // Inicializar con las fechas de los filtros si existen, si no con la fecha actual
-    let startDate, endDate;
+    // Inicializar con las fechas de los filtros si existen, si no con null
+    let startDate = null;
+    let endDate = null;
 
     if (filters.startDate) {
       // Si viene en formato YYYY-MM-DD, crear fecha a medianoche hora local
       const [year, month, day] = filters.startDate.split('-').map(Number);
       startDate = new Date(year, month - 1, day, 0, 0, 0);
-    } else {
-      startDate = new Date();
     }
 
     if (filters.endDate) {
       // Si viene en formato YYYY-MM-DD, crear fecha a medianoche hora local
       const [year, month, day] = filters.endDate.split('-').map(Number);
       endDate = new Date(year, month - 1, day, 0, 0, 0);
-    } else {
-      endDate = new Date();
     }
 
     return [{
@@ -320,6 +317,33 @@ const SearchFilters = ({ filters, onFilterChange }) => {
     onFilterChange('labels', updatedLabels);
   };
 
+  // Función para reiniciar todos los filtros
+  const handleResetFilters = () => {
+    // Reiniciar ubicación
+    onFilterChange('country', '');
+    onFilterChange('region', '');
+    onFilterChange('county', '');
+    onFilterChange('city', '');
+
+    // Reiniciar etiquetas
+    onFilterChange('labels', []);
+
+    // Reiniciar fechas sin establecer valores
+    onFilterChange('startDate', '');
+    onFilterChange('endDate', '');
+
+    // Reiniciar el estado del DateRange con la fecha actual pero sin selección
+    const today = new Date();
+    setDateRangeState([{
+      startDate: null,
+      endDate: null,
+      key: 'selection'
+    }]);
+
+    // Recargar datos del calendario con la fecha actual
+    loadCalendarData(today);
+  };
+
   return (
     <div className="search-filters p-3 bg-light border rounded mb-3">
       <h6 className="mb-3">{t('title')}</h6>
@@ -408,6 +432,16 @@ const SearchFilters = ({ filters, onFilterChange }) => {
               showPhotoCount={true}
             />
           </Form.Group>
+
+          {/* Botón de reinicio de filtros */}
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            className="w-100 mb-3"
+            onClick={handleResetFilters}
+          >
+            {t('reset_filters')}
+          </Button>
         </Col>
 
         {/* COLUMNA DERECHA: Calendario */}

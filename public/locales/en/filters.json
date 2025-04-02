@@ -1,5 +1,6 @@
 {
   "title": "Search Filters",
+  "reset_filters": "Reset filters",
   "location": {
     "title": "Location",
     "country": "Country",
