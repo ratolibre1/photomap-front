@@ -97,10 +97,28 @@ const SearchFilters = ({ filters, onFilterChange }) => {
 
   // Efecto para cargar los datos del calendario al inicializar
   useEffect(() => {
-    // Cargar los datos del calendario al inicializar
-    const today = new Date();
-    loadCalendarData(today);
-  }, []);
+    // Cargar los datos del calendario al inicializar,
+    // pero solo si no hay una fecha seleccionada previamente
+    if (!filters.startDate) {
+      const today = new Date();
+      loadCalendarData(today);
+    } else {
+      // Si ya hay una fecha seleccionada, usar esa para cargar los datos
+      const [year, month, day] = filters.startDate.split('-').map(Number);
+      const startDate = new Date(year, month - 1, day, 0, 0, 0);
+      loadCalendarData(startDate);
+    }
+  }, []);  // Solo se ejecuta al montar el componente
+
+  // Efecto para cargar los datos del calendario cuando cambia la fecha de inicio
+  useEffect(() => {
+    if (filters.startDate) {
+      console.log('🔄 Actualizando calendario por cambio en filtro:', filters.startDate);
+      const [year, month, day] = filters.startDate.split('-').map(Number);
+      const startDate = new Date(year, month - 1, day, 0, 0, 0);
+      loadCalendarData(startDate);
+    }
+  }, [filters.startDate]);
 
   // Formatear la fecha actual para usarla como placeholder, actualizándose cuando cambia el idioma
   const currentDatePlaceholder = useMemo(() => {
@@ -152,6 +170,9 @@ const SearchFilters = ({ filters, onFilterChange }) => {
     // Actualizar cada campo individualmente
     onFilterChange('startDate', startDate);
     onFilterChange('endDate', endDate);
+
+    // NO recargamos aquí - la carga de datos se hará en el useEffect cuando cambie la fecha
+    console.log('📆 Selección completada, filtrando desde:', startDate, 'hasta:', endDate);
   };
 
   // Función para formatear fechas sin problema de zona horaria
