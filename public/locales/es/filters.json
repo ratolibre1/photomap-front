@@ -21,7 +21,10 @@
   "date": {
     "title": "Rango de fechas",
     "start": "Fecha inicial",
-    "end": "Fecha final"
+    "end": "Fecha final",
+    "apply_range": "Aplicar",
+    "photo_count": "{{count}} foto",
+    "photo_count_plural": "{{count}} fotos"
   },
   "labels": {
     "title": "Etiquetas",

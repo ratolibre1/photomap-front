@@ -10,3 +10,78 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Sobrescribir estilos del calendario react-date-range */
+.rdrCalendarWrapper {
+  font-size: 16px !important;
+  font-family: 'Hind', sans-serif !important;
+}
+
+.photo-indicator {
+  position: absolute !important;
+  top: 28px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background-color: var(--bs-primary) !important;
+  color: white !important;
+  border-radius: 10px !important;
+  padding: 0px 5px !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  line-height: 1.5 !important;
+  min-width: 16px !important;
+  text-align: center !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7) !important;
+  z-index: 5 !important;
+}
+
+/* Ocultar indicadores en días fuera del mes actual */
+.rdrDayPassive .photo-indicator {
+  display: none !important;
+}
+
+/* Texto más claro para días fuera del mes actual */
+.rdrDayPassive .rdrDayNumber span {
+  opacity: 0.75 !important;
+}
+
+/* Estilos específicos para cuando un día está seleccionado */
+.rdrDayStartOfMonth .photo-indicator,
+.rdrDayEndOfMonth .photo-indicator,
+.rdrDayInPreview .photo-indicator,
+.rdrDayStartPreview .photo-indicator,
+.rdrDayEndPreview .photo-indicator {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Resaltar el día actual con un círculo - versión mejorada */
+.rdrDayToday:not(.rdrDayPassive) .rdrDayNumber span::after,
+.rdrDayToday.rdrDayStartOfMonth .rdrDayNumber span::after,
+.rdrDayToday.rdrDayEndOfMonth .rdrDayNumber span::after,
+.rdrDayToday.rdrDayInPreview .rdrDayNumber span::after,
+.rdrDayToday.rdrDayStartPreview .rdrDayNumber span::after,
+.rdrDayToday.rdrDayEndPreview .rdrDayNumber span::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: 2.5px solid !important;
+  border-radius: 50% !important;
+  background-color: transparent !important;
+  z-index: -1 !important;
+  display: block !important;
+}
+
+/* Anular el fondo azul nativo para el día actual */
+.rdrDayToday {
+  background-color: transparent !important;
+}
+
+/* Asegurarse que el texto sea visible en el día actual incluso cuando está seleccionado */
+.rdrDayToday .rdrDayNumber span {
+  position: relative !important;
+  z-index: 2 !important;
+}

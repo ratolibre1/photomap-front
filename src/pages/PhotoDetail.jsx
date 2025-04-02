@@ -69,11 +69,6 @@ const PhotoDetail = () => {
         // Establecer las transformaciones en el estado
         setImageTransformations(currentPhoto.cssTransform);
 
-        // Logs para depuración
-        console.log("cssTransform cargado:", currentPhoto.cssTransform);
-        console.log("Etiquetas de la foto:", currentPhoto.labels);
-        console.log("Tipo de etiquetas:", Array.isArray(currentPhoto.labels) ? "Array" : typeof currentPhoto.labels);
-
         // Obtener IDs de foto anterior y siguiente
         try {
           const navResponse = await photoService.getPhotoNavigation(id);
@@ -93,7 +88,7 @@ const PhotoDetail = () => {
     };
 
     fetchPhoto();
-  }, [id, t]);
+  }, [id]);
 
   useEffect(() => {
     if (showEditModal && photo) {
@@ -355,14 +350,14 @@ const PhotoDetail = () => {
           </Button>
 
           {/* Botón para editar imagen */}
-          <Button
+          {/* <Button
             variant="outline-secondary"
             onClick={() => setShowImageEditor(true)}
             disabled={imageError || !photo}
           >
             <i className="bi bi-crop me-1"></i>
             {t('actions.edit_image')}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -502,14 +497,14 @@ const PhotoDetail = () => {
                   </Button>
 
                   {/* Nuevo botón para editar la imagen */}
-                  <Button
+                  {/* <Button
                     variant="outline-info"
                     onClick={() => setShowImageEditor(true)}
                     disabled={imageError}
                   >
                     <i className="bi bi-crop me-1"></i>
                     {t('photos:image_editor.title')}
-                  </Button>
+                  </Button> */}
                 </div>
 
                 {window.location.hostname === 'localhost' && (
@@ -529,7 +524,7 @@ const PhotoDetail = () => {
                     onClick={handleEditClick}
                   >
                     <i className="bi bi-pencil-fill me-1"></i>
-                    {t('actions.edit')}
+                    {t('actions.edit_data')}
                   </Button>
 
                   <Button
@@ -574,7 +569,7 @@ const PhotoDetail = () => {
       {/* Modal de edición */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{t('edit.title')}</Modal.Title>
+          <Modal.Title>{t('edit.title_data')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {saveError && <Alert variant="danger">{saveError}</Alert>}

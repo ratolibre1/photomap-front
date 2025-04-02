@@ -25,6 +25,7 @@
   },
   "edit": {
     "title": "Editar foto",
+    "title_data": "Editar Datos",
     "photo_title": "Título",
     "description": "Descripción",
     "labels": "Etiquetas",
@@ -47,6 +48,7 @@
   },
   "actions": {
     "edit": "Editar foto",
+    "edit_data": "Editar Datos",
     "delete": "Eliminar foto",
     "edit_image": "Editar imagen"
   },

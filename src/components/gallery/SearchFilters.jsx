@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useLocation } from '../../context/LocationContext';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Estilos principales
 import 'react-date-range/dist/theme/default.css'; // Tema por defecto
 import es from 'date-fns/locale/es'; // Importar localización española
+import enUS from 'date-fns/locale/en-US'; // Importar localización inglesa
 import { useTranslation } from 'react-i18next';
 import { photoService } from '../../services/api';
 import LabelSelector from '../common/LabelSelector';
@@ -14,33 +15,101 @@ const SearchFilters = ({ filters, onFilterChange }) => {
   const { locations: filteredLocations, loading, selectLocation } = useLocation();
   const { t, i18n } = useTranslation(['filters', 'labels']);
 
+  // Mapa de locales soportados para date-fns
+  // Se puede extender fácilmente con más idiomas
+  const locales = useMemo(() => ({
+    'es': es,
+    'en': enUS
+  }), []);
+
+  // Obtener el locale según el idioma actual
+  const currentLocale = useMemo(() => {
+    // Obtener el código de idioma base (es, en, etc.)
+    const langCode = i18n.language.split('-')[0];
+    // Retornar el locale correspondiente o inglés como fallback
+    return locales[langCode] || locales['en'];
+  }, [i18n.language, locales]);
+
   // Estado para controlar si se ha inicializado el calendario
   const [calendarInitialized, setCalendarInitialized] = useState(false);
 
+  // Estado para rastrear si estamos en proceso de selección
+  const [isSelecting, setIsSelecting] = useState(false);
+
+  // Estado para rastrear el último día seleccionado
+  const [lastSelectedDay, setLastSelectedDay] = useState(null);
+
   // Estado para manejar el rango de fechas con la fecha actual
   const [dateRangeState, setDateRangeState] = useState(() => {
-    const today = new Date();
+    // Inicializar con las fechas de los filtros si existen, si no con la fecha actual
+    let startDate, endDate;
+
+    if (filters.startDate) {
+      // Si viene en formato YYYY-MM-DD, crear fecha a medianoche hora local
+      const [year, month, day] = filters.startDate.split('-').map(Number);
+      startDate = new Date(year, month - 1, day, 0, 0, 0);
+    } else {
+      startDate = new Date();
+    }
+
+    if (filters.endDate) {
+      // Si viene en formato YYYY-MM-DD, crear fecha a medianoche hora local
+      const [year, month, day] = filters.endDate.split('-').map(Number);
+      endDate = new Date(year, month - 1, day, 0, 0, 0);
+    } else {
+      endDate = new Date();
+    }
+
     return [{
-      startDate: today,
-      endDate: today,
+      startDate,
+      endDate,
       key: 'selection'
     }];
   });
 
   // Nuevo estado para almacenar datos del calendario
   const [calendarData, setCalendarData] = useState([]);
+  // Estado para controlar si los datos del calendario están cargando
+  const [loadingCalendarData, setLoadingCalendarData] = useState(false);
 
-  // Formatear la fecha actual para usarla como placeholder
-  const formatCurrentDate = () => {
+  // Función para cargar los datos del calendario
+  const loadCalendarData = async (date) => {
+    try {
+      setLoadingCalendarData(true);
+
+      // Obtener el mes y año del primer mes visible
+      const firstMonth = new Date(date);
+      const month = firstMonth.getMonth() + 1; // getMonth() devuelve 0-11, necesitamos 1-12
+      const year = firstMonth.getFullYear();
+
+      // El backend ya devuelve los datos para los dos meses visibles
+      const response = await photoService.getPhotoCalendar(month, year);
+      const calendarData = response.data.data.calendar || [];
+
+      setCalendarData(calendarData);
+      console.log('Datos del calendario cargados:', calendarData);
+    } catch (error) {
+      console.error('Error al cargar datos del calendario:', error);
+    } finally {
+      setLoadingCalendarData(false);
+    }
+  };
+
+  // Efecto para cargar los datos del calendario al inicializar
+  useEffect(() => {
+    // Cargar los datos del calendario al inicializar
+    const today = new Date();
+    loadCalendarData(today);
+  }, []);
+
+  // Formatear la fecha actual para usarla como placeholder, actualizándose cuando cambia el idioma
+  const currentDatePlaceholder = useMemo(() => {
     const today = new Date();
     const options = { month: 'short', day: '2-digit', year: 'numeric' };
     let formattedDate = today.toLocaleDateString(i18n.language, options);
     formattedDate = formattedDate.replace(/^[A-Z]/, match => match.toLowerCase());
     return formattedDate;
-  };
-
-  // Guardar el formato para usarlo en los placeholders
-  const currentDatePlaceholder = formatCurrentDate();
+  }, [i18n.language]);
 
   const handleDateRangeChange = (item) => {
     // Si es la primera interacción, inicializamos el estado
@@ -51,13 +120,46 @@ const SearchFilters = ({ filters, onFilterChange }) => {
     // Actualizamos el estado con la selección del usuario
     setDateRangeState([item.selection]);
 
-    // Notificamos al componente padre - CORREGIDO: enviar cada campo por separado
-    const startDate = item.selection.startDate ? item.selection.startDate.toISOString().split('T')[0] : '';
-    const endDate = item.selection.endDate ? item.selection.endDate.toISOString().split('T')[0] : '';
+    // Verificar si es un solo día (inicio y fin iguales)
+    const isSingleDay = item.selection.startDate.getTime() === item.selection.endDate.getTime();
+
+    // Convertir a formato string para comparaciones
+    const selectedDay = isSingleDay ?
+      formatDateToLocalISOString(item.selection.startDate) : null;
+
+    // Lógica para la selección
+    if (isSingleDay) {
+      // Primera vez que seleccionamos este día
+      if (!isSelecting || selectedDay !== lastSelectedDay) {
+        // Iniciamos selección
+        setIsSelecting(true);
+        setLastSelectedDay(selectedDay);
+        return; // No enviamos el cambio aún
+      } else {
+        // Segunda vez que seleccionamos el mismo día, confirmamos la selección
+        setIsSelecting(false);
+      }
+    } else {
+      // Si es un rango (días diferentes), resetear el estado de selección
+      setIsSelecting(false);
+      setLastSelectedDay(null);
+    }
+
+    // Llegados a este punto, enviamos el cambio (si es un rango o un día confirmado)
+    const startDate = item.selection.startDate ? formatDateToLocalISOString(item.selection.startDate) : '';
+    const endDate = item.selection.endDate ? formatDateToLocalISOString(item.selection.endDate) : '';
 
     // Actualizar cada campo individualmente
     onFilterChange('startDate', startDate);
     onFilterChange('endDate', endDate);
+  };
+
+  // Función para formatear fechas sin problema de zona horaria
+  const formatDateToLocalISOString = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   // Función que maneja cambios en los selectores de ubicación
@@ -155,31 +257,13 @@ const SearchFilters = ({ filters, onFilterChange }) => {
 
   // Función para manejar cambios en los meses visibles
   const handleShownDateChange = async (date) => {
-    // 'date' representa el primer mes visible
-    const firstMonth = new Date(date);
-    // El segundo mes visible es el mes siguiente
-    const secondMonth = new Date(date);
-    secondMonth.setMonth(secondMonth.getMonth() + 1);
-
-    try {
-      // Obtener datos del calendario para el primer mes visible
-      const month = firstMonth.getMonth() + 1; // getMonth() devuelve 0-11, necesitamos 1-12
-      const year = firstMonth.getFullYear();
-
-      const response = await photoService.getPhotoCalendar(month, year);
-      const calendarData = response.data.data.calendar || [];
-
-      setCalendarData(calendarData);
-      console.log('Datos del calendario:', calendarData);
-    } catch (error) {
-      console.error('Error al cargar datos del calendario:', error);
-    }
+    loadCalendarData(date);
   };
 
   // Función para renderizar el contenido personalizado de los días
   const renderDayContent = (day) => {
     // Formatear la fecha al formato YYYY-MM-DD para comparar con los datos del backend
-    const dateString = day.toISOString().split('T')[0];
+    const dateString = formatDateToLocalISOString(day);
 
     // Buscar si hay datos para esta fecha
     const dayData = calendarData.find(item => item.date === dateString);
@@ -188,10 +272,10 @@ const SearchFilters = ({ filters, onFilterChange }) => {
       // Si hay fotos en esta fecha, mostrar un indicador
       return (
         <div className="calendar-day-with-photos">
-          <span>{day.getDate()}</span>
+          <span className="day-number">{day.getDate()}</span>
           <div
             className="photo-indicator"
-            title={`${dayData.count} foto${dayData.count !== 1 ? 's' : ''}`}
+            title={t('date.photo_count', { count: dayData.count })}
           >
             {dayData.count}
           </div>
@@ -200,7 +284,7 @@ const SearchFilters = ({ filters, onFilterChange }) => {
     }
 
     // Si no hay datos, mostrar el día normal
-    return <span>{day.getDate()}</span>;
+    return <span className="day-number">{day.getDate()}</span>;
   };
 
   const handleLabelSelect = (label) => {
@@ -310,14 +394,22 @@ const SearchFilters = ({ filters, onFilterChange }) => {
           <Form.Group>
             <Form.Label>{t('date.title')}</Form.Label>
             <div className="date-range-container">
+              {loadingCalendarData && (
+                <div className="calendar-loading-overlay">
+                  <div className="text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              )}
               <DateRange
+                key={`date-range-${i18n.language}`}
                 editableDateInputs={true}
                 onChange={handleDateRangeChange}
                 moveRangeOnFirstSelection={false}
                 ranges={dateRangeState}
                 months={2}
                 direction="horizontal"
-                locale={i18n.language.startsWith('es') ? es : undefined}
+                locale={currentLocale}
                 weekdayDisplayFormat="EEEEE"
                 rangeColors={["var(--secondary)"]}
                 showMonthAndYearPickers={true}
@@ -325,87 +417,13 @@ const SearchFilters = ({ filters, onFilterChange }) => {
                 dayContentRenderer={renderDayContent}
                 startDatePlaceholder={currentDatePlaceholder}
                 endDatePlaceholder={currentDatePlaceholder}
-                showSelectionPreview={false}
+                showSelectionPreview={true}
                 className="w-100"
               />
             </div>
           </Form.Group>
         </Col>
       </Row>
-
-      {/* Estilos para ajustar el calendario */}
-      <style jsx>{`
-        .date-range-container {
-          width: 100%;
-          max-width: 100%;
-          overflow-x: auto;
-        }
-
-        .calendar-day-with-photos {
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-        }
-
-        .photo-indicator {
-          font-size: 0.7em;
-          background-color: var(--bs-secondary);
-          color: white;
-          border-radius: 10px;
-          padding: 1px 4px;
-          margin-top: 2px;
-          line-height: 1;
-        }
-
-        /* Ajustes para el calendario */
-        :global(.rdrCalendarWrapper) {
-          width: 100% !important;
-          font-size: 14px !important;
-        }
-
-        :global(.rdrMonth) {
-          width: 100% !important;
-          max-width: none !important;
-        }
-
-        :global(.rdrMonthAndYearWrapper) {
-          padding-top: 5px !important;
-          height: auto !important;
-        }
-
-        :global(.rdrMonthAndYearPickers select) {
-          padding: 5px 25px 5px 10px !important;
-        }
-
-        :global(.rdrNextPrevButton) {
-          margin: 0 5px !important;
-        }
-
-        :global(.rdrDateDisplayWrapper) {
-          background-color: transparent !important;
-        }
-
-        :global(.rdrDateDisplay) {
-          margin: 0.5rem !important;
-        }
-
-        :global(.rdrDateDisplayItem) {
-          border-radius: 4px !important;
-          background-color: white !important;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-        }
-
-        :global(.rdrDateDisplayItemActive) {
-          border-color: var(--bs-secondary) !important;
-        }
-
-        :global(.rdrDayToday .rdrDayNumber span:after) {
-          background: var(--bs-secondary) !important;
-        }
-      `}</style>
     </div>
   );
 };

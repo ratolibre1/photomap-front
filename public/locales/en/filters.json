@@ -21,7 +21,10 @@
   "date": {
     "title": "Date Range",
     "start": "Start date",
-    "end": "End date"
+    "end": "End date",
+    "apply_range": "Apply",
+    "photo_count": "{{count}} photo",
+    "photo_count_plural": "{{count}} photos"
   },
   "labels": {
     "title": "Labels",

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { useAuth } from '../../context/AuthContext'; // Importar el contexto de autenticación
+import { useAuth } from '../../context/AuthContext';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -23,47 +22,68 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = ({ photos, loading }) => {
-  const { t } = useTranslation(['map', 'common']);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
   const clusterLayerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [userLocationLoading, setUserLocationLoading] = useState(false);
-  const { user } = useAuth(); // Obtener el usuario actual
+  const { user } = useAuth();
+  const apiKey = 'vKvwcKb5zvFpvEHcTNBv';
+
+  // Estilos del mapa
+  const mapStyles = {
+    voyager: {
+      title: 'Voyager',
+      url: `https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?key=${apiKey}`
+    },
+    streets: {
+      title: 'Streets',
+      url: `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${apiKey}`
+    },
+    basic: {
+      title: 'Basic',
+      url: `https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=${apiKey}`
+    },
+    outdoor: {
+      title: 'Outdoor',
+      url: `https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=${apiKey}`
+    },
+    toner: {
+      title: 'Toner',
+      url: `https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=${apiKey}`
+    }
+  };
+
+  // Función para crear el botón de localización
+  const createLocationButton = () => {
+    const locationButton = L.control({ position: 'topright' });
+    locationButton.onAdd = function () {
+      const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+      div.innerHTML = `
+        <a href="#" title="Find my location" class="leaflet-control-locate leaflet-bar-part">
+          <i class="bi bi-person-circle"></i>
+        </a>
+      `;
+
+      const link = div.querySelector('a');
+      L.DomEvent.disableClickPropagation(link);
+      L.DomEvent.on(link, 'click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        findUserLocation();
+        return false;
+      });
+
+      return div;
+    };
+    return locationButton;
+  };
 
   // Inicializar el mapa cuando el componente se monta
   useEffect(() => {
     if (mapRef.current && !mapInstanceRef.current) {
-      // Crear el mapa
-      const map = L.map(mapRef.current).setView([-33.45, -70.67], 5); // Default: Santiago, Chile
-
-      // Agregar capa de mosaicos de MapTiler
-      const apiKey = 'vKvwcKb5zvFpvEHcTNBv'; // Reemplaza con tu clave API de MapTiler
-
-      // Definir los diferentes estilos de mapa disponibles
-      const mapStyles = {
-        voyager: {
-          title: t('layers.voyager'),
-          url: `https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?key=${apiKey}`
-        },
-        streets: {
-          title: t('layers.streets'),
-          url: `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${apiKey}`
-        },
-        basic: {
-          title: t('layers.basic'),
-          url: `https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=${apiKey}`
-        },
-        outdoor: {
-          title: t('layers.outdoor'),
-          url: `https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=${apiKey}`
-        },
-        toner: {
-          title: t('layers.toner'),
-          url: `https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=${apiKey}`
-        }
-      };
+      const map = L.map(mapRef.current).setView([-33.45, -70.67], 5);
 
       // Crear las capas base para cada estilo
       const baseLayers = {};
@@ -77,7 +97,7 @@ const MapComponent = ({ photos, loading }) => {
       }
 
       // Agregar la capa inicial (Voyager por defecto)
-      baseLayers[t('layers.voyager')].addTo(map);
+      baseLayers['Voyager'].addTo(map);
 
       // Agregar el control para cambiar entre capas
       L.control.layers(baseLayers, {}, { position: 'topright' }).addTo(map);
@@ -196,28 +216,7 @@ const MapComponent = ({ photos, loading }) => {
       markersLayerRef.current = L.layerGroup().addTo(map);
 
       // Agregar botón de localización
-      const locationButton = L.control({ position: 'topright' });
-      locationButton.onAdd = function () {
-        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-        div.innerHTML = `
-          <a href="#" title="${t('location.button_title')}" class="leaflet-control-locate leaflet-bar-part">
-            <i class="bi bi-person-circle"></i>
-          </a>
-        `;
-
-        // Prevenir que el clic se propague al mapa para evitar comportamientos inesperados
-        const link = div.querySelector('a');
-        L.DomEvent.disableClickPropagation(link);
-        L.DomEvent.on(link, 'click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          findUserLocation();
-          return false;
-        });
-
-        return div;
-      };
-      locationButton.addTo(map);
+      createLocationButton().addTo(map);
     }
 
     return () => {
@@ -227,7 +226,7 @@ const MapComponent = ({ photos, loading }) => {
         mapInstanceRef.current = null;
       }
     };
-  }, [user, t]); // Agregar t como dependencia
+  }, []); // Quitamos la dependencia de user
 
   // Función para encontrar la ubicación del usuario
   const findUserLocation = (e) => {
@@ -247,29 +246,19 @@ const MapComponent = ({ photos, loading }) => {
         const { latitude, longitude } = position.coords;
         setUserLocation([latitude, longitude]);
 
-        // Centrar mapa en ubicación del usuario con animación
-        console.log("🗺️ Centrando mapa en:", latitude, longitude);
-
-        // Forzar navegación y centrado con timeout
         setTimeout(() => {
           if (mapInstanceRef.current) {
-            // Primero hacer zoom
-            mapInstanceRef.current.setZoom(16);
-
-            // Luego centrar en la ubicación
+            const currentZoom = mapInstanceRef.current.getZoom();
+            mapInstanceRef.current.setZoom(currentZoom > 16 ? currentZoom : 16);
             mapInstanceRef.current.panTo([latitude, longitude], {
               animate: true,
               duration: 1
             });
-
-            console.log("📍 Mapa centrado en coordenadas");
           }
         }, 100);
 
-        // Obtener la inicial del usuario de forma segura
         const userInitial = user && user.name ? user.name.charAt(0).toUpperCase() : '👤';
 
-        // Limpiar marcadores de usuario anteriores
         if (markersLayerRef.current) {
           const userMarkers = document.querySelectorAll('.custom-user-marker');
           userMarkers.forEach(marker => {
@@ -280,7 +269,6 @@ const MapComponent = ({ photos, loading }) => {
           });
         }
 
-        // Añadir marcador para el usuario
         const userMarker = L.marker([latitude, longitude], {
           icon: L.divIcon({
             className: 'custom-user-marker',
@@ -295,19 +283,17 @@ const MapComponent = ({ photos, loading }) => {
             `,
             iconSize: [50, 60],
             iconAnchor: [25, 55],
-            popupAnchor: [0, -45] // Ajustado para que coincida con los tooltips de las fotos
+            popupAnchor: [0, -45]
           })
         }).addTo(markersLayerRef.current);
 
-        // Agregar popup con información
         userMarker.bindPopup(`
           <div class="user-location-popup text-center">
-            <h6 class="mb-2">${t('location.current')}</h6>
-            <p class="coordinates mb-2">${t('location.coordinates', { lat: latitude.toFixed(5), lng: longitude.toFixed(5) })}</p>
+            <h6 class="mb-2">You are here</h6>
+            <p class="coordinates mb-2">Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}</p>
           </div>
         `);
 
-        // Aplicar estilos al popup
         setTimeout(() => {
           const popups = document.querySelectorAll('.leaflet-popup-content-wrapper');
           popups.forEach(popup => {
@@ -322,21 +308,19 @@ const MapComponent = ({ photos, loading }) => {
         console.error("❌ Error obteniendo ubicación:", error);
         setUserLocationLoading(false);
 
-        // Mostrar alerta al usuario con más detalles
-        let errorMsg = t('common:errors.location_general');
-
+        let errorMsg = 'Error getting location';
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMsg += ' ' + t('common:errors.location_denied');
+            errorMsg += ': Permission denied';
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMsg += ' ' + t('common:errors.location_unavailable');
+            errorMsg += ': Position unavailable';
             break;
           case error.TIMEOUT:
-            errorMsg += ' ' + t('common:errors.location_timeout');
+            errorMsg += ': Request timeout';
             break;
           default:
-            errorMsg += ' ' + t('common:errors.location_unknown');
+            errorMsg += ': Unknown error';
         }
 
         alert(errorMsg);
@@ -344,18 +328,64 @@ const MapComponent = ({ photos, loading }) => {
       {
         timeout: 10000,
         enableHighAccuracy: true,
-        maximumAge: 0 // Forzar a obtener una posición actualizada
+        maximumAge: 0
       }
     );
+  };
+
+  // Función para generar el contenido del popup
+  const createPopupContent = (photo) => {
+    const popupContent = document.createElement('div');
+    popupContent.style.width = '200px';
+    popupContent.style.textAlign = 'center';
+
+    const title = document.createElement('h6');
+    title.textContent = photo.title || 'No title';
+    popupContent.appendChild(title);
+
+    if (photo.thumbnailUrl) {
+      const img = document.createElement('img');
+      img.src = photo.thumbnailUrl;
+      img.alt = photo.title || 'No title';
+      img.style.maxWidth = '100%';
+      img.style.height = 'auto';
+      img.style.maxHeight = '150px';
+      img.style.borderRadius = '5px';
+      popupContent.appendChild(img);
+    } else {
+      const noImageDiv = document.createElement('div');
+      noImageDiv.className = 'no-image-placeholder';
+      noImageDiv.textContent = 'No image';
+      popupContent.appendChild(noImageDiv);
+    }
+
+    if (photo.description) {
+      const description = document.createElement('p');
+      description.className = 'mt-2';
+      description.textContent = photo.description;
+      popupContent.appendChild(description);
+    }
+
+    const linkButton = document.createElement('a');
+    linkButton.href = `#/photo/${photo._id}`;
+    linkButton.className = 'btn btn-sm btn-primary';
+    linkButton.textContent = 'View details';
+    linkButton.style.marginTop = '8px';
+
+    linkButton.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.history.pushState({}, '', `/photo/${photo._id}`);
+      window.dispatchEvent(new Event('popstate'));
+    });
+
+    popupContent.appendChild(linkButton);
+    return popupContent;
   };
 
   // Actualizar marcadores cuando cambian las fotos
   useEffect(() => {
     if (mapInstanceRef.current && clusterLayerRef.current && photos && !loading) {
-      // Limpiar marcadores anteriores
       clusterLayerRef.current.clearLayers();
-
-      // Añadir marcadores para cada foto con coordenadas
       const bounds = L.latLngBounds();
       let markersAdded = 0;
 
@@ -365,13 +395,11 @@ const MapComponent = ({ photos, loading }) => {
 
           const [lng, lat] = photo.location.coordinates;
 
-          // Solo añadir si las coordenadas parecen válidas (verificando si son números, no si son truthy)
           if ((lat !== undefined) && (lng !== undefined) && !isNaN(lat) && !isNaN(lng)) {
             const latLng = L.latLng(lat, lng);
             bounds.extend(latLng);
             markersAdded++;
 
-            // Crear un marcador personalizado con miniatura circular
             const marker = L.marker(latLng, {
               icon: L.divIcon({
                 className: 'custom-photo-marker',
@@ -380,7 +408,7 @@ const MapComponent = ({ photos, loading }) => {
                     <div class="marker-pin">
                       <div class="marker-thumbnail-container">
                         ${photo.thumbnailUrl
-                    ? `<img src="${photo.thumbnailUrl}" alt="${photo.title || t('photo.no_title')}" class="marker-thumbnail">`
+                    ? `<img src="${photo.thumbnailUrl}" alt="${photo.title || 'No title'}" class="marker-thumbnail">`
                     : `<div class="marker-thumbnail no-image"><i class="bi bi-camera"></i></div>`
                   }
                       </div>
@@ -388,80 +416,24 @@ const MapComponent = ({ photos, loading }) => {
                   </div>
                 `,
                 iconSize: [40, 60],
-                iconAnchor: [20, 55], // Punto central inferior del pin
-                popupAnchor: [0, -45] // Posición del popup
+                iconAnchor: [20, 55],
+                popupAnchor: [0, -45]
               })
             });
 
-            // Crear un contenido personalizado para el popup
-            const popupContent = document.createElement('div');
-            popupContent.style.width = '200px';
-            popupContent.style.textAlign = 'center';
-
-            // Crear el título
-            const title = document.createElement('h6');
-            title.textContent = photo.title || t('photo.no_title');
-            popupContent.appendChild(title);
-
-            // Crear la imagen
-            if (photo.thumbnailUrl) {
-              const img = document.createElement('img');
-              img.src = photo.thumbnailUrl;
-              img.alt = photo.title || t('photo.no_title');
-              img.style.maxWidth = '100%';
-              img.style.height = 'auto';
-              img.style.maxHeight = '150px';
-              img.style.borderRadius = '5px';
-              popupContent.appendChild(img);
-            } else {
-              const noImageDiv = document.createElement('div');
-              noImageDiv.className = 'no-image-placeholder';
-              noImageDiv.textContent = t('photo.no_image');
-              popupContent.appendChild(noImageDiv);
-            }
-
-            // Agregar descripción si existe
-            if (photo.description) {
-              const description = document.createElement('p');
-              description.className = 'mt-2';
-              description.textContent = photo.description;
-              popupContent.appendChild(description);
-            }
-
-            // Crear enlace como botón que use react-router-dom en lugar de un enlace absoluto
-            const linkButton = document.createElement('a');
-            linkButton.href = `#/photo/${photo._id}`; // Usar hash para que React Router lo capture
-            linkButton.className = 'btn btn-sm btn-primary';
-            linkButton.textContent = t('photo.view_details');
-            linkButton.style.marginTop = '8px';
-
-            // Agregar evento para evitar recarga de página y usar la navegación de React Router
-            linkButton.addEventListener('click', function (e) {
-              e.preventDefault();
-              window.history.pushState({}, '', `/photo/${photo._id}`);
-              window.dispatchEvent(new Event('popstate'));
-            });
-
-            popupContent.appendChild(linkButton);
-
-            // Asignar el contenido personalizado al popup
-            marker.bindPopup(popupContent);
-
-            // Agregar el marcador al grupo de clusters en lugar de directamente al mapa
+            marker.bindPopup(createPopupContent(photo));
             clusterLayerRef.current.addLayer(marker);
           }
         }
       });
 
-      // Ajustar vista si hay marcadores
       if (markersAdded > 0) {
         mapInstanceRef.current.fitBounds(bounds, { padding: [80, 80] });
       } else if (!userLocation) {
-        // Si no hay marcadores ni ubicación de usuario, mostrar vista predeterminada
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
       }
     }
-  }, [photos, loading, userLocation, t]); // Agregar t como dependencia
+  }, [photos, loading]); // Quitamos userLocation de las dependencias ya que no es necesario
 
   // Estilo CSS para el mapa
   const mapStyle = {
@@ -472,36 +444,27 @@ const MapComponent = ({ photos, loading }) => {
 
   return (
     <div className="map-component-container">
-      {/* Overlay de carga */}
       {(loading || userLocationLoading) && (
         <div className="map-loading-overlay">
           <Spinner animation="border" variant="primary" />
           <p className="mt-2">
-            {userLocationLoading
-              ? t('common:loading.location')
-              : t('common:loading.map')}
+            {userLocationLoading ? 'Getting location...' : 'Loading map...'}
           </p>
         </div>
       )}
 
-      {/* Contenedor del mapa */}
       <div ref={mapRef} style={mapStyle}></div>
 
-      {/* Información sobre el mapa */}
       <div className="mt-2 text-muted">
         <small>
           {photos.length > 0 ? (
-            t('info.showing_photos', {
-              count: photos.length,
-              location: userLocation ? t('info.location_detected') : ''
-            })
+            `Showing ${photos.length} photos${userLocation ? ' · Location detected' : ''}`
           ) : (
-            t('info.no_photos')
+            'No photos to show on the map'
           )}
         </small>
       </div>
 
-      {/* CSS para los marcadores y overlay */}
       <style jsx="true">{`
         .map-loading-overlay {
           position: absolute;
