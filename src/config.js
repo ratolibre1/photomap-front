@@ -1,10 +1,10 @@
 // Configuración global de la aplicación
 
 // URL base de la API para llamadas directas (sin pasar por el proxy de Vite)
-// En desarrollo usamos localhost, en producción se obtiene de variables de entorno
+// En desarrollo usamos localhost, en producción la URL completa del backend
 export const API_URL = import.meta.env.PROD
-  ? import.meta.env.VITE_API_URL || '/api' // URL de producción desde .env
-  : '/api'; // URL para proxy local en desarrollo
+  ? 'https://photomap-back.onrender.com' // URL completa en producción 
+  : '/api'; // Ruta relativa en desarrollo (usará el proxy de Vite)
 
 // Configuración de carga de archivos
 export const FILE_UPLOAD_CONFIG = {

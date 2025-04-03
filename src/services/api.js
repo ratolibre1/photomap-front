@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-// Configuración base para axios
-const API_URL = '/api'; // Definimos la constante API_URL
+// URL completa para producción, ruta relativa para desarrollo
+const API_BASE_URL = import.meta.env.PROD
+  ? 'https://photomap-back.onrender.com' // URL completa en producción
+  : '/api'; // Ruta relativa en desarrollo (usará el proxy de Vite)
 
+// Configuración base para axios
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -149,7 +152,7 @@ export const photoService = {
       }
 
       const response = await axios.patch(
-        `${API_URL}/photos/${photoId}/visibility`,
+        `${API_BASE_URL}/photos/${photoId}/visibility`,
         { isPublic },
         {
           headers: {
@@ -248,7 +251,7 @@ export const labelService = {
 export const publicMapService = {
   getPublicMap: async (shareId) => {
     try {
-      const response = await axios.get(`${API_URL}/public-maps/share/${shareId}`);
+      const response = await axios.get(`${API_BASE_URL}/public-maps/share/${shareId}`);
       return response;
     } catch (error) {
       console.error('Error al obtener el mapa público:', error);
@@ -257,7 +260,7 @@ export const publicMapService = {
   },
   getPublicMapPhotos: async (shareId) => {
     try {
-      const response = await axios.get(`${API_URL}/public-maps/share/${shareId}/photos`);
+      const response = await axios.get(`${API_BASE_URL}/public-maps/share/${shareId}/photos`);
       return response;
     } catch (error) {
       console.error('Error al obtener las fotos del mapa público:', error);
