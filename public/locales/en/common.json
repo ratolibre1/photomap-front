@@ -22,14 +22,14 @@
   "errors": {
     "default": "An error has occurred",
     "location_denied": "You have denied permission to access your location",
-    "location_unavailable": "Location information is not available",
+    "location_unavailable": "Location information is unavailable",
     "location_timeout": "The request to get your location has timed out",
     "location_unknown": "An unknown error occurred while getting your location"
   },
   "success": {
-    "saved": "Successfully saved",
-    "deleted": "Successfully deleted",
-    "uploaded": "Successfully uploaded"
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "uploaded": "Uploaded successfully"
   },
   "confirmations": {
     "delete": "Are you sure you want to delete this?",
@@ -39,7 +39,7 @@
   },
   "language": {
     "title": "Language",
-    "es": "Spanish",
+    "es": "Español",
     "en": "English"
   },
   "theme": {
@@ -49,5 +49,12 @@
     "singular": "photo",
     "plural": "photos",
     "unknown": "? photos"
+  },
+  "navigation": {
+    "home": "Go to home",
+    "publicMaps": "View public maps",
+    "back": "Go back",
+    "next": "Next",
+    "previous": "Previous"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "notFound": {
+    "title": "Oops! Page not found",
+    "message": "We couldn't find the page you're looking for. The address might be misspelled or the page may have been moved or deleted."
+  },
+  "general": {
+    "serverError": "Server error",
+    "connectionError": "Connection error",
+    "unauthorized": "You don't have permission to perform this action",
+    "forbidden": "Access denied",
+    "unknown": "An unknown error has occurred"
+  }
+}

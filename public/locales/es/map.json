@@ -1,28 +1,44 @@
 {
-  "title": "Mapa de Recuerdos",
-  "description": "Visualiza tus fotos distribuidas geográficamente",
-  "info": {
-    "showing_photos_one": "Mostrando {{count}} foto en el mapa{{location}}",
-    "showing_photos_other": "Mostrando {{count}} fotos en el mapa{{location}}",
-    "location_detected": " · Ubicación detectada",
-    "no_photos": "No hay fotos para mostrar en el mapa"
+  "title": "Mapa de Fotos",
+  "description": "Explora tus fotos en un mapa interactivo",
+  "filters": {
+    "title": "Filtros de Búsqueda",
+    "visibility": "Mostrar solo fotos públicas",
+    "date": "Fecha",
+    "startDate": "Desde",
+    "endDate": "Hasta",
+    "dateRange": "Rango de fechas",
+    "resetFilters": "Restablecer filtros"
   },
-  "layers": {
-    "title": "Capas del mapa",
+  "mapStyles": {
     "voyager": "Voyager",
     "streets": "Calles",
     "basic": "Básico",
-    "outdoor": "Outdoor",
+    "outdoor": "Exterior",
     "toner": "Toner"
   },
   "location": {
-    "button_title": "Encontrar mi ubicación",
-    "current": "Estás aquí",
-    "coordinates": "Lat: {{lat}}, Lng: {{lng}}"
+    "findMyLocation": "Encontrar mi ubicación",
+    "gettingLocation": "Obteniendo ubicación...",
+    "locationDetected": "Ubicación detectada",
+    "loadingMap": "Cargando mapa...",
+    "youAreHere": "Estás aquí",
+    "visitorLocation": "Tu ubicación actual",
+    "errors": {
+      "title": "Error obteniendo ubicación",
+      "denied": "Permiso denegado",
+      "unavailable": "Ubicación no disponible",
+      "timeout": "Tiempo de espera agotado",
+      "unknown": "Error desconocido"
+    }
   },
   "photo": {
-    "no_title": "Sin título",
-    "no_image": "Sin imagen",
-    "view_details": "Ver detalle"
+    "noTitle": "Sin título",
+    "noImage": "Sin imagen",
+    "viewDetails": "Ver detalles"
+  },
+  "status": {
+    "showing": "Mostrando {{count}} fotos",
+    "noPhotos": "No hay fotos para mostrar en el mapa"
   }
 }

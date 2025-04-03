@@ -6,10 +6,10 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { useAuth } from '../../context/AuthContext';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import { THEMES } from '../../context/ThemeContext';
 
 // Corregir el ícono de marcador predeterminado de Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -22,16 +22,29 @@ L.Icon.Default.mergeOptions({
   shadowSize: [41, 41]
 });
 
-const MapComponent = ({ photos, loading }) => {
+const PublicMapComponent = ({ photos, loading, colorPalette }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
   const clusterLayerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [userLocationLoading, setUserLocationLoading] = useState(false);
-  const { user } = useAuth();
   const { t } = useTranslation(['map']);
   const apiKey = 'vKvwcKb5zvFpvEHcTNBv';
+
+  // Seleccionar la paleta de colores a utilizar desde los temas disponibles
+  const themeColors = colorPalette && THEMES[colorPalette]
+    ? THEMES[colorPalette].colors
+    : THEMES.magmar.colors;
+
+  // Mapeamos los colores para su uso en el mapa
+  const palette = {
+    primary: themeColors.primary,
+    secondary: themeColors.secondary,
+    accent: themeColors.warning,
+    dark: themeColors.dark,
+    light: themeColors.light
+  };
 
   // Estilos del mapa con traducciones
   const mapStyles = {
@@ -228,7 +241,7 @@ const MapComponent = ({ photos, loading }) => {
         mapInstanceRef.current = null;
       }
     };
-  }, []); // Quitamos la dependencia de user
+  }, []);
 
   // Función para encontrar la ubicación del usuario
   const findUserLocation = (e) => {
@@ -250,61 +263,56 @@ const MapComponent = ({ photos, loading }) => {
 
         setTimeout(() => {
           if (mapInstanceRef.current) {
-            const currentZoom = mapInstanceRef.current.getZoom();
-            mapInstanceRef.current.setZoom(currentZoom > 16 ? currentZoom : 16);
-            mapInstanceRef.current.panTo([latitude, longitude], {
-              animate: true,
-              duration: 1
-            });
-          }
-        }, 100);
-
-        const userInitial = user && user.name ? user.name.charAt(0).toUpperCase() : '👤';
-
-        if (markersLayerRef.current) {
-          const userMarkers = document.querySelectorAll('.custom-user-marker');
-          userMarkers.forEach(marker => {
-            const parent = marker.parentElement;
-            if (parent && parent.parentElement) {
-              parent.parentElement.removeChild(parent);
+            // Si hay un marcador de usuario previo, eliminarlo
+            if (markersLayerRef.current) {
+              markersLayerRef.current.clearLayers();
             }
-          });
-        }
 
-        const userMarker = L.marker([latitude, longitude], {
-          icon: L.divIcon({
-            className: 'custom-user-marker',
-            html: `
-              <div class="marker-container">
-                <div class="marker-pin user-pin">
-                  <div class="marker-thumbnail-container user-location-container">
-                    <div class="user-initial">${navigator.onLine ? userInitial : '👤'}</div>
+            // Crear un icono personalizado para el usuario visitante (modo incógnito)
+            const userMarker = L.marker([latitude, longitude], {
+              icon: L.divIcon({
+                className: 'custom-photo-marker',
+                html: `
+                  <div class="marker-container">
+                    <div class="marker-pin user-pin">
+                      <div class="marker-thumbnail-container user-location-container">
+                        <i class="bi bi-person-fill-slash" style="color: white; font-size: 1.2rem;"></i>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                `,
+                iconSize: [40, 60],
+                iconAnchor: [20, 55],
+                popupAnchor: [0, -45]
+              })
+            }).addTo(markersLayerRef.current);
+
+            // Agregar popup al marcador
+            userMarker.bindPopup(`
+              <div class="user-location-popup text-center">
+                <h6 class="mb-2">${t('map:location.visitorLocation')}</h6>
+                <p class="coordinates mb-2">Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}</p>
               </div>
-            `,
-            iconSize: [50, 60],
-            iconAnchor: [25, 55],
-            popupAnchor: [0, -45]
-          })
-        }).addTo(markersLayerRef.current);
+            `);
 
-        userMarker.bindPopup(`
-          <div class="user-location-popup text-center">
-            <h6 class="mb-2">${t('map:location.youAreHere')}</h6>
-            <p class="coordinates mb-2">Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}</p>
-          </div>
-        `);
+            // Abrir el popup automáticamente
+            userMarker.openPopup();
 
-        setTimeout(() => {
-          const popups = document.querySelectorAll('.leaflet-popup-content-wrapper');
-          popups.forEach(popup => {
-            popup.style.padding = '10px';
-            popup.style.borderRadius = '10px';
-          });
-        }, 10);
+            // Centrar el mapa en la ubicación del usuario con zoom apropiado
+            mapInstanceRef.current.setView([latitude, longitude], 15);
 
-        setUserLocationLoading(false);
+            // Ajustar el estilo del popup
+            setTimeout(() => {
+              const popup = document.querySelector('.leaflet-popup-content-wrapper');
+              if (popup) {
+                popup.style.padding = '10px';
+                popup.style.borderRadius = '10px';
+              }
+            }, 10);
+          }
+
+          setUserLocationLoading(false);
+        }, 300);
       },
       (error) => {
         console.error("❌ Error obteniendo ubicación:", error);
@@ -368,19 +376,9 @@ const MapComponent = ({ photos, loading }) => {
       popupContent.appendChild(description);
     }
 
-    const linkButton = document.createElement('a');
-    linkButton.href = `#/photo/${photo._id}`;
-    linkButton.className = 'btn btn-sm btn-primary';
-    linkButton.textContent = t('map:photo.viewDetails');
-    linkButton.style.marginTop = '8px';
+    // En el mapa público, no permitimos ver detalles ya que el usuario no está autenticado
+    // Solo mostramos la información básica de la foto
 
-    linkButton.addEventListener('click', function (e) {
-      e.preventDefault();
-      window.history.pushState({}, '', `/photo/${photo._id}`);
-      window.dispatchEvent(new Event('popstate'));
-    });
-
-    popupContent.appendChild(linkButton);
     return popupContent;
   };
 
@@ -410,7 +408,7 @@ const MapComponent = ({ photos, loading }) => {
                     <div class="marker-pin">
                       <div class="marker-thumbnail-container">
                         ${photo.thumbnailUrl
-                    ? `<img src="${photo.thumbnailUrl}" alt="${photo.title || 'No title'}" class="marker-thumbnail">`
+                    ? `<img src="${photo.thumbnailUrl}" alt="${photo.title || t('map:photo.noTitle')}" class="marker-thumbnail">`
                     : `<div class="marker-thumbnail no-image"><i class="bi bi-camera"></i></div>`
                   }
                       </div>
@@ -435,7 +433,7 @@ const MapComponent = ({ photos, loading }) => {
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
       }
     }
-  }, [photos, loading]); // Quitamos userLocation de las dependencias ya que no es necesario
+  }, [photos, loading]);
 
   // Estilo CSS para el mapa
   const mapStyle = {
@@ -499,7 +497,7 @@ const MapComponent = ({ photos, loading }) => {
         .marker-pin {
           width: 50px;
           height: 50px;
-          background: var(--primary, #0d6efd);
+          background: ${palette.primary} !important;
           border: 2px solid #fff;
           border-radius: 50%;
           position: absolute;
@@ -515,7 +513,7 @@ const MapComponent = ({ photos, loading }) => {
           height: 40px;
           border-radius: 50%;
           overflow: hidden;
-          background: #fff;
+          background: ${palette.light};
           display: flex;
           align-items: center;
           justify-content: center;
@@ -527,17 +525,17 @@ const MapComponent = ({ photos, loading }) => {
           background-color: white;
         }
         .marker-thumbnail.no-image {
-          background: #f8f9fa;
-          color: #6c757d;
+          background: ${palette.light};
+          color: ${palette.secondary};
           display: flex;
           align-items: center;
           justify-content: center;
         }
         .user-pin {
-          background: var(--primary, #0dcaf0);  /* Color diferente para distinguir del pin de foto */
+          background: ${palette.accent} !important;
         }
         .user-location-container {
-          background: var(--secondary, #0d6efd);
+          background: ${palette.dark} !important;
         }
         .user-initial {
           color: white;
@@ -561,7 +559,7 @@ const MapComponent = ({ photos, loading }) => {
 
         /* Ajustes para el número en los clusters */
         .marker-thumbnail-container span {
-          color: #333;
+          color: ${palette.dark};
           font-weight: bold;
           font-size: 16px;
           display: flex;
@@ -579,13 +577,13 @@ const MapComponent = ({ photos, loading }) => {
           width: 44px !important;
           height: 44px !important;
           background: white !important;
-          color: #333 !important;
+          color: ${palette.primary} !important;
           box-shadow: none !important;
           border-radius: 4px !important;
           text-decoration: none !important;
         }
         .leaflet-control-locate:hover {
-          background: #f8f8f8 !important;
+          background: ${palette.light} !important;
         }
         .leaflet-control-locate i {
           font-size: 22px !important;
@@ -610,4 +608,4 @@ const MapComponent = ({ photos, loading }) => {
   );
 };
 
-export default MapComponent; 
+export default PublicMapComponent; 

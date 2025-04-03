@@ -9,6 +9,8 @@ import CategoryManager from './pages/CategoryManager';
 import { ThemeProvider } from './context/ThemeContext';
 import Upload from './pages/Upload';
 import PhotoMap from './pages/PhotoMap';
+import PublicMap from './pages/PublicMap';
+import NotFound from './pages/NotFound';
 import { CategoryProvider } from './context/CategoryContext';
 import AdminTools from './pages/AdminTools';
 import OnThisDay from './pages/OnThisDay';
@@ -50,6 +52,9 @@ function App() {
                   <Route path="/" element={<Navigate to="/dashboard" />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<div>Página de registro (próximamente)</div>} />
+                  <Route path="/mapa-publico" element={<Navigate to="/not-found" />} />
+                  <Route path="/mapa-publico/:shareId" element={<PublicMap />} />
+                  <Route path="/not-found" element={<NotFound />} />
 
                   {/* Rutas protegidas con layout */}
                   <Route path="/dashboard" element={
@@ -117,7 +122,7 @@ function App() {
                   } />
 
                   {/* Ruta para manejar direcciones no encontradas */}
-                  <Route path="*" element={<Navigate to="/" />} />
+                  <Route path="*" element={<Navigate to="/not-found" />} />
                 </Routes>
               </Router>
             </ThemeProvider>

@@ -49,5 +49,12 @@
     "singular": "foto",
     "plural": "fotos",
     "unknown": "? fotos"
+  },
+  "navigation": {
+    "home": "Ir al inicio",
+    "publicMaps": "Ver mapas públicos",
+    "back": "Volver atrás",
+    "next": "Siguiente",
+    "previous": "Anterior"
   }
 }

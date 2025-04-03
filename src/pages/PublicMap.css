@@ -1,0 +1,133 @@
+.public-map-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  /* Valores por defecto para las variables CSS */
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --text-color: #333;
+  --page-background: #f8f9fa80;
+
+  /* Aplicar transición suave al cambio de tema */
+  transition: all 0.3s ease;
+}
+
+.public-map-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--primary, #333);
+  transition: color 0.3s ease;
+}
+
+.public-map-subtitle {
+  color: var(--secondary, #666);
+  margin-bottom: 2rem;
+  transition: color 0.3s ease;
+}
+
+/* Estilos para el mapa en la vista pública */
+.public-map-container .leaflet-container {
+  height: 70vh;
+  min-height: 500px;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+/* Estilos para las tarjetas temáticas */
+.public-map-container .card {
+  border-color: var(--light, #f8f9fa);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.public-map-container .card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.public-map-container .alert-danger {
+  background-color: var(--danger, #dc3545);
+  color: white;
+}
+
+/* Skeleton loader */
+.skeleton-map {
+  height: 70vh;
+  min-height: 500px;
+  background-color: var(--light, #f8f9fa);
+  border-radius: 5px;
+  position: relative;
+  animation: pulse 1.5s infinite;
+}
+
+.skeleton-map-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--secondary, #6c757d);
+}
+
+.skeleton-map-overlay i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--primary, #007bff);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .public-map-title {
+    font-size: 2rem;
+  }
+
+  .public-map-container .leaflet-container {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .skeleton-map {
+    height: 60vh;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .public-map-title {
+    font-size: 1.75rem;
+  }
+
+  .public-map-subtitle {
+    font-size: 1rem;
+  }
+
+  .public-map-container .leaflet-container {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .skeleton-map {
+    height: 50vh;
+    min-height: 350px;
+  }
+}

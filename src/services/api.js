@@ -244,4 +244,26 @@ export const labelService = {
   deleteLabel: (id) => api.delete(`/labels/${id}`)
 };
 
+// Agregar este servicio para mapas públicos
+export const publicMapService = {
+  getPublicMap: async (shareId) => {
+    try {
+      const response = await axios.get(`${API_URL}/public-maps/share/${shareId}`);
+      return response;
+    } catch (error) {
+      console.error('Error al obtener el mapa público:', error);
+      throw error;
+    }
+  },
+  getPublicMapPhotos: async (shareId) => {
+    try {
+      const response = await axios.get(`${API_URL}/public-maps/share/${shareId}/photos`);
+      return response;
+    } catch (error) {
+      console.error('Error al obtener las fotos del mapa público:', error);
+      throw error;
+    }
+  }
+};
+
 export default api;

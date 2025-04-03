@@ -1,0 +1,13 @@
+{
+  "notFound": {
+    "title": "¡Oops! Página no encontrada",
+    "message": "No pudimos encontrar la página que estás buscando. Es posible que la dirección esté mal escrita o que la página haya sido movida o eliminada."
+  },
+  "general": {
+    "serverError": "Error en el servidor",
+    "connectionError": "Error de conexión",
+    "unauthorized": "No tienes permisos para realizar esta acción",
+    "forbidden": "Acceso denegado",
+    "unknown": "Ha ocurrido un error desconocido"
+  }
+}

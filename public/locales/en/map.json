@@ -1,14 +1,16 @@
 {
-  "title": "Memories Map",
-  "description": "View your photos distributed geographically",
-  "info": {
-    "showing_photos_one": "Showing {{count}} photo on the map{{location}}",
-    "showing_photos_other": "Showing {{count}} photos on the map{{location}}",
-    "location_detected": " · Location detected",
-    "no_photos": "No photos to show on the map"
+  "title": "Photo Map",
+  "description": "Explore your photos on an interactive map",
+  "filters": {
+    "title": "Search Filters",
+    "visibility": "Show only public photos",
+    "date": "Date",
+    "startDate": "From",
+    "endDate": "To",
+    "dateRange": "Date range",
+    "resetFilters": "Reset filters"
   },
-  "layers": {
-    "title": "Map Layers",
+  "mapStyles": {
     "voyager": "Voyager",
     "streets": "Streets",
     "basic": "Basic",
@@ -16,13 +18,27 @@
     "toner": "Toner"
   },
   "location": {
-    "button_title": "Find my location",
-    "current": "You are here",
-    "coordinates": "Lat: {{lat}}, Lng: {{lng}}"
+    "findMyLocation": "Find my location",
+    "gettingLocation": "Getting location...",
+    "locationDetected": "Location detected",
+    "loadingMap": "Loading map...",
+    "youAreHere": "You are here",
+    "visitorLocation": "Your current location",
+    "errors": {
+      "title": "Error getting location",
+      "denied": "Permission denied",
+      "unavailable": "Location unavailable",
+      "timeout": "Request timeout",
+      "unknown": "Unknown error"
+    }
   },
   "photo": {
-    "no_title": "No title",
-    "no_image": "No image",
-    "view_details": "View details"
+    "noTitle": "No title",
+    "noImage": "No image",
+    "viewDetails": "View details"
+  },
+  "status": {
+    "showing": "Showing {{count}} photos",
+    "noPhotos": "No photos to show on the map"
   }
 }
