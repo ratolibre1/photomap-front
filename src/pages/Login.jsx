@@ -108,12 +108,6 @@ const Login = () => {
                     ¿No tienes cuenta? <Link to="/register" className="text-decoration-none">Regístrate</Link>
                   </p>
                 </div>
-
-                <div className="text-center mt-3">
-                  <a href="/dashboard" className="btn btn-link">
-                    Ir directamente al dashboard (prueba con href)
-                  </a>
-                </div>
               </Form>
             </Card.Body>
           </Card>
