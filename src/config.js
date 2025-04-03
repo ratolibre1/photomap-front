@@ -1,9 +1,10 @@
 // Configuración global de la aplicación
 
-// URL base de la API
-export const API_URL = process.env.NODE_ENV === 'production'
-  ? 'https://api.photomap.example.com/api' // URL de producción (cambiar cuando esté disponible)
-  : 'http://localhost:3000/api'; // URL de desarrollo
+// URL base de la API para llamadas directas (sin pasar por el proxy de Vite)
+// En desarrollo usamos localhost, en producción se obtiene de variables de entorno
+export const API_URL = import.meta.env.PROD
+  ? import.meta.env.VITE_API_URL || '/api' // URL de producción desde .env
+  : '/api'; // URL para proxy local en desarrollo
 
 // Configuración de carga de archivos
 export const FILE_UPLOAD_CONFIG = {
