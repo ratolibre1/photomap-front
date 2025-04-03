@@ -51,7 +51,7 @@ function App() {
                   {/* Rutas públicas */}
                   <Route path="/" element={<Navigate to="/dashboard" />} />
                   <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<div>Página de registro (próximamente)</div>} />
+                  <Route path="/register" element={<div>Página de registro (pronto)</div>} />
                   <Route path="/mapa-publico" element={<Navigate to="/not-found" />} />
                   <Route path="/mapa-publico/:shareId" element={<PublicMap />} />
                   <Route path="/not-found" element={<NotFound />} />
