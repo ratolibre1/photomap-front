@@ -30,7 +30,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
   const [userLocation, setUserLocation] = useState(null);
   const [userLocationLoading, setUserLocationLoading] = useState(false);
   const { t } = useTranslation(['map']);
-  const apiKey = 'vKvwcKb5zvFpvEHcTNBv';
+  const apiKey = import.meta.env.VITE_MAPTILER_API_KEY || 'your_maptiler_api_key';
 
   // Seleccionar la paleta de colores a utilizar desde los temas disponibles
   const themeColors = colorPalette && THEMES[colorPalette]

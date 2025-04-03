@@ -31,7 +31,7 @@ const MapComponent = ({ photos, loading }) => {
   const [userLocationLoading, setUserLocationLoading] = useState(false);
   const { user } = useAuth();
   const { t } = useTranslation(['map']);
-  const apiKey = 'vKvwcKb5zvFpvEHcTNBv';
+  const apiKey = import.meta.env.VITE_MAPTILER_API_KEY || 'your_maptiler_api_key';
 
   // Estilos del mapa con traducciones
   const mapStyles = {
