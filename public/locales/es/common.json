@@ -5,9 +5,10 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "back": "Volver",
-    "close": "Listo",
+    "close": "Cerrar",
     "upload": "Subir",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "share": "Compartir"
   },
   "actions": {
     "reset": "Restaurar",
@@ -56,5 +57,43 @@
     "back": "Volver atrás",
     "next": "Siguiente",
     "previous": "Anterior"
+  },
+  "mymaps": {
+    "title": "Mis Mapas",
+    "create": "Crear Mapa",
+    "create_first": "Crear mi primer mapa",
+    "loading": "Cargando tus mapas...",
+    "error": "No pudimos cargar tus mapas. Por favor intenta más tarde.",
+    "empty_title": "No tienes mapas todavía",
+    "empty_description": "Crea tu primer mapa para compartir tus recuerdos fotográficos.",
+    "view": "Ver",
+    "share": "Compartir",
+    "share_title": "Compartir: {{title}}",
+    "share_link": "Link para compartir:",
+    "copied": "¡Link copiado al portapapeles!",
+    "views": "{{count}} vistas",
+    "date_from": "Desde {{date}}",
+    "date_to": "Hasta {{date}}",
+    "date_range": "{{startDate}} - {{endDate}}",
+    "view_all": "Ver todos mis mapas"
+  },
+  "error": {
+    "create_map": "No se pudo crear el mapa. Intenta nuevamente."
+  },
+  "filters": {
+    "none": "Sin filtros aplicados",
+    "tags": "Etiquetas",
+    "date_range": "Rango de fechas",
+    "date_from": "Desde",
+    "date_to": "Hasta",
+    "location": "Ubicación"
+  },
+  "to": "hasta",
+  "badges": {
+    "new": "¡NUEVO!"
+  },
+  "visibility": {
+    "public": "Público",
+    "private": "Privado"
   }
 }

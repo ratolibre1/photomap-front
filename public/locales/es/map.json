@@ -38,7 +38,38 @@
     "viewDetails": "Ver detalles"
   },
   "status": {
-    "showing": "Mostrando {{count}} fotos",
+    "showing_one": "Mostrando {{count}} foto",
+    "showing_other": "Mostrando {{count}} fotos",
     "noPhotos": "No hay fotos para mostrar en el mapa"
+  },
+  "create_map": {
+    "title": "Crear Mapa Personalizado",
+    "applied_filters": "Filtros aplicados",
+    "map_title": "Título del mapa",
+    "title_placeholder": "Ej: Viaje a Perú 2024",
+    "description": "Descripción",
+    "description_placeholder": "Describe este mapa personalizado...",
+    "color_theme": "Tema de color",
+    "public_map": "Mapa público (cualquiera con el link puede ver)",
+    "create_button": "Crear Mapa",
+    "creating": "Creando...",
+    "success": "¡Mapa creado exitosamente!",
+    "success_message": "Tu mapa ha sido creado y ya puedes compartirlo."
+  },
+  "public_map": {
+    "footer": "Este mapa ha sido compartido públicamente"
+  },
+  "stats": {
+    "date_info": "Rango de fechas",
+    "from": "Desde",
+    "to": "hasta",
+    "all_dates": "Todas las fechas",
+    "photo_count": "{{count}} foto",
+    "photo_count_plural": "{{count}} fotos",
+    "photo_singular": "foto",
+    "photo_plural": "fotos",
+    "about": "Acerca de este mapa",
+    "created_on": "Creado el {{date}}",
+    "view_count": "Visto {{count}} veces"
   }
 }

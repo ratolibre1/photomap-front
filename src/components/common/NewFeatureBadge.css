@@ -1,0 +1,103 @@
+.new-feature-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  background: linear-gradient(135deg, #FFD700, #B8860B);
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(184, 134, 11, 0.3), 0 0 10px rgba(255, 215, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  animation: pulse 1.5s infinite alternate;
+  transform-origin: center;
+  z-index: 100;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Tamaños */
+.new-feature-badge-sm {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+}
+
+.new-feature-badge-md {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+}
+
+.new-feature-badge-lg {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+}
+
+/* Posiciones */
+.new-feature-badge-top-right {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  transform: rotate(10deg);
+  z-index: 100;
+}
+
+.new-feature-badge-top-left {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  transform: rotate(-10deg);
+  z-index: 100;
+}
+
+.new-feature-badge-inline {
+  position: relative;
+  margin-left: 0.5rem;
+  transform: rotate(0deg);
+}
+
+/* Efecto de brillo */
+.new-feature-badge-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  animation: shine 3s infinite;
+}
+
+/* Animación de pulso */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+/* Animación de brillo */
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+
+  20% {
+    left: 100%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+/* Efecto hover */
+.new-feature-badge:hover {
+  background: linear-gradient(135deg, #FFC107, #DAA520);
+  box-shadow: 0 3px 8px rgba(184, 134, 11, 0.4), 0 0 15px rgba(255, 215, 0, 0.3);
+  animation: pulse 0.8s infinite alternate;
+}

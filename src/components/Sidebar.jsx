@@ -4,11 +4,13 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme, THEMES } from '../context/ThemeContext';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import NewFeatureBadge from './common/NewFeatureBadge';
 
 // Íconos usando emoji por simplicidad
 const MENU_ITEMS = [
   { path: '/photo-map', label: 'nav:map', icon: '🗺️' },
   { path: '/gallery', label: 'nav:gallery', icon: '🖼️' },
+  { path: '/my-maps', label: 'nav:mymaps', icon: '🌎', isNew: true },
   { path: '/on-this-day', label: 'nav:onthisday', icon: '📅' },
   { path: '/upload', label: 'nav:upload', icon: '📤' },
   { path: '/categories', label: 'nav:categories', icon: '🏷️' },
@@ -130,10 +132,21 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
               as={Link}
               to={item.path}
               className={`py-2 ${location.pathname === item.path ? 'active bg-secondary bg-opacity-25' : ''}`}
+              style={{
+                color: location.pathname === item.path ? 'white' : 'rgba(255, 255, 255, 0.7)'
+              }}
             >
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center position-relative">
                 <span className={`${expanded ? 'me-3' : ''} fs-5`} style={{ paddingTop: '3px' }}>{item.icon}</span>
-                {expanded && <span>{t(item.label)}</span>}
+                {expanded && (
+                  <>
+                    <span style={{ fontWeight: location.pathname === item.path ? 600 : 'normal' }}>
+                      {t(item.label)}
+                    </span>
+                    {item.isNew && <NewFeatureBadge position="inline" size="sm" rotate={-12} />}
+                  </>
+                )}
+                {!expanded && item.isNew && <NewFeatureBadge position="top-right" size="sm" rotate={15} />}
               </div>
             </Nav.Link>
           </Nav.Item>
@@ -158,7 +171,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: theme === themeKey ? '2px solid ' + THEMES[themeKey].colors.dark : 'none',
+                    border: theme === themeKey ? '3px solid var(--info)' : 'none',
                     borderRadius: '50%',
                     transition: 'all 0.3s ease',
                     color: THEMES[themeKey].colors.light,
@@ -198,7 +211,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: i18n.language === lang.code ? '2px solid var(--dark)' : 'none',
+                    border: i18n.language === lang.code ? '3px solid var(--info)' : 'none',
                     borderRadius: '50%',
                     transition: 'all 0.3s ease',
                     opacity: i18n.language === lang.code ? 1 : 0.7,

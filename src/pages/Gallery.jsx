@@ -692,7 +692,7 @@ const Gallery = () => {
               onClick={() => batchUpdateVisibility(true)}
               disabled={changingVisibility || selectedPhotos.length === 0}
             >
-              <i className="bi bi-eye me-1"></i>
+              <i className="bi bi-eye-fill me-1"></i>
               Marcar como Públicas
             </Button>
 
@@ -702,7 +702,7 @@ const Gallery = () => {
               onClick={() => batchUpdateVisibility(false)}
               disabled={changingVisibility || selectedPhotos.length === 0}
             >
-              <i className="bi bi-piggy-bank me-1"></i>
+              <i className="bi bi-eye-slash-fill me-1"></i>
               Marcar como Privadas
             </Button>
 
@@ -794,7 +794,7 @@ const Gallery = () => {
                     className="edit-pending"
                     title="Foto sin revisar"
                   >
-                    <i className="bi bi-pencil-square"></i>
+                    <i className="bi bi-pencil-fill"></i>
                   </Button>
                 )}
 
@@ -821,7 +821,7 @@ const Gallery = () => {
                   disabled={changingVisibility}
                   title={photo.isPublic ? 'Foto pública' : 'Foto privada'}
                 >
-                  <i className={`bi ${photo.isPublic ? 'bi-eye' : 'bi-piggy-bank'}`}></i>
+                  <i className={`bi ${photo.isPublic ? 'bi-eye-fill' : 'bi-eye-slash-fill'}`}></i>
                 </Button>
 
                 <Link to={`/photo/${photo._id}`} className="text-decoration-none">

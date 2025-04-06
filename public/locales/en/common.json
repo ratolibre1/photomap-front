@@ -5,9 +5,10 @@
     "delete": "Delete",
     "edit": "Edit",
     "back": "Back",
-    "close": "Done",
+    "close": "Close",
     "upload": "Upload",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "share": "Share"
   },
   "actions": {
     "reset": "Reset",
@@ -56,5 +57,43 @@
     "back": "Go back",
     "next": "Next",
     "previous": "Previous"
+  },
+  "mymaps": {
+    "title": "My Maps",
+    "create": "Create Map",
+    "create_first": "Create my first map",
+    "loading": "Loading your maps...",
+    "error": "We couldn't load your maps. Please try again later.",
+    "empty_title": "You don't have any maps yet",
+    "empty_description": "Create your first map to share your photo memories.",
+    "view": "View",
+    "share": "Share",
+    "share_title": "Share: {{title}}",
+    "share_link": "Share link:",
+    "copied": "Link copied to clipboard!",
+    "views": "{{count}} views",
+    "date_from": "From {{date}}",
+    "date_to": "Until {{date}}",
+    "date_range": "{{startDate}} - {{endDate}}",
+    "view_all": "View all my maps"
+  },
+  "error": {
+    "create_map": "Could not create the map. Please try again."
+  },
+  "filters": {
+    "none": "No filters applied",
+    "tags": "Tags",
+    "date_range": "Date range",
+    "date_from": "From",
+    "date_to": "To",
+    "location": "Location"
+  },
+  "to": "to",
+  "badges": {
+    "new": "NEW!"
+  },
+  "visibility": {
+    "public": "Public",
+    "private": "Private"
   }
 }

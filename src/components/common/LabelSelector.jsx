@@ -78,7 +78,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
         show={dropdownOpen}
         onToggle={handleToggleDropdown}
         autoClose={false}
-        style={{ zIndex: 9999 }}
+        style={{ zIndex: 1400 }}
       >
         <Dropdown.Toggle variant="outline-secondary" size="sm" id="label-dropdown">
           <i className="bi bi-tag me-1"></i> {t('dropdown.select')}
@@ -87,7 +87,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
           style={{
             maxHeight: '300px',
             overflowY: 'auto',
-            zIndex: 9999, // Valor superior al de los controles de Leaflet
+            zIndex: 1400, // Valor inferior al del modal (1500)
             minWidth: '250px' // Ancho mínimo para acomodar el buscador
           }}
         >

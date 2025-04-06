@@ -31,5 +31,8 @@
     "title": "Labels",
     "none_selected": "No labels selected",
     "select": "Select labels"
-  }
+  },
+  "create_map_button": "Create custom map with these filters",
+  "create_map_title": "Your filter is ready!",
+  "create_map_description": "Now you can create a custom map with the filters you've applied and share it with others."
 }

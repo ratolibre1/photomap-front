@@ -376,8 +376,7 @@ const MapComponent = ({ photos, loading }) => {
 
     linkButton.addEventListener('click', function (e) {
       e.preventDefault();
-      window.history.pushState({}, '', `/photo/${photo._id}`);
-      window.dispatchEvent(new Event('popstate'));
+      window.location.href = `/photo/${photo._id}`;
     });
 
     popupContent.appendChild(linkButton);

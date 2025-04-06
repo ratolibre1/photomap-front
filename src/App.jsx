@@ -17,6 +17,7 @@ import OnThisDay from './pages/OnThisDay';
 import { LocationProvider } from './context/LocationContext';
 import { LabelProvider } from './context/LabelContext';
 import { AuthProvider } from './context/AuthContext';
+import MyMaps from './pages/MyMaps';
 
 // Importamos el CSS del layout
 import './components/layout.css';
@@ -117,6 +118,13 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <OnThisDay />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/my-maps" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <MyMaps />
                       </Layout>
                     </ProtectedRoute>
                   } />

@@ -31,5 +31,8 @@
     "title": "Etiquetas",
     "none_selected": "Sin etiquetas seleccionadas",
     "select": "Seleccionar etiquetas"
-  }
+  },
+  "create_map_button": "Crear mapa personalizado con estos filtros",
+  "create_map_title": "¡Tu filtro está listo!",
+  "create_map_description": "Ahora puedes crear un mapa personalizado con los filtros que has aplicado y compartirlo con otros."
 }

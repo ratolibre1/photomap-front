@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Row, Col, Form, Button, Collapse } from 'react-bootstrap';
 import { useLocation } from '../../context/LocationContext';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Estilos principales
@@ -9,11 +9,14 @@ import enUS from 'date-fns/locale/en-US'; // Importar localización inglesa
 import { useTranslation } from 'react-i18next';
 import { photoService } from '../../services/api';
 import LabelSelector from '../common/LabelSelector';
+import NewFeatureBadge from '../common/NewFeatureBadge';
 
-const SearchFilters = ({ filters, onFilterChange }) => {
+const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, onOpenCreateMapModal }) => {
   // Obtenemos funciones y datos del contexto de ubicación
   const { locations: filteredLocations, loading, selectLocation } = useLocation();
   const { t, i18n } = useTranslation(['filters', 'labels']);
+  const [showCreateMapSection, setShowCreateMapSection] = useState(false);
+  const prevFiltersRef = useRef(null);
 
   // Mapa de locales soportados para date-fns
   // Se puede extender fácilmente con más idiomas
@@ -317,31 +320,52 @@ const SearchFilters = ({ filters, onFilterChange }) => {
     onFilterChange('labels', updatedLabels);
   };
 
-  // Función para reiniciar todos los filtros
+  // Función para verificar si hay filtros activos
+  const hasActiveFilters = () => {
+    return !!(
+      filters.startDate ||
+      filters.endDate ||
+      filters.country ||
+      filters.region ||
+      filters.county ||
+      filters.city ||
+      (filters.labels && filters.labels.length > 0)
+    );
+  };
+
+  // Efecto para detectar cuando se activan o desactivan filtros
+  useEffect(() => {
+    const hasFilters = hasActiveFilters();
+
+    // Si acaban de aplicar filtros, mostrar el cajón
+    if (hasFilters && !showCreateMapSection) {
+      // Pequeño retraso para mejorar la animación
+      setTimeout(() => {
+        setShowCreateMapSection(true);
+      }, 300);
+    }
+    // Si borraron todos los filtros, ocultar el cajón
+    else if (!hasFilters && showCreateMapSection) {
+      setShowCreateMapSection(false);
+    }
+
+    // Guardar estado actual para la próxima comparación
+    prevFiltersRef.current = { ...filters };
+  }, [filters]);
+
+  // Función para reiniciar filtros
   const handleResetFilters = () => {
-    // Reiniciar ubicación
+    // Reiniciar todos los filtros
+    onFilterChange('startDate', '');
+    onFilterChange('endDate', '');
     onFilterChange('country', '');
     onFilterChange('region', '');
     onFilterChange('county', '');
     onFilterChange('city', '');
-
-    // Reiniciar etiquetas
     onFilterChange('labels', []);
 
-    // Reiniciar fechas sin establecer valores
-    onFilterChange('startDate', '');
-    onFilterChange('endDate', '');
-
-    // Reiniciar el estado del DateRange con la fecha actual pero sin selección
-    const today = new Date();
-    setDateRangeState([{
-      startDate: null,
-      endDate: null,
-      key: 'selection'
-    }]);
-
-    // Recargar datos del calendario con la fecha actual
-    loadCalendarData(today);
+    // Ocultar el cajón del botón
+    setShowCreateMapSection(false);
   };
 
   return (
@@ -434,14 +458,18 @@ const SearchFilters = ({ filters, onFilterChange }) => {
           </Form.Group>
 
           {/* Botón de reinicio de filtros */}
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="w-100 mb-3"
-            onClick={handleResetFilters}
-          >
-            {t('reset_filters')}
-          </Button>
+          {hasActiveFilters() && (
+            <div className="d-flex justify-content-center mt-3">
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={handleResetFilters}
+              >
+                <i className="bi bi-x-circle me-2"></i>
+                {t('filters:reset_filters')}
+              </Button>
+            </div>
+          )}
         </Col>
 
         {/* COLUMNA DERECHA: Calendario */}
@@ -479,6 +507,50 @@ const SearchFilters = ({ filters, onFilterChange }) => {
           </Form.Group>
         </Col>
       </Row>
+
+      {/* Cajón animado para el botón de crear mapa */}
+      {showCreateMapButton && (
+        <Collapse in={showCreateMapSection && hasActiveFilters()}>
+          <div className="mt-4 border-top pt-4">
+            <div className="create-map-drawer bg-light rounded p-3 position-relative">
+              {/* Quitamos el badge de característica nueva de la caja */}
+              {/* <NewFeatureBadge position="top-right" rotate={12} /> */}
+
+              <div className="text-center mb-3">
+                <i className="bi bi-map-fill text-success fs-3"></i>
+                <h5 className="mb-0 mt-2">{t('filters:create_map_title')}</h5>
+                <p className="text-muted small">{t('filters:create_map_description')}</p>
+              </div>
+              <div className="d-flex justify-content-center">
+                <Button
+                  variant="success"
+                  className="px-4"
+                  onClick={() => onOpenCreateMapModal(filters)}
+                >
+                  <i className="bi bi-globe me-2"></i>
+                  {t('filters:create_map_button')}
+                  <span className="new-feature-badge-button">
+                    {t('common:badges.new')}
+                  </span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Collapse>
+      )}
+
+      {/* Estilo para la animación */}
+      <style jsx="true">{`
+        .create-map-drawer {
+          transition: all 0.3s ease-in-out;
+          border-left: 4px solid var(--success);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn-success {
+          position: relative;
+        }
+      `}</style>
     </div>
   );
 };

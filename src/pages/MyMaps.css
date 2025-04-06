@@ -1,0 +1,247 @@
+/* Contenedor principal */
+.my-maps-container {
+  /* Quitamos el fondo especial para mantener consistencia con el resto de la app */
+}
+
+/* Estilos para las tarjetas de mapas */
+.map-card {
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border-radius: 12px;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  padding-top: 6px;
+}
+
+.map-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Quitamos la decoración superior colorida */
+/* .map-card-decoration {
+  height: 6px;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+} */
+
+/* Botones flotantes de tema e idioma */
+.theme-language-buttons {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 5;
+}
+
+.theme-button,
+.language-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  cursor: default;
+  font-size: 1.1rem;
+}
+
+.theme-button:hover,
+.language-button:hover {
+  transform: scale(1.1);
+}
+
+.language-button {
+  background-color: white;
+  border: 2px solid var(--info);
+}
+
+/* Badge de conteo de fotos */
+.photo-count-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 2px 12px 2px 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 5;
+}
+
+.photo-count-icon {
+  width: 26px;
+  height: 26px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  font-size: 0.8rem;
+}
+
+.photo-count-number {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--dark);
+}
+
+/* Contenedor del título y fecha, con margin-top para darle espacio al badge de fotos */
+.map-title-container {
+  margin-top: 35px;
+  padding-right: 50px;
+  /* Espacio para los botones de tema/idioma */
+  padding-left: 4px;
+}
+
+/* Estilos para el título */
+.map-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Fecha */
+.map-date {
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+/* Estilos para la descripción */
+.map-description {
+  font-size: 0.9rem;
+  color: var(--dark);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 8px;
+  min-height: 2.8em;
+  padding: 0 4px;
+}
+
+/* Estilos para el rango de fechas */
+.date-range-display {
+  background-color: var(--light);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--dark);
+  margin: 15px 4px 5px 4px;
+}
+
+/* Badges de estadísticas */
+.map-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 15px 4px 0;
+}
+
+.stats-badge {
+  font-weight: normal;
+  font-size: 0.75rem;
+}
+
+/* Botones de acción */
+.map-actions {
+  padding-top: 15px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-map-btn {
+  padding: 8px 16px;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.share-btn:hover {
+  background-color: var(--info);
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: var(--warning);
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: var(--danger);
+  color: white;
+}
+
+/* Botón de crear mapa */
+.create-map-btn {
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+/* Badge de Nuevo mejorado */
+.new-feature-badge {
+  position: absolute;
+  top: -5px;
+  right: 35px;
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transform: rotate(0deg);
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Badge de Nuevo para el botón verde */
+.new-feature-badge-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transform: rotate(12deg);
+}

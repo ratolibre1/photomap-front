@@ -156,12 +156,21 @@ const PublicMap = () => {
     <Container fluid className={`public-map-container py-5 ${colorPalette ? `theme-${colorPalette}` : ''}`}>
       <Row className="mb-4">
         <Col>
-          <h1 className="public-map-title">
-            {mapData ? mapData.title : 'Mapa Fotográfico Público'}
-          </h1>
-          <p className="public-map-subtitle lead">
-            {mapData ? mapData.description : 'Cargando descripción...'}
-          </p>
+          {loading ? (
+            <>
+              <div className="skeleton-title mb-3" style={{ width: '40%', height: '2rem' }}></div>
+              <div className="skeleton-label" style={{ width: '70%', height: '1.5rem' }}></div>
+            </>
+          ) : (
+            <>
+              <h1 className="public-map-title">
+                {mapData ? mapData.title : 'Mapa Fotográfico Público'}
+              </h1>
+              <p className="public-map-subtitle lead">
+                {mapData ? mapData.description : 'Cargando descripción...'}
+              </p>
+            </>
+          )}
         </Col>
       </Row>
 
@@ -185,6 +194,97 @@ const PublicMap = () => {
           )}
         </Card.Body>
       </Card>
+
+      {loading && (
+        <Row className="mb-5">
+          <Col md={6}>
+            <div className="skeleton-label mb-2"></div>
+            <div className="skeleton-calendar" style={{ height: '180px' }}></div>
+          </Col>
+          <Col md={6}>
+            <div className="skeleton-label mb-2"></div>
+            <div className="skeleton-tags" style={{ height: '180px' }}></div>
+          </Col>
+        </Row>
+      )}
+
+      {!loading && mapData?.stats && (
+        <Row className="mb-5">
+          <Col md={6}>
+            <Card className="shadow-sm h-100">
+              <Card.Body>
+                <h5 className="d-flex align-items-center mb-3">
+                  <i className="bi bi-calendar3 me-2"></i>
+                  {t('map:stats.date_info')}
+                </h5>
+
+                <div className="mb-3">
+                  <p className="mb-0 fs-6">
+                    {mapData.filters.startDate || mapData.filters.endDate ? (
+                      <>
+                        {mapData.filters.startDate && <span>{t('map:filters.startDate')} {new Date(mapData.filters.startDate).toLocaleDateString()}</span>}
+                        {mapData.filters.startDate && mapData.filters.endDate && <span> - </span>}
+                        {mapData.filters.endDate && <span>{t('map:filters.endDate')} {new Date(mapData.filters.endDate).toLocaleDateString()}</span>}
+                      </>
+                    ) : (
+                      t('map:stats.all_dates')
+                    )}
+                  </p>
+                </div>
+
+                <div className="d-flex align-items-center mt-4">
+                  <div className="d-flex align-items-center justify-content-center me-2"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      backgroundColor: 'var(--primary)',
+                      color: 'white',
+                      borderRadius: '50%'
+                    }}>
+                    <i className="bi bi-camera"></i>
+                  </div>
+                  <span className="fs-5">
+                    {photos.length === 1
+                      ? `${photos.length} ${t('map:stats.photo_singular')}`
+                      : `${photos.length} ${t('map:stats.photo_plural')}`}
+                  </span>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="shadow-sm h-100">
+              <Card.Body>
+                <h5 className="d-flex align-items-center mb-3">
+                  <i className="bi bi-info-circle me-2"></i>
+                  {t('map:stats.about')}
+                </h5>
+
+                <div className="mb-3">
+                  <div className="d-flex align-items-center mb-2">
+                    <i className="bi bi-calendar-date me-2 text-muted"></i>
+                    <span>{t('map:stats.created_on', { date: new Date(mapData.createdAt).toLocaleDateString() })}</span>
+                  </div>
+                </div>
+
+                <div className="d-flex align-items-center mt-4">
+                  <div className="d-flex align-items-center justify-content-center me-2"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      backgroundColor: 'var(--info)',
+                      color: 'white',
+                      borderRadius: '50%'
+                    }}>
+                    <i className="bi bi-eye-fill"></i>
+                  </div>
+                  <span className="fs-5">{t('map:stats.view_count', { count: mapData.stats.viewCount })}</span>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 };

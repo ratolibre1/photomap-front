@@ -266,7 +266,13 @@ export const publicMapService = {
       console.error('Error al obtener las fotos del mapa público:', error);
       throw error;
     }
-  }
+  },
+  getUserMaps: async () => {
+    return await api.get('/public-maps/user');
+  },
+  createMap: async (mapData) => {
+    return await api.post('/public-maps', mapData);
+  },
 };
 
 export default api;

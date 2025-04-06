@@ -124,15 +124,21 @@ const PhotoDetail = () => {
   // Función para eliminar foto actual
   const handleDeletePhoto = async () => {
     try {
-      // Aquí irá la llamada al API real
-      // await axios.delete(`${API_URL}/photos/${photoId}`);
+      setLoading(true);
+      // Llamar al API para eliminar la foto
+      await photoService.deletePhoto(id);
 
       setPhotoDeleted(true);
-      // Opcional: redirigir después de un tiempo
-      setTimeout(() => navigate('/map'), 2000);
+      // Redirigir a la galería después de un tiempo
+      setTimeout(() => navigate('/gallery'), 2000);
+
+      // Cerrar el modal de confirmación
+      setShowDeleteModal(false);
     } catch (error) {
       console.error('Error al eliminar la foto:', error);
       setError(t('delete.error'));
+    } finally {
+      setLoading(false);
     }
   };
 
