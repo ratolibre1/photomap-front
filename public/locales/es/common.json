@@ -75,7 +75,17 @@
     "date_from": "Desde {{date}}",
     "date_to": "Hasta {{date}}",
     "date_range": "{{startDate}} - {{endDate}}",
-    "view_all": "Ver todos mis mapas"
+    "view_all": "Ver todos mis mapas",
+    "anywhere": "Cualquier lugar",
+    "any_date": "Cualquier fecha",
+    "any_label": "Cualquier etiqueta",
+    "delete_confirm": "¿Estás seguro que quieres eliminar el mapa \"{{title}}\"?",
+    "delete_success": "Mapa eliminado correctamente",
+    "delete_error": "No se pudo eliminar el mapa. Por favor intenta nuevamente.",
+    "location_filter": "📍 {{location}}",
+    "worldwide": "Todo el mundo",
+    "all_dates": "Todas las fechas",
+    "no_labels": "Sin etiquetas"
   },
   "error": {
     "create_map": "No se pudo crear el mapa. Intenta nuevamente."

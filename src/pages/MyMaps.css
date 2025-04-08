@@ -133,6 +133,49 @@
   padding: 0 4px;
 }
 
+/* Estilos para las cajitas de filtros */
+.filter-boxes {
+  padding: 0 4px;
+}
+
+.filter-box {
+  background-color: var(--light);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--dark);
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.filter-box:last-child {
+  margin-bottom: 0;
+}
+
+.filter-box i {
+  font-size: 1rem;
+  min-width: 20px;
+  margin-top: 2px;
+}
+
+.filter-box small {
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.filter-box .d-flex {
+  align-items: center;
+  min-height: 24px;
+}
+
+.filter-box .badge {
+  font-size: 0.75rem !important;
+  font-weight: normal !important;
+}
+
 /* Estilos para el rango de fechas */
 .date-range-display {
   background-color: var(--light);

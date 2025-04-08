@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Badge, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { publicMapService } from '../services/api';
 import { THEMES } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import NewFeatureBadge from '../components/common/NewFeatureBadge';
+import { useLabels } from '../context/LabelContext';
+import { useLocation } from '../context/LocationContext';
+import LabelBadge from '../components/common/LabelBadge';
 import './MyMaps.css';
 
 const MapCard = ({ map, onDelete, onEdit, onShare }) => {
@@ -12,6 +15,73 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
   const themeData = THEMES[map.colorPalette] || THEMES.magmar;
   const mapDate = new Date(map.createdAt);
   const photoCount = map.stats?.photoCount || 0;
+  const { labels } = useLabels();
+  const { locations } = useLocation();
+
+  // Obtener nombres de ubicaciones con cadena completa
+  const locationNames = (() => {
+    let names = {
+      city: null,
+      county: null,
+      region: null,
+      country: null
+    };
+
+    // Si tenemos una ciudad, obtenemos toda la cadena
+    if (map.filters.cityId) {
+      const city = locations.cities.find(c => c._id === map.filters.cityId);
+      if (city) {
+        names.city = city.name;
+        const county = locations.counties.find(c => c._id === city.countyId);
+        if (county) {
+          names.county = county.name;
+          const region = locations.regions.find(r => r._id === county.regionId);
+          if (region) {
+            names.region = region.name;
+            const country = locations.countries.find(c => c._id === region.countryId);
+            if (country) {
+              names.country = country.name;
+            }
+          }
+        }
+      }
+    }
+    // Si tenemos una provincia/county, obtenemos región y país
+    else if (map.filters.countyId) {
+      const county = locations.counties.find(c => c._id === map.filters.countyId);
+      if (county) {
+        names.county = county.name;
+        const region = locations.regions.find(r => r._id === county.regionId);
+        if (region) {
+          names.region = region.name;
+          const country = locations.countries.find(c => c._id === region.countryId);
+          if (country) {
+            names.country = country.name;
+          }
+        }
+      }
+    }
+    // Si tenemos una región, obtenemos el país
+    else if (map.filters.regionId) {
+      const region = locations.regions.find(r => r._id === map.filters.regionId);
+      if (region) {
+        names.region = region.name;
+        const country = locations.countries.find(c => c._id === region.countryId);
+        if (country) {
+          names.country = country.name;
+        }
+      }
+    }
+    // Si solo tenemos país
+    else if (map.filters.countryId) {
+      const country = locations.countries.find(c => c._id === map.filters.countryId);
+      if (country) {
+        names.country = country.name;
+      }
+    }
+
+    return names;
+  })();
 
   // Formatear la fecha de creación del mapa
   const formattedDate = mapDate.toLocaleDateString(undefined, {
@@ -96,13 +166,72 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
           <div className="map-description">{map.description}</div>
         )}
 
-        {/* Rango de fechas con formato bonito */}
-        {dateRangeText && (
-          <div className="date-range-display">
-            <i className="bi bi-calendar-range me-2"></i>
-            {dateRangeText}
+        {/* Cajitas de filtros */}
+        <div className="filter-boxes mt-3">
+          {/* Filtro de ubicación */}
+          <div className="filter-box mb-2">
+            <i className="bi bi-geo-alt text-primary me-2"></i>
+            {locationNames.city ? (
+              <div>
+                <div className="fw-bold">{locationNames.city}</div>
+                <small className="text-muted">
+                  {locationNames.county && `${locationNames.county}, `}
+                  {locationNames.region && `${locationNames.region}, `}
+                  {locationNames.country}
+                </small>
+              </div>
+            ) : locationNames.county ? (
+              <div>
+                <div className="fw-bold">{locationNames.county}</div>
+                <small className="text-muted">
+                  {locationNames.region && `${locationNames.region}, `}
+                  {locationNames.country}
+                </small>
+              </div>
+            ) : locationNames.region ? (
+              <div>
+                <div className="fw-bold">{locationNames.region}</div>
+                <small className="text-muted">{locationNames.country}</small>
+              </div>
+            ) : locationNames.country ? (
+              <div className="fw-bold">{locationNames.country}</div>
+            ) : (
+              <span className="text-muted">{t('common:mymaps.anywhere')}</span>
+            )}
           </div>
-        )}
+
+          {/* Filtro de fechas */}
+          <div className="filter-box mb-2">
+            <i className="bi bi-calendar-range text-primary me-2"></i>
+            {dateRangeText ? (
+              <span className="fw-bold">{dateRangeText}</span>
+            ) : (
+              <span className="text-muted">{t('common:mymaps.any_date')}</span>
+            )}
+          </div>
+
+          {/* Filtro de etiquetas */}
+          <div className="filter-box">
+            <i className="bi bi-tags text-primary me-2"></i>
+            <div className="d-flex flex-wrap gap-1">
+              {map.filters.labels && map.filters.labels.length > 0 ? (
+                map.filters.labels.map(labelId => {
+                  const label = labels.find(l => l._id === labelId);
+                  return label ? (
+                    <LabelBadge
+                      key={label._id}
+                      label={label}
+                      showEditButton={false}
+                      style={{ fontSize: '0.75rem', padding: '2px 8px' }}
+                    />
+                  ) : null;
+                })
+              ) : (
+                <span className="text-muted">{t('common:mymaps.any_label')}</span>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Estadísticas */}
         <div className="map-stats">
@@ -169,11 +298,42 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
   );
 };
 
+const DeleteMapModal = ({ show, onHide, onConfirm, mapTitle }) => {
+  const { t } = useTranslation(['common']);
+
+  return (
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <i className="bi bi-trash me-2 text-danger"></i>
+          {t('common:buttons.delete')}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>{t('common:mymaps.delete_confirm', { title: mapTitle })}</p>
+        <p className="text-muted mb-0">
+          <i className="bi bi-exclamation-triangle me-2"></i>
+          {t('common:confirmations.irreversible')}
+        </p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="light" onClick={onHide}>
+          {t('common:buttons.cancel')}
+        </Button>
+        <Button variant="danger" onClick={onConfirm}>
+          {t('common:buttons.delete')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
 const MyMaps = () => {
   const [maps, setMaps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ show: false, map: null });
   const { t } = useTranslation(['common']);
 
   useEffect(() => {
@@ -197,9 +357,36 @@ const MyMaps = () => {
   }, []);
 
   const handleDeleteMap = (map) => {
-    console.log('Eliminar mapa:', map);
-    // Aquí iría la lógica para eliminar el mapa
-    alert(`Función de eliminación no implementada para: ${map.title}`);
+    setDeleteModal({ show: true, map });
+  };
+
+  const confirmDelete = async () => {
+    const map = deleteModal.map;
+    try {
+      await publicMapService.deleteMap(map._id);
+
+      // Actualizar la lista de mapas
+      setMaps(prevMaps => prevMaps.filter(m => m._id !== map._id));
+
+      // Mostrar toast de éxito
+      setToast({
+        message: t('common:mymaps.delete_success'),
+        title: map.title,
+        type: 'success'
+      });
+    } catch (error) {
+      console.error('Error al eliminar el mapa:', error);
+
+      // Mostrar toast de error
+      setToast({
+        message: t('common:mymaps.delete_error'),
+        title: map.title,
+        type: 'error'
+      });
+    } finally {
+      // Cerrar el modal
+      setDeleteModal({ show: false, map: null });
+    }
   };
 
   const handleEditMap = (map) => {
@@ -235,7 +422,7 @@ const MyMaps = () => {
     <Container fluid className="my-maps-container py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>{t('common:mymaps.title')}</h1>
-        <Button variant="success" size="lg" className="create-map-btn">
+        <Button variant="primary" size="lg" className="create-map-btn">
           <i className="bi bi-plus-lg me-2"></i> {t('common:mymaps.create')}
         </Button>
       </div>
@@ -262,7 +449,7 @@ const MyMaps = () => {
           </Button>
         </div>
       ) : (
-        <Row xs={1} md={2} lg={3} xl={4} className="g-4">
+        <Row xs={1} md={2} lg={3} className="g-4">
           {maps.map(map => (
             <Col key={map._id}>
               <MapCard
@@ -279,9 +466,9 @@ const MyMaps = () => {
       {/* Toast de confirmación */}
       {toast && (
         <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 2000 }}>
-          <div className="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div className={`toast show ${toast.type === 'error' ? 'bg-danger text-white' : ''}`} role="alert" aria-live="assertive" aria-atomic="true">
             <div className="toast-header">
-              <i className="bi bi-clipboard-check me-2 text-success"></i>
+              <i className={`bi ${toast.type === 'error' ? 'bi-exclamation-circle text-danger' : 'bi-clipboard-check text-success'} me-2`}></i>
               <strong className="me-auto">{toast.title}</strong>
               <button
                 type="button"
@@ -296,6 +483,14 @@ const MyMaps = () => {
           </div>
         </div>
       )}
+
+      {/* Modal de confirmación de borrado */}
+      <DeleteMapModal
+        show={deleteModal.show}
+        onHide={() => setDeleteModal({ show: false, map: null })}
+        onConfirm={confirmDelete}
+        mapTitle={deleteModal.map?.title}
+      />
     </Container>
   );
 };

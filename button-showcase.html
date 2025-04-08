@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoMap - Catálogo de Botones</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    /* Variables de tema - Basado en Magmar */
+    :root {
+      --primary: #2b2a2c;
+      --secondary: #da2f37;
+      --info: #eaa845;
+      --success: #20a166;
+      --warning: #ddcc20;
+      --danger: #e92f10;
+      --light: #ece7d7;
+      --dark: #111219;
+      --page-background: #ece7d780;
+
+      /* Variables para botones */
+      --btn-primary-bg: var(--primary);
+      --btn-primary-hover: #3d3c3e;
+      --btn-primary-text: white;
+      --btn-success-text: white;
+      --btn-danger-text: white;
+
+      /* Transform variables */
+      --btn-hover-transform: scale(1.03);
+      --btn-active-transform: scale(0.98);
+    }
+
+    body {
+      background-color: var(--page-background);
+      padding: 30px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--info);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      color: var(--secondary);
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .main-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .button-example {
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      width: 100%;
+    }
+
+    .state-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--dark);
+    }
+
+    .state-description {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+
+    .color-box {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      border: 1px solid #ccc;
+      vertical-align: middle;
+    }
+
+    .btn-showcase {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* Estilos específicos para botones */
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      font-weight: bold;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--btn-primary-hover);
+      border-color: var(--btn-primary-hover);
+      transform: var(--btn-hover-transform);
+    }
+
+    .btn-primary:active {
+      transform: var(--btn-active-transform);
+    }
+
+    .btn-outline-primary {
+      color: var(--btn-primary-bg);
+      border-color: var(--btn-primary-bg);
+    }
+
+    .btn-outline-primary:hover {
+      background-color: var(--btn-primary-bg);
+      color: white;
+      transform: var(--btn-hover-transform);
+    }
+
+    .btn-success {
+      background-color: var(--success);
+      border-color: var(--success);
+      color: var(--btn-success-text);
+    }
+
+    .btn-success:hover {
+      background-color: #25bb76;
+      border-color: #25bb76;
+      transform: var(--btn-hover-transform);
+    }
+
+    .btn-outline-success {
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    .btn-outline-success:hover {
+      background-color: var(--success);
+      color: var(--btn-success-text);
+      transform: var(--btn-hover-transform);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      border-color: var(--danger);
+      color: var(--btn-danger-text);
+    }
+
+    .btn-danger:hover {
+      background-color: #fd351a;
+      border-color: #fd351a;
+      transform: var(--btn-hover-transform);
+    }
+
+    .btn-outline-danger {
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn-outline-danger:hover {
+      background-color: var(--danger);
+      color: var(--btn-danger-text);
+      transform: var(--btn-hover-transform);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background-color: #e44048;
+      border-color: #e44048;
+      transform: var(--btn-hover-transform);
+    }
+
+    /* Action buttons */
+    .action-btn {
+      background-color: var(--light);
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem;
+      color: var(--dark);
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .share-btn:hover {
+      background-color: rgba(13, 110, 253, 0.15);
+      color: #0d6efd;
+    }
+
+    .edit-btn:hover {
+      background-color: rgba(25, 135, 84, 0.15);
+      color: #198754;
+    }
+
+    .delete-btn:hover {
+      background-color: rgba(220, 53, 69, 0.15);
+      color: #dc3545;
+    }
+
+    .view-map-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .view-map-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Theme buttons */
+    .theme-buttons,
+    .language-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .theme-button,
+    .language-button {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--light);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      opacity: 0.7;
+    }
+
+    .theme-button:hover,
+    .language-button:hover {
+      opacity: 1;
+    }
+
+    .theme-button.selected,
+    .language-button.selected {
+      border: 3px solid var(--info);
+      opacity: 1;
+    }
+
+    .magmar-theme {
+      background-color: #ece7d7;
+    }
+
+    .caterpie-theme {
+      background-color: #c6fbda;
+    }
+
+    .oddish-theme {
+      background-color: #dbd2e9;
+    }
+
+    /* Sidebar buttons */
+    .sidebar-button {
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      color: white;
+      background-color: transparent;
+      border: none;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+    }
+
+    .sidebar-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-button.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+
+    .sidebar-button i {
+      margin-right: 0.75rem;
+    }
+
+    .sidebar-section {
+      background-color: var(--primary);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* State hover simulation */
+    .hover-simulation {
+      position: relative;
+    }
+
+    .hover-simulation::after {
+      content: 'HOVER';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--info);
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .active-simulation {
+      position: relative;
+    }
+
+    .active-simulation::after {
+      content: 'ACTIVE';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--secondary);
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    /* Prevenir hover real */
+    .button-container button {
+      pointer-events: none !important;
+    }
+
+    /* Usar un div en su lugar para permitir hover en elementos interactivos de la paleta */
+    .theme-option,
+    .sticky-palette button {
+      pointer-events: auto !important;
+    }
+
+    table {
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    table th {
+      background-color: var(--light);
+      color: var(--dark);
+    }
+
+    /* Color swatch table */
+    .color-swatch {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      flex-basis: calc(20% - 0.5rem);
+      min-width: 120px;
+    }
+
+    .swatch-color {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ddd;
+    }
+
+    .swatch-name {
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .swatch-value {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    code {
+      background-color: #f5f5f5;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 85%;
+    }
+
+    /* Estilos para la lista de ubicaciones */
+    .usage-list {
+      margin-top: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    .usage-list li {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .usage-section {
+      margin-top: 1.5rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      border-left: 4px solid var(--info);
+    }
+
+    .usage-section h4 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    /* Disabled states */
+    .btn:disabled,
+    .btn.disabled {
+      background-color: #999 !important;
+      border-color: #999 !important;
+      color: white !important;
+      opacity: 1 !important;
+      cursor: not-allowed !important;
+    }
+
+    /* Estilos para el panel lateral sticky */
+    .sticky-palette {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 250px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      padding: 1rem;
+      z-index: 1000;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+    }
+
+    .sticky-palette h3 {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      border-bottom: 2px solid var(--info);
+      padding-bottom: 0.5rem;
+    }
+
+    .theme-selector {
+      margin-bottom: 1.5rem;
+    }
+
+    .theme-option {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-option:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .theme-option.active {
+      background-color: rgba(0, 0, 0, 0.08);
+      font-weight: bold;
+    }
+
+    .theme-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .sticky-palette .swatch {
+      flex-basis: 100%;
+      margin-bottom: 0.5rem;
+      min-width: 0;
+    }
+
+    /* Ajuste del contenedor principal para dar espacio al sticky */
+    .main-container {
+      margin-right: 270px;
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 992px) {
+      .sticky-palette {
+        position: static;
+        width: 100%;
+        max-height: none;
+        margin-bottom: 2rem;
+      }
+
+      .main-container {
+        margin-right: 0;
+      }
+    }
+
+    /* Estilos para los diferentes temas */
+    /* Tema Magmar (default) */
+    .magmar-theme-vars {
+      --primary: #2b2a2c;
+      --secondary: #da2f37;
+      --info: #eaa845;
+      --success: #20a166;
+      --warning: #ddcc20;
+      --danger: #e92f10;
+      --light: #ece7d7;
+      --dark: #111219;
+      --page-background: #ece7d780;
+    }
+
+    /* Tema Caterpie */
+    .caterpie-theme-vars {
+      --primary: #034d4c;
+      --secondary: #824d39;
+      --info: #c1a423;
+      --success: #05a145;
+      --warning: #ecc605;
+      --danger: #f20232;
+      --light: #c6fbda;
+      --dark: #00060a;
+      --page-background: #c6fbda80;
+    }
+
+    /* Tema Oddish */
+    .oddish-theme-vars {
+      --primary: #423aa3;
+      --secondary: #006afb;
+      --info: #08bbca;
+      --success: #00a862;
+      --warning: #e2cd00;
+      --danger: #f21f00;
+      --light: #dbd2e9;
+      --dark: #1e1b34;
+      --page-background: #dbd2e980;
+    }
+
+    /* Tema Farfetch'd */
+    .farfetchd-theme-vars {
+      --primary: #5d3b2e;
+      --secondary: #cc5f41;
+      --info: #cfcb63;
+      --success: #62ab2e;
+      --warning: #fdc370;
+      --danger: #f11a65;
+      --light: #ebe7d8;
+      --dark: #000100;
+      --page-background: #ebe7d880;
+    }
+
+    /* Tema Venusaur */
+    .venusaur-theme-vars {
+      --primary: #14493a;
+      --secondary: #4a952f;
+      --info: #e2cc2f;
+      --success: #12b23d;
+      --warning: #f6c911;
+      --danger: #f80742;
+      --light: #d3e6e6;
+      --dark: #000709;
+      --page-background: #d3e6e680;
+    }
+  </style>
+</head>
+
+<body class="magmar-theme-vars">
+  <div class="sticky-palette">
+    <h3>Selector de Tema</h3>
+    <div class="theme-selector">
+      <div class="theme-option active" data-theme="magmar">
+        <div class="theme-icon magmar-theme">🌋</div>
+        <span>Magmar</span>
+      </div>
+      <div class="theme-option" data-theme="caterpie">
+        <div class="theme-icon caterpie-theme">🐛</div>
+        <span>Caterpie</span>
+      </div>
+      <div class="theme-option" data-theme="oddish">
+        <div class="theme-icon oddish-theme">🌱</div>
+        <span>Oddish</span>
+      </div>
+      <div class="theme-option" data-theme="farfetchd">
+        <div class="theme-icon" style="background-color: #ebe7d8;">🦆</div>
+        <span>Farfetch'd</span>
+      </div>
+      <div class="theme-option" data-theme="venusaur">
+        <div class="theme-icon" style="background-color: #d3e6e6;">🌸</div>
+        <span>Venusaur</span>
+      </div>
+    </div>
+
+    <h3>Paleta Actual</h3>
+    <div class="color-swatch">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--primary);"></div>
+        <div class="swatch-name">Primary</div>
+        <div class="swatch-value js-color-value" data-color="primary"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--secondary);"></div>
+        <div class="swatch-name">Secondary</div>
+        <div class="swatch-value js-color-value" data-color="secondary"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--info);"></div>
+        <div class="swatch-name">Info</div>
+        <div class="swatch-value js-color-value" data-color="info"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--success);"></div>
+        <div class="swatch-name">Success</div>
+        <div class="swatch-value js-color-value" data-color="success"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--warning);"></div>
+        <div class="swatch-name">Warning</div>
+        <div class="swatch-value js-color-value" data-color="warning"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--danger);"></div>
+        <div class="swatch-name">Danger</div>
+        <div class="swatch-value js-color-value" data-color="danger"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--light);"></div>
+        <div class="swatch-name">Light</div>
+        <div class="swatch-value js-color-value" data-color="light"></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--dark);"></div>
+        <div class="swatch-name">Dark</div>
+        <div class="swatch-value js-color-value" data-color="dark"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <h1>Catálogo de Botones - PhotoMap</h1>
+    <p>Este documento muestra visualmente todos los diferentes tipos de botones utilizados en la aplicación PhotoMap.
+      <strong>¡Prueba a cambiar el tema con el selector a la derecha!</strong>
+    </p>
+
+    <div class="alert alert-info mb-4">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      <strong>Nota:</strong> Los botones de este catálogo son solo de muestra y no responden a interacciones. Los
+      estados hover y active están simulados visualmente para propósitos de documentación.
+    </div>
+
+    <h2>1. Botones Principales (Primary)</h2>
+
+    <h3>Botón Principal Sólido (btn-primary)</h3>
+    <div class="button-example">
+      <p>Botón principal para acciones primarias o llamadas a la acción destacadas.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--primary);"></span> Fondo: var(--primary) |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            <span class="color-box" style="background-color: var(--primary);"></span> Borde: var(--primary)
+          </div>
+          <button class="btn btn-primary btn-showcase">Iniciar Sesión</button>
+          <button class="btn btn-primary btn-lg btn-showcase">Crear Mapa</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--btn-primary-hover);"></span> Fondo:
+            var(--btn-primary-hover) |
+            Transformación: scale(1.03) | Sombra aumentada
+          </div>
+          <button class="btn btn-primary btn-showcase hover-simulation">Iniciar Sesión</button>
+          <button class="btn btn-primary btn-lg btn-showcase hover-simulation">Crear Mapa</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Activo/Presionado</div>
+          <div class="state-description">Transformación: scale(0.98)</div>
+          <button class="btn btn-primary btn-showcase active-simulation">Iniciar Sesión</button>
+          <button class="btn btn-primary btn-lg btn-showcase active-simulation">Crear Mapa</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            Opacidad: 100%
+          </div>
+          <button class="btn btn-primary btn-showcase" disabled>Iniciar Sesión</button>
+          <button class="btn btn-primary btn-lg btn-showcase" disabled>Crear Mapa</button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;Button variant="primary"&gt;Iniciar Sesión&lt;/Button&gt;
+&lt;Button variant="primary" size="lg"&gt;Crear Mapa&lt;/Button&gt;
+&lt;Button variant="primary" disabled&gt;Iniciar Sesión&lt;/Button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Login/Registro</strong>: Botones de "Iniciar Sesión" y "Registrarse" en las pantallas de
+            autenticación</li>
+          <li><strong>Dashboard</strong>: Botón para crear nuevo mapa</li>
+          <li><strong>Subida de Fotos</strong>: Botón de confirmación para finalizar la subida</li>
+          <li><strong>Configuración de Cuenta</strong>: Botón para guardar cambios importantes en perfil</li>
+          <li><strong>Formularios</strong>: Como botón de envío (submit) en formularios principales</li>
+          <li><strong>Modales</strong>: Para acciones principales en ventanas modales</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Botón Principal Outline (btn-outline-primary)</h3>
+    <div class="button-example">
+      <p>Variante de contorno del botón principal, para acciones importantes pero secundarias.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            Fondo: Transparente |
+            <span class="color-box" style="background-color: var(--primary);"></span> Texto: var(--btn-primary-bg) |
+            <span class="color-box" style="background-color: var(--primary);"></span> Borde: var(--btn-primary-bg)
+          </div>
+          <button class="btn btn-outline-primary btn-showcase">Ver Perfil</button>
+          <button class="btn btn-outline-primary btn-showcase">Ver Galería</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--primary);"></span> Fondo: var(--btn-primary-bg) |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            Transformación: scale(1.03)
+          </div>
+          <button class="btn btn-outline-primary btn-showcase hover-simulation">Ver Perfil</button>
+          <button class="btn btn-outline-primary btn-showcase hover-simulation">Ver Galería</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="btn btn-outline-primary btn-showcase" disabled>Ver Perfil</button>
+          <button class="btn btn-outline-primary btn-showcase" disabled>Ver Galería</button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;Button variant="outline-primary"&gt;Ver Perfil&lt;/Button&gt;
+&lt;Button as={Link} to="/gallery" variant="outline-primary"&gt;{t('gallery.button')}&lt;/Button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Dashboard</strong>: Enlaces a diferentes secciones de la aplicación</li>
+          <li><strong>Perfil de Usuario</strong>: Opciones alternativas como "Ver Galería" o "Ver Mapas"</li>
+          <li><strong>Navegación Secundaria</strong>: En barras de navegación como opciones secundarias</li>
+          <li><strong>Filtros</strong>: Para aplicar filtros en galerías y mapas</li>
+          <li><strong>Modales</strong>: Como alternativa secundaria en diálogos (p.ej., "Ver detalles")</li>
+          <li><strong>Listas</strong>: Botones de acción secundarios en listas de elementos</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>2. Botones de Éxito (Success)</h2>
+
+    <h3>Botón de Éxito Sólido (btn-success)</h3>
+    <div class="button-example">
+      <p>Botón para acciones positivas o de confirmación.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--success);"></span> Fondo: var(--success) |
+            <span class="color-box" style="background-color: white;"></span> Texto: var(--btn-success-text) |
+            <span class="color-box" style="background-color: var(--success);"></span> Borde: var(--success)
+          </div>
+          <button class="btn btn-success btn-showcase">Guardar Cambios</button>
+          <button class="btn btn-success btn-lg btn-showcase">
+            <i class="bi bi-plus-lg me-2"></i> Crear Nuevo Mapa
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">Sombra aumentada | Transformación: scale(1.03)</div>
+          <button class="btn btn-success btn-showcase hover-simulation">Guardar Cambios</button>
+          <button class="btn btn-success btn-lg btn-showcase hover-simulation">
+            <i class="bi bi-plus-lg me-2"></i> Crear Nuevo Mapa
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            Opacidad: 100%
+          </div>
+          <button class="btn btn-success btn-showcase" disabled>Guardar Cambios</button>
+          <button class="btn btn-success btn-lg btn-showcase" disabled>
+            <i class="bi bi-plus-lg me-2"></i> Crear Nuevo Mapa
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;Button variant="success"&gt;Guardar Cambios&lt;/Button&gt;
+&lt;Button variant="success" size="lg" className="create-map-btn"&gt;
+  &lt;i className="bi bi-plus-lg me-2"&gt;&lt;/i&gt; {t('common:mymaps.create')}
+&lt;/Button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>My Maps</strong>: Botón para crear un nuevo mapa</li>
+          <li><strong>Editor de Mapa</strong>: Botón para guardar cambios en un mapa</li>
+          <li><strong>Subida de Fotos</strong>: Botón para confirmar subida exitosa</li>
+          <li><strong>Configuración</strong>: Guardar preferencias o cambios</li>
+          <li><strong>Modales de Confirmación</strong>: Acción positiva o de confirmación</li>
+          <li><strong>Formularios</strong>: Envío de formularios donde la acción principal es positiva</li>
+          <li><strong>Galería de Fotos</strong>: Botón para añadir fotos a un mapa existente</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Botón de Éxito Outline (btn-outline-success)</h3>
+    <div class="button-example">
+      <p>Variante de contorno del botón de éxito.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            Fondo: Transparente |
+            <span class="color-box" style="background-color: var(--success);"></span> Texto: var(--btn-success-bg) |
+            <span class="color-box" style="background-color: var(--success);"></span> Borde: var(--btn-success-bg)
+          </div>
+          <button class="btn btn-outline-success btn-showcase">Aplicar Filtro</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--success);"></span> Fondo: var(--btn-success-bg) |
+            <span class="color-box" style="background-color: white;"></span> Texto: var(--btn-success-text)
+          </div>
+          <button class="btn btn-outline-success btn-showcase hover-simulation">Aplicar Filtro</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="btn btn-outline-success btn-showcase" disabled>Aplicar Filtro</button>
+        </div>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Filtros de Mapa</strong>: Para aplicar filtros no destructivos</li>
+          <li><strong>Editor de Mapa</strong>: Opciones secundarias como "Ver Previsualización"</li>
+          <li><strong>Galería de Fotos</strong>: Botón para seleccionar múltiples fotos</li>
+          <li><strong>Configuración</strong>: Opciones secundarias de configuración</li>
+          <li><strong>Categorías</strong>: Botones para agregar categorías</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>3. Botones de Peligro (Danger)</h2>
+
+    <h3>Botón de Peligro Sólido (btn-danger)</h3>
+    <div class="button-example">
+      <p>Botón para acciones destructivas o irreversibles.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--danger);"></span> Fondo: var(--danger) |
+            <span class="color-box" style="background-color: white;"></span> Texto: var(--btn-danger-text) |
+            <span class="color-box" style="background-color: var(--danger);"></span> Borde: var(--danger)
+          </div>
+          <button class="btn btn-danger btn-showcase">Eliminar</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">Sombra aumentada | Transformación: scale(1.03)</div>
+          <button class="btn btn-danger btn-showcase hover-simulation">Eliminar</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            Opacidad: 100%
+          </div>
+          <button class="btn btn-danger btn-showcase" disabled>Eliminar</button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;Button variant="danger" onClick={handleDeletePhoto}&gt;
+  {t('photo:actions.delete')}
+&lt;/Button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Galería de Fotos</strong>: Botón para eliminar fotos</li>
+          <li><strong>My Maps</strong>: Botón para eliminar mapas existentes</li>
+          <li><strong>Editor de Mapa</strong>: Eliminar elementos o categorías del mapa</li>
+          <li><strong>Configuración de Cuenta</strong>: Botón para eliminar cuenta</li>
+          <li><strong>Modales de Confirmación</strong>: Confirmar acciones destructivas</li>
+          <li><strong>Comentarios</strong>: Eliminar comentarios en fotos compartidas</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Botón de Peligro Outline (btn-outline-danger)</h3>
+    <div class="button-example">
+      <p>Variante de contorno del botón de peligro.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            Fondo: Transparente |
+            <span class="color-box" style="background-color: var(--danger);"></span> Texto: var(--btn-danger-bg) |
+            <span class="color-box" style="background-color: var(--danger);"></span> Borde: var(--btn-danger-bg)
+          </div>
+          <button class="btn btn-outline-danger btn-showcase">
+            <i class="bi bi-trash"></i>
+          </button>
+          <button class="btn btn-outline-danger btn-showcase">Borrar Categoría</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--danger);"></span> Fondo: var(--btn-danger-bg) |
+            <span class="color-box" style="background-color: white;"></span> Texto: var(--btn-danger-text)
+          </div>
+          <button class="btn btn-outline-danger btn-showcase hover-simulation">
+            <i class="bi bi-trash"></i>
+          </button>
+          <button class="btn btn-outline-danger btn-showcase hover-simulation">Borrar Categoría</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="btn btn-outline-danger btn-showcase" disabled>
+            <i class="bi bi-trash"></i>
+          </button>
+          <button class="btn btn-outline-danger btn-showcase" disabled>Borrar Categoría</button>
+        </div>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Tarjetas de Mapa</strong>: Botón pequeño para eliminar mapas</li>
+          <li><strong>Galerías</strong>: Botón sutil para eliminar fotos</li>
+          <li><strong>Listas</strong>: Para eliminar elementos de listas (categorías, etiquetas)</li>
+          <li><strong>Editor</strong>: Opción secundaria para quitar elementos</li>
+          <li><strong>Configuración</strong>: Opciones para resetear configuraciones</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>4. Botones Secundarios (Secondary)</h2>
+    <div class="button-example">
+      <p>Botones para acciones auxiliares o alternativas.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--secondary);"></span> Fondo: var(--secondary) |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            <span class="color-box" style="background-color: var(--secondary);"></span> Borde: var(--secondary)
+          </div>
+          <button class="btn btn-secondary btn-showcase">Cancelar</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">Sombra ligeramente aumentada | Transformación: scale(1.03)</div>
+          <button class="btn btn-secondary btn-showcase hover-simulation">Cancelar</button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="btn btn-secondary btn-showcase" disabled>Cancelar</button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;Button variant="secondary" onClick={() => setShowModal(false)}&gt;
+  {t('common:buttons.cancel')}
+&lt;/Button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Modales</strong>: Botón "Cancelar" en diálogos</li>
+          <li><strong>Formularios</strong>: Opción para cancelar o volver atrás</li>
+          <li><strong>Asistentes</strong>: Navegación entre pasos de asistentes</li>
+          <li><strong>Editor de Mapa</strong>: Botones de cancelar edición</li>
+          <li><strong>Configuración</strong>: Botón para descartar cambios</li>
+          <li><strong>Subida de Fotos</strong>: Cancelar proceso de subida</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>5. Botones de Acción en Mapas y Tarjetas</h2>
+
+    <h3>Botones de Acción (action-btn)</h3>
+    <div class="button-example">
+      <p>Botones pequeños para acciones específicas en tarjetas o listas.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--light);"></span> Fondo: var(--light) |
+            Icono: Variable según acción |
+            Borde: None
+          </div>
+          <button class="btn action-btn share-btn btn-showcase">
+            <i class="bi bi-share"></i>
+          </button>
+          <button class="btn action-btn edit-btn btn-showcase">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn action-btn delete-btn btn-showcase">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">Sombra aumentada | Transformación: translateY(-2px) | Color de fondo específico
+          </div>
+          <button class="btn action-btn share-btn btn-showcase hover-simulation">
+            <i class="bi bi-share"></i>
+          </button>
+          <button class="btn action-btn edit-btn btn-showcase hover-simulation">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn action-btn delete-btn btn-showcase hover-simulation">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="btn action-btn share-btn btn-showcase" disabled>
+            <i class="bi bi-share"></i>
+          </button>
+          <button class="btn action-btn edit-btn btn-showcase" disabled>
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn action-btn delete-btn btn-showcase" disabled>
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;Button variant="light" className="action-btn share-btn" onClick={() => onShare(map)}&gt;
+  &lt;i className="bi bi-share"&gt;&lt;/i&gt;
+&lt;/Button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Tarjetas de Mapa</strong>: En cada tarjeta, para acciones de compartir, editar y eliminar</li>
+          <li><strong>Vista de Mapa</strong>: Acciones rápidas sobre markers y elementos del mapa</li>
+          <li><strong>Galería de Fotos</strong>: En miniaturas para acciones rápidas</li>
+          <li><strong>Listas</strong>: En filas de tablas para realizar acciones sobre un elemento</li>
+          <li><strong>Comentarios</strong>: Para acciones sobre comentarios (editar, responder, eliminar)</li>
+          <li><strong>Perfil</strong>: Acciones rápidas en elementos del perfil</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Botón de Vista de Mapa (view-map-btn)</h3>
+    <div class="button-example">
+      <p>Botón destacado para ver un mapa específico.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Normal</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: var(--primary);"></span> Fondo: var(--primary) |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco |
+            Borde: None | Border-radius: 8px
+          </div>
+          <button class="btn view-map-btn btn-showcase">
+            <i class="bi bi-map me-2"></i> Ver Mapa
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Hover</div>
+          <div class="state-description">Sombra aumentada | Transformación: translateY(-2px)</div>
+          <button class="btn view-map-btn btn-showcase hover-simulation">
+            <i class="bi bi-map me-2"></i> Ver Mapa
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="btn view-map-btn btn-showcase" disabled>
+            <i class="bi bi-map me-2"></i> Ver Mapa
+          </button>
+        </div>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Tarjetas de Mapa</strong>: Botón principal en cada tarjeta de mapa</li>
+          <li><strong>Resultados de Búsqueda</strong>: Para ir directamente a un mapa desde resultados</li>
+          <li><strong>Perfil de Usuario</strong>: En listados de mapas favoritos o creados</li>
+          <li><strong>Mi Cuenta</strong>: En sección de mapas recientes</li>
+          <li><strong>Compartidos</strong>: En sección de mapas compartidos conmigo</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>6. Botones de Icono y Circulares</h2>
+
+    <h3>Theme & Language Buttons</h3>
+    <div class="button-example">
+      <p>Botones circulares para selección de tema e idioma.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Temas (Normal, Hover, Seleccionado)</div>
+          <div class="theme-buttons">
+            <button class="theme-button magmar-theme">🌋</button>
+            <button class="theme-button caterpie-theme hover-simulation">🐛</button>
+            <button class="theme-button oddish-theme selected">🌱</button>
+          </div>
+
+          <div class="state-title mt-3">Idiomas (Normal, Hover, Seleccionado)</div>
+          <div class="language-buttons">
+            <button class="language-button">🇨🇱</button>
+            <button class="language-button hover-simulation">🇬🇧</button>
+            <button class="language-button selected">🇪🇸</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">
+            <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
+            <span class="color-box" style="background-color: white;"></span> Texto: Blanco
+          </div>
+          <button class="theme-button magmar-theme" disabled>🌋</button>
+          <button class="language-button" disabled>🇨🇱</button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <p><strong>Código:</strong></p>
+        <pre><code>&lt;button
+  key={themeKey}
+  onClick={() => setTheme(themeKey)}
+  className={`btn btn-sm p-1`}
+  style={{
+    backgroundColor: THEMES[themeKey].colors.light,
+    width: '32px',
+    height: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: theme === themeKey ? '3px solid var(--info)' : 'none',
+    borderRadius: '50%',
+    // otros estilos...
+  }}
+  title={THEMES[themeKey].name}
+&gt;
+  &lt;span&gt;{THEMES[themeKey].icon}&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Barra de Navegación</strong>: Para selección de tema e idioma</li>
+          <li><strong>Configuración</strong>: En sección de personalización</li>
+          <li><strong>Perfil</strong>: Para configurar preferencias visuales</li>
+          <li><strong>Primera Vez</strong>: En asistente de primera ejecución para elegir preferencias</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>7. Botones de Navegación y Toggle</h2>
+    <div class="button-example">
+      <p>Botones específicos para expandir/colapsar o navegar entre secciones.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Toggle Sidebar</div>
+          <div style="margin-bottom: 1rem;">
+            <button class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center"
+              style="width: 28px; height: 28px; color: var(--primary); border: 1px solid var(--primary);">
+              ◀
+            </button>
+          </div>
+
+          <div class="state-title">Navegación en Sidebar</div>
+          <div class="sidebar-section">
+            <button class="sidebar-button">
+              <i class="bi bi-map"></i> Memories Map
+            </button>
+            <button class="sidebar-button">
+              <i class="bi bi-images"></i> Photo Gallery
+            </button>
+            <button class="sidebar-button active">
+              <i class="bi bi-globe"></i> My Maps
+            </button>
+            <button class="sidebar-button">
+              <i class="bi bi-calendar-check"></i> On This Day
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Inactivo/Deshabilitado</div>
+          <div class="state-description">Opacidad reducida | Sin efecto hover</div>
+          <button class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; color: var(--primary); border: 1px solid var(--primary);" disabled>
+            ◀
+          </button>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Botones de Sidebar Inactivos</div>
+          <div class="sidebar-section">
+            <button class="sidebar-button">
+              <i class="bi bi-map"></i> Memories Map
+            </button>
+            <button class="sidebar-button" disabled>
+              <i class="bi bi-images"></i> Photo Gallery
+            </button>
+            <button class="sidebar-button active">
+              <i class="bi bi-globe"></i> My Maps
+            </button>
+            <button class="sidebar-button" disabled>
+              <i class="bi bi-calendar-check"></i> On This Day
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>8. Botones de Estado</h2>
+    <div class="button-example">
+      <p>Botones que reflejan estados y pueden o no ser accionables.</p>
+
+      <div class="button-container">
+        <div>
+          <div class="state-title">Activo</div>
+          <button class="btn btn-primary btn-showcase">Estado Activo</button>
+
+          <div class="state-title mt-3">Inactivo/Deshabilitado</div>
+          <button class="btn btn-primary btn-showcase" disabled>Estado Inactivo</button>
+        </div>
+      </div>
+
+      <div class="usage-section">
+        <h4>Dónde se utiliza:</h4>
+        <ul class="usage-list">
+          <li><strong>Formularios</strong>: Botones deshabilitados cuando faltan campos requeridos</li>
+          <li><strong>Validación</strong>: Botones inactivos hasta verificar formularios</li>
+          <li><strong>Procesos en Curso</strong>: Deshabilitados durante carga o procesamiento</li>
+          <li><strong>Permisos</strong>: Inactivos cuando el usuario no tiene permisos para la acción</li>
+          <li><strong>Estados de Mapa</strong>: Según el estado del mapa (publicado, borrador, etc.)</li>
+          <li><strong>Paginación</strong>: Botones de navegación inactivos en primera/última página</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>9. Guía General de Uso</h2>
+    <div class="button-example">
+      <p>Recomendaciones generales para la consistencia en el uso de botones en toda la aplicación</p>
+
+      <ul class="usage-list">
+        <li><strong>Primary</strong>: Usar sólo para la acción principal en cada pantalla o sección. Siempre con texto
+          en negrita.</li>
+        <li><strong>Success</strong>: Para acciones que confirman, completan o crean elementos.</li>
+        <li><strong>Danger</strong>: Exclusivamente para acciones destructivas que requieren consideración.</li>
+        <li><strong>Secondary</strong>: Para acciones de cancelación o alternativas secundarias.</li>
+        <li><strong>Action</strong>: Para acciones contextuales específicas en elementos individuales.</li>
+        <li><strong>Estado Inactivo</strong>: Todos los botones deshabilitados usan el mismo estilo: fondo gris #999 con
+          texto blanco, sin importar el tipo de botón.</li>
+        <li><strong>Tamaños</strong>: Usar consistentemente según importancia - lg para acciones destacadas, sm para
+          acciones compactas.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Scripts de Bootstrap para interactividad -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Definición de los temas y sus valores hexadecimales
+      const themes = {
+        magmar: {
+          primary: '#2b2a2c',
+          secondary: '#da2f37',
+          info: '#eaa845',
+          success: '#20a166',
+          warning: '#ddcc20',
+          danger: '#e92f10',
+          light: '#ece7d7',
+          dark: '#111219',
+          pageBackground: '#ece7d780'
+        },
+        caterpie: {
+          primary: '#034d4c',
+          secondary: '#824d39',
+          info: '#c1a423',
+          success: '#05a145',
+          warning: '#ecc605',
+          danger: '#f20232',
+          light: '#c6fbda',
+          dark: '#00060a',
+          pageBackground: '#c6fbda80'
+        },
+        oddish: {
+          primary: '#423aa3',
+          secondary: '#006afb',
+          info: '#08bbca',
+          success: '#00a862',
+          warning: '#e2cd00',
+          danger: '#f21f00',
+          light: '#dbd2e9',
+          dark: '#1e1b34',
+          pageBackground: '#dbd2e980'
+        },
+        farfetchd: {
+          primary: '#5d3b2e',
+          secondary: '#cc5f41',
+          info: '#cfcb63',
+          success: '#62ab2e',
+          warning: '#fdc370',
+          danger: '#f11a65',
+          light: '#ebe7d8',
+          dark: '#000100',
+          pageBackground: '#ebe7d880'
+        },
+        venusaur: {
+          primary: '#14493a',
+          secondary: '#4a952f',
+          info: '#e2cc2f',
+          success: '#12b23d',
+          warning: '#f6c911',
+          danger: '#f80742',
+          light: '#d3e6e6',
+          dark: '#000709',
+          pageBackground: '#d3e6e680'
+        }
+      };
+
+      // Función para actualizar los valores hexadecimales en la paleta
+      function updateColorValues(theme) {
+        const colorValueElements = document.querySelectorAll('.js-color-value');
+        colorValueElements.forEach(el => {
+          const color = el.dataset.color;
+          el.textContent = themes[theme][color];
+        });
+      }
+
+      // Inicializa los valores de colores
+      updateColorValues('magmar');
+
+      // Selector de temas
+      const themeOptions = document.querySelectorAll('.theme-option');
+      themeOptions.forEach(option => {
+        option.addEventListener('click', function () {
+          const theme = this.dataset.theme;
+
+          // Actualiza la clase activa en las opciones
+          themeOptions.forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+
+          // Cambia la clase del body para aplicar las variables CSS
+          document.body.className = `${theme}-theme-vars`;
+
+          // Actualiza los valores hexadecimales mostrados
+          updateColorValues(theme);
+        });
+      });
+
+      // Fix para emojis en tema Oddish
+      const oddishButton = document.querySelector('.oddish-theme');
+      if (oddishButton.textContent === '🌱') {
+        oddishButton.textContent = '🌱';
+      }
+    });
+  </script>
+</body>
+
+</html>

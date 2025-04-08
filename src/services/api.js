@@ -273,6 +273,9 @@ export const publicMapService = {
   createMap: async (mapData) => {
     return await api.post('/public-maps', mapData);
   },
+  deleteMap: async (mapId) => {
+    return await api.delete(`/public-maps/${mapId}`);
+  },
 };
 
 export default api;

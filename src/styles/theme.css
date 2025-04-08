@@ -41,12 +41,29 @@
 .btn-primary {
   background-color: var(--primary);
   border-color: var(--primary);
+  font-weight: bold;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
   background-color: var(--btn-primary-hover) !important;
   border-color: var(--btn-primary-hover) !important;
+}
+
+/* Estilos para botones deshabilitados */
+.btn:disabled,
+.btn.disabled {
+  background-color: #999 !important;
+  border-color: #999 !important;
+  color: white !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+/* Eliminar el indicador visual diagonal */
+.btn.btn-primary:disabled::after,
+.btn.btn-primary.disabled::after {
+  content: none;
 }
 
 .btn-outline-primary {

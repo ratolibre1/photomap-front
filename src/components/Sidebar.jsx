@@ -5,6 +5,7 @@ import { useTheme, THEMES } from '../context/ThemeContext';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import NewFeatureBadge from './common/NewFeatureBadge';
+import './Sidebar.css';
 
 // Íconos usando emoji por simplicidad
 const MENU_ITEMS = [
@@ -81,38 +82,30 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
   };
 
   return (
-    <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}
-      style={{
-        width: expanded ? '250px' : '60px',
-        transition: 'width 0.3s',
-        backgroundColor: 'var(--primary)',
-        borderRight: '1px solid var(--info)'
-      }}>
-
-      {/* Logo/Brand sin botón */}
+    <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}>
+      {/* Logo/Brand */}
       <div className="p-3 d-flex align-items-center">
-        <Link to="/dashboard" className="text-decoration-none text-white d-flex align-items-center">
+        <Link to="/dashboard" className="brand-link d-flex align-items-center">
           <span className="fs-4 me-2" style={{ paddingTop: '3px' }}>📷</span>
-          {expanded && <h1 className="fs-4 fw-bold mb-0" style={{ fontFamily: 'Courgette' }}>PhotoMap</h1>}
+          {expanded && <h1 className="brand-title">PhotoMap</h1>}
         </Link>
 
-        {/* Botón toggle solo visible cuando está expandido */}
+        {/* Toggle button - visible when expanded */}
         {expanded && (
           <Button
             variant="outline-light"
             size="sm"
-            className="ms-auto p-1 border-0 d-flex align-items-center justify-content-center"
+            className="ms-auto toggle-button"
             onClick={toggleSidebar}
-            style={{ width: '28px', height: '28px' }}
           >
             ◀
           </Button>
         )}
       </div>
 
-      {/* Menú de navegación */}
+      {/* Navigation menu */}
       <Nav className="flex-column mb-auto">
-        {/* Botón de expandir - solo visible cuando está colapsado */}
+        {/* Toggle button - visible when collapsed */}
         {!expanded && (
           <Nav.Link
             as="button"
@@ -125,69 +118,44 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
           </Nav.Link>
         )}
 
-        {/* Menú unificado usando el array MENU_ITEMS */}
+        {/* Menu items */}
         {MENU_ITEMS.map((item) => (
           <Nav.Item key={item.path}>
             <Nav.Link
               as={Link}
               to={item.path}
-              className={`py-2 ${location.pathname === item.path ? 'active bg-secondary bg-opacity-25' : ''}`}
-              style={{
-                color: location.pathname === item.path ? 'white' : 'rgba(255, 255, 255, 0.7)'
-              }}
+              className={`py-2 ${location.pathname === item.path ? 'active' : ''}`}
             >
               <div className="d-flex align-items-center position-relative">
                 <span className={`${expanded ? 'me-3' : ''} fs-5`} style={{ paddingTop: '3px' }}>{item.icon}</span>
                 {expanded && (
                   <>
-                    <span style={{ fontWeight: location.pathname === item.path ? 600 : 'normal' }}>
-                      {t(item.label)}
-                    </span>
+                    <span>{t(item.label)}</span>
                     {item.isNew && <NewFeatureBadge position="inline" size="sm" rotate={-12} />}
                   </>
                 )}
-                {!expanded && item.isNew && <NewFeatureBadge position="top-right" size="sm" rotate={15} />}
               </div>
             </Nav.Link>
           </Nav.Item>
         ))}
       </Nav>
 
-      {/* Selector de tema cuando está expandido */}
+      {/* Theme selector - visible when expanded */}
       {expanded && (
         <>
           <div className="px-3 mb-3">
-            <p className="text-light small mb-2">{t('common:theme.title')}:</p>
+            <p className="section-title">{t('common:theme.title')}:</p>
             <div className="d-flex flex-wrap gap-2">
               {Object.keys(THEMES).map((themeKey) => (
                 <button
                   key={themeKey}
                   onClick={() => setTheme(themeKey)}
-                  className={`btn btn-sm p-1`}
+                  className={`theme-button ${theme === themeKey ? 'active' : ''}`}
                   style={{
                     backgroundColor: THEMES[themeKey].colors.light,
-                    width: '32px',
-                    height: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: theme === themeKey ? '3px solid var(--info)' : 'none',
-                    borderRadius: '50%',
-                    transition: 'all 0.3s ease',
-                    color: THEMES[themeKey].colors.light,
-                    opacity: theme === themeKey ? 1 : 0.7,
+                    color: THEMES[themeKey].colors.light
                   }}
                   title={THEMES[themeKey].name}
-                  onMouseEnter={(e) => {
-                    if (theme !== themeKey) {
-                      e.currentTarget.style.opacity = '1';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (theme !== themeKey) {
-                      e.currentTarget.style.opacity = '0.7';
-                    }
-                  }}
                 >
                   <span style={{ paddingTop: '3px' }}>{THEMES[themeKey].icon}</span>
                 </button>
@@ -195,9 +163,9 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
             </div>
           </div>
 
-          {/* Selector de idioma */}
+          {/* Language selector */}
           <div className="px-3 mb-3">
-            <p className="text-light small mb-2">{t('common:language.title')}:</p>
+            <p className="section-title">{t('common:language.title')}:</p>
             <div className="d-flex flex-wrap gap-2">
               {LANGUAGES.map((lang) => (
                 <button
@@ -234,190 +202,6 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
             </div>
           </div>
         </>
-      )}
-
-      {/* Cuando está colapsado, usamos un popup con opciones */}
-      {!expanded && (
-        <div className="py-2 d-flex flex-column align-items-center gap-2">
-          {/* Botón de tema */}
-          <div className="theme-dropdown">
-            <button
-              className="btn btn-sm text-white border-0 bg-transparent"
-              type="button"
-              onClick={(e) => {
-                const themeMenu = document.getElementById('themeMenu');
-                if (themeMenu) {
-                  themeMenu.style.display = themeMenu.style.display === 'none' ? 'block' : 'none';
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const menuWidth = 200;
-                  let leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
-                  leftPos = Math.max(10, leftPos);
-                  const maxRight = window.innerWidth - menuWidth - 10;
-                  leftPos = Math.min(maxRight, leftPos);
-                  themeMenu.style.top = `${rect.bottom + 10}px`;
-                  themeMenu.style.left = `${leftPos}px`;
-                }
-              }}
-              title={t('common:theme.title')}
-            >
-              <span className="fs-5" style={{ paddingTop: '3px' }}>🎨</span>
-            </button>
-
-            {/* Menú de temas */}
-            <div
-              id="themeMenu"
-              className="position-fixed rounded shadow-lg py-1"
-              style={{
-                display: 'none',
-                zIndex: 1000,
-                minWidth: '200px',
-                marginTop: '10px',
-                animation: 'fadeIn 0.2s ease-in-out',
-                backgroundColor: 'var(--light)',
-                border: '1px solid var(--dark)',
-                color: 'var(--dark)'
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  left: '20px',
-                  width: '0',
-                  height: '0',
-                  borderLeft: '8px solid transparent',
-                  borderRight: '8px solid transparent',
-                  borderBottom: '8px solid var(--light)'
-                }}
-              ></div>
-
-              <div className="px-3 py-2 border-bottom mb-1"
-                style={{ borderBottomColor: 'var(--dark)' }}>
-                <small style={{ color: 'var(--dark)' }}>{t('common:theme.title')}</small>
-              </div>
-
-              {Object.keys(THEMES).map((themeKey) => (
-                <button
-                  key={themeKey}
-                  className="dropdown-item d-flex align-items-center px-3 py-2"
-                  onClick={() => {
-                    setTheme(themeKey);
-                    document.getElementById('themeMenu').style.display = 'none';
-                  }}
-                  style={{
-                    backgroundColor: theme === themeKey ? 'rgba(0,0,0,0.04)' : 'transparent',
-                    transition: 'background-color 0.2s'
-                  }}
-                >
-                  <div
-                    className="me-3 rounded-circle"
-                    style={{
-                      backgroundColor: THEMES[themeKey].colors.light,
-                      width: '24px',
-                      height: '24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                    }}
-                  >
-                    <span style={{ paddingTop: '3px' }}>{THEMES[themeKey].icon}</span>
-                  </div>
-                  <span className="fw-medium">{THEMES[themeKey].name}</span>
-                  {theme === themeKey && <i className="bi bi-check-lg ms-auto text-secondary"></i>}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Botón de idioma */}
-          <div className="lang-dropdown">
-            <button
-              className="btn btn-sm text-white border-0 bg-transparent"
-              type="button"
-              onClick={(e) => {
-                const langMenu = document.getElementById('langMenu');
-                if (langMenu) {
-                  langMenu.style.display = langMenu.style.display === 'none' ? 'block' : 'none';
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const menuWidth = 200;
-                  let leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
-                  leftPos = Math.max(10, leftPos);
-                  const maxRight = window.innerWidth - menuWidth - 10;
-                  leftPos = Math.min(maxRight, leftPos);
-                  langMenu.style.top = `${rect.bottom + 10}px`;
-                  langMenu.style.left = `${leftPos}px`;
-                }
-              }}
-              title={t('common:language.title')}
-            >
-              <span className="fs-5" style={{ paddingTop: '3px' }}>🌍</span>
-            </button>
-
-            {/* Menú de idiomas */}
-            <div
-              id="langMenu"
-              className="position-fixed rounded shadow-lg py-1"
-              style={{
-                display: 'none',
-                zIndex: 1000,
-                minWidth: '200px',
-                marginTop: '10px',
-                animation: 'fadeIn 0.2s ease-in-out',
-                backgroundColor: 'var(--light)',
-                border: '1px solid var(--dark)',
-                color: 'var(--dark)'
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  left: '20px',
-                  width: '0',
-                  height: '0',
-                  borderLeft: '8px solid transparent',
-                  borderRight: '8px solid transparent',
-                  borderBottom: '8px solid var(--light)'
-                }}
-              ></div>
-
-              <div className="px-3 py-2 border-bottom mb-1"
-                style={{ borderBottomColor: 'var(--dark)' }}>
-                <small style={{ color: 'var(--dark)' }}>{t('common:language.title')}</small>
-              </div>
-
-              {LANGUAGES.map((lang) => (
-                <button
-                  key={lang.code}
-                  className="dropdown-item d-flex align-items-center px-3 py-2"
-                  onClick={() => handleLanguageChange(lang.code)}
-                  style={{
-                    backgroundColor: i18n.language === lang.code ? 'rgba(0,0,0,0.04)' : 'transparent',
-                    transition: 'background-color 0.2s'
-                  }}
-                >
-                  <div
-                    className="me-3 rounded-circle"
-                    style={{
-                      backgroundColor: 'var(--light)',
-                      width: '24px',
-                      height: '24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                    }}
-                  >
-                    <span style={{ paddingTop: '3px' }}>{lang.icon}</span>
-                  </div>
-                  <span className="fw-medium">{t(`common:${lang.name}`)}</span>
-                  {i18n.language === lang.code && <i className="bi bi-check-lg ms-auto text-secondary"></i>}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Footer */}

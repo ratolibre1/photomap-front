@@ -73,9 +73,19 @@
     "copied": "Link copied to clipboard!",
     "views": "{{count}} views",
     "date_from": "From {{date}}",
-    "date_to": "Until {{date}}",
+    "date_to": "To {{date}}",
     "date_range": "{{startDate}} - {{endDate}}",
-    "view_all": "View all my maps"
+    "view_all": "View all my maps",
+    "anywhere": "Any location",
+    "any_date": "Any date",
+    "any_label": "Any label",
+    "delete_confirm": "Are you sure you want to delete the map \"{{title}}\"?",
+    "delete_success": "Map deleted successfully",
+    "delete_error": "Could not delete the map. Please try again.",
+    "location_filter": "📍 {{location}}",
+    "worldwide": "Worldwide",
+    "all_dates": "All dates",
+    "no_labels": "No labels"
   },
   "error": {
     "create_map": "Could not create the map. Please try again."
