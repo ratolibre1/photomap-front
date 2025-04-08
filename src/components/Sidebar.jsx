@@ -82,15 +82,16 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
   };
 
   return (
-    <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}>
-      {/* Logo/Brand */}
+    <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}
+      style={{ backgroundColor: THEMES[theme].colors.primary }}>
+      {/* Logo/Brand sin botón */}
       <div className="p-3 d-flex align-items-center">
         <Link to="/dashboard" className="brand-link d-flex align-items-center">
           <span className="fs-4 me-2" style={{ paddingTop: '3px' }}>📷</span>
           {expanded && <h1 className="brand-title">PhotoMap</h1>}
         </Link>
 
-        {/* Toggle button - visible when expanded */}
+        {/* Botón toggle solo visible cuando está expandido */}
         {expanded && (
           <Button
             variant="outline-light"
@@ -103,9 +104,9 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
         )}
       </div>
 
-      {/* Navigation menu */}
+      {/* Menú de navegación */}
       <Nav className="flex-column mb-auto">
-        {/* Toggle button - visible when collapsed */}
+        {/* Botón de expandir - solo visible cuando está colapsado */}
         {!expanded && (
           <Nav.Link
             as="button"
@@ -118,7 +119,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
           </Nav.Link>
         )}
 
-        {/* Menu items */}
+        {/* Menú unificado usando el array MENU_ITEMS */}
         {MENU_ITEMS.map((item) => (
           <Nav.Item key={item.path}>
             <Nav.Link
@@ -130,7 +131,9 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                 <span className={`${expanded ? 'me-3' : ''} fs-5`} style={{ paddingTop: '3px' }}>{item.icon}</span>
                 {expanded && (
                   <>
-                    <span>{t(item.label)}</span>
+                    <span className="nav-text">
+                      {t(item.label)}
+                    </span>
                     {item.isNew && <NewFeatureBadge position="inline" size="sm" rotate={-12} />}
                   </>
                 )}
@@ -140,7 +143,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
         ))}
       </Nav>
 
-      {/* Theme selector - visible when expanded */}
+      {/* Selector de tema cuando está expandido */}
       {expanded && (
         <>
           <div className="px-3 mb-3">
@@ -153,7 +156,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                   className={`theme-button ${theme === themeKey ? 'active' : ''}`}
                   style={{
                     backgroundColor: THEMES[themeKey].colors.light,
-                    color: THEMES[themeKey].colors.light
+                    color: THEMES[themeKey].colors.light,
                   }}
                   title={THEMES[themeKey].name}
                 >
@@ -163,7 +166,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
             </div>
           </div>
 
-          {/* Language selector */}
+          {/* Selector de idioma */}
           <div className="px-3 mb-3">
             <p className="section-title">{t('common:language.title')}:</p>
             <div className="d-flex flex-wrap gap-2">
@@ -202,6 +205,190 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
             </div>
           </div>
         </>
+      )}
+
+      {/* Cuando está colapsado, usamos un popup con opciones */}
+      {!expanded && (
+        <div className="py-2 d-flex flex-column align-items-center gap-2">
+          {/* Botón de tema */}
+          <div className="theme-dropdown">
+            <button
+              className="btn btn-sm text-white border-0 bg-transparent"
+              type="button"
+              onClick={(e) => {
+                const themeMenu = document.getElementById('themeMenu');
+                if (themeMenu) {
+                  themeMenu.style.display = themeMenu.style.display === 'none' ? 'block' : 'none';
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const menuWidth = 200;
+                  let leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
+                  leftPos = Math.max(10, leftPos);
+                  const maxRight = window.innerWidth - menuWidth - 10;
+                  leftPos = Math.min(maxRight, leftPos);
+                  themeMenu.style.top = `${rect.bottom + 10}px`;
+                  themeMenu.style.left = `${leftPos}px`;
+                }
+              }}
+              title={t('common:theme.title')}
+            >
+              <span className="fs-5" style={{ paddingTop: '3px' }}>🎨</span>
+            </button>
+
+            {/* Menú de temas */}
+            <div
+              id="themeMenu"
+              className="position-fixed rounded shadow-lg py-1"
+              style={{
+                display: 'none',
+                zIndex: 1000,
+                minWidth: '200px',
+                marginTop: '10px',
+                animation: 'fadeIn 0.2s ease-in-out',
+                backgroundColor: 'var(--light)',
+                border: '1px solid var(--dark)',
+                color: 'var(--dark)'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '20px',
+                  width: '0',
+                  height: '0',
+                  borderLeft: '8px solid transparent',
+                  borderRight: '8px solid transparent',
+                  borderBottom: '8px solid var(--light)'
+                }}
+              ></div>
+
+              <div className="px-3 py-2 border-bottom mb-1"
+                style={{ borderBottomColor: 'var(--dark)' }}>
+                <small style={{ color: 'var(--dark)' }}>{t('common:theme.title')}</small>
+              </div>
+
+              {Object.keys(THEMES).map((themeKey) => (
+                <button
+                  key={themeKey}
+                  className="dropdown-item d-flex align-items-center px-3 py-2"
+                  onClick={() => {
+                    setTheme(themeKey);
+                    document.getElementById('themeMenu').style.display = 'none';
+                  }}
+                  style={{
+                    backgroundColor: theme === themeKey ? 'rgba(0,0,0,0.04)' : 'transparent',
+                    transition: 'background-color 0.2s'
+                  }}
+                >
+                  <div
+                    className="me-3 rounded-circle"
+                    style={{
+                      backgroundColor: THEMES[themeKey].colors.light,
+                      width: '24px',
+                      height: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                    }}
+                  >
+                    <span style={{ paddingTop: '3px' }}>{THEMES[themeKey].icon}</span>
+                  </div>
+                  <span className="fw-medium">{THEMES[themeKey].name}</span>
+                  {theme === themeKey && <i className="bi bi-check-lg ms-auto text-secondary"></i>}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Botón de idioma */}
+          <div className="lang-dropdown">
+            <button
+              className="btn btn-sm text-white border-0 bg-transparent"
+              type="button"
+              onClick={(e) => {
+                const langMenu = document.getElementById('langMenu');
+                if (langMenu) {
+                  langMenu.style.display = langMenu.style.display === 'none' ? 'block' : 'none';
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const menuWidth = 200;
+                  let leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
+                  leftPos = Math.max(10, leftPos);
+                  const maxRight = window.innerWidth - menuWidth - 10;
+                  leftPos = Math.min(maxRight, leftPos);
+                  langMenu.style.top = `${rect.bottom + 10}px`;
+                  langMenu.style.left = `${leftPos}px`;
+                }
+              }}
+              title={t('common:language.title')}
+            >
+              <span className="fs-5" style={{ paddingTop: '3px' }}>🌍</span>
+            </button>
+
+            {/* Menú de idiomas */}
+            <div
+              id="langMenu"
+              className="position-fixed rounded shadow-lg py-1"
+              style={{
+                display: 'none',
+                zIndex: 1000,
+                minWidth: '200px',
+                marginTop: '10px',
+                animation: 'fadeIn 0.2s ease-in-out',
+                backgroundColor: 'var(--light)',
+                border: '1px solid var(--dark)',
+                color: 'var(--dark)'
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '20px',
+                  width: '0',
+                  height: '0',
+                  borderLeft: '8px solid transparent',
+                  borderRight: '8px solid transparent',
+                  borderBottom: '8px solid var(--light)'
+                }}
+              ></div>
+
+              <div className="px-3 py-2 border-bottom mb-1"
+                style={{ borderBottomColor: 'var(--dark)' }}>
+                <small style={{ color: 'var(--dark)' }}>{t('common:language.title')}</small>
+              </div>
+
+              {LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  className="dropdown-item d-flex align-items-center px-3 py-2"
+                  onClick={() => handleLanguageChange(lang.code)}
+                  style={{
+                    backgroundColor: i18n.language === lang.code ? 'rgba(0,0,0,0.04)' : 'transparent',
+                    transition: 'background-color 0.2s'
+                  }}
+                >
+                  <div
+                    className="me-3 rounded-circle"
+                    style={{
+                      backgroundColor: 'var(--light)',
+                      width: '24px',
+                      height: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                    }}
+                  >
+                    <span style={{ paddingTop: '3px' }}>{lang.icon}</span>
+                  </div>
+                  <span className="fw-medium">{t(`common:${lang.name}`)}</span>
+                  {i18n.language === lang.code && <i className="bi bi-check-lg ms-auto text-secondary"></i>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Footer */}

@@ -1,6 +1,5 @@
 .sidebar {
   transition: width 0.3s;
-  background-color: var(--primary);
   border-right: 1px solid var(--info);
 }
 
@@ -27,6 +26,14 @@
   background-color: rgba(255, 255, 255, 0.25);
 }
 
+.sidebar .nav-link .nav-text {
+  font-weight: normal;
+}
+
+.sidebar .nav-link.active .nav-text {
+  font-weight: 600;
+}
+
 .sidebar .brand-link {
   text-decoration: none;
   color: white;
@@ -40,32 +47,24 @@
 }
 
 .sidebar .toggle-button {
-  background: transparent;
+  width: 28px;
+  height: 28px;
+  padding: 0.25rem;
   border: none;
-  color: white;
-  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
 }
 
 .sidebar .theme-button {
   width: 32px;
   height: 32px;
+  padding: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   transition: all 0.3s ease;
-  border: none;
-  padding: 0.25rem;
-}
-
-.sidebar .theme-button.active {
-  border: 3px solid var(--info);
-  opacity: 1;
 }
 
 .sidebar .theme-button:not(.active) {
@@ -76,8 +75,12 @@
   opacity: 1;
 }
 
+.sidebar .theme-button.active {
+  border: 3px solid var(--info);
+}
+
 .sidebar .section-title {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
 }
