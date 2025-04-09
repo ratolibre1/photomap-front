@@ -13,34 +13,36 @@ const CreateMapModal = ({ show, onHide, filters, onSuccess }) => {
   const { locations } = useLocation();
   const { currentTheme } = useTheme();
 
-  const [mapData, setMapData] = useState({
+  // Inicializar el estado cuando se abre el modal
+  const [mapData, setMapData] = useState(() => ({
     title: '',
     description: '',
     isPublic: true,
-    colorPalette: currentTheme,
+    colorPalette: 'magmar', // valor por defecto inicial
     language: i18n.language.startsWith('es') ? 'es' : 'en'
-  });
+  }));
 
-  // Actualizar valores por defecto cuando cambia el idioma o tema actual
+  // Actualizar valores por defecto cuando se abre el modal Y el tema está disponible
   useEffect(() => {
-    if (show) {
+    if (show && currentTheme) {
+      console.log('Theme loaded:', currentTheme);
       setMapData(prev => ({
         ...prev,
         colorPalette: currentTheme,
         language: i18n.language.startsWith('es') ? 'es' : 'en'
       }));
     }
-  }, [currentTheme, i18n.language, show]);
+  }, [show, currentTheme]); // Agregamos currentTheme como dependencia
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   // Estado para almacenar los nombres de las ubicaciones
   const [locationNames, setLocationNames] = useState({
-    country: '',
-    region: '',
-    county: '',
-    city: ''
+    city: null,
+    county: null,
+    region: null,
+    country: null
   });
 
   // Función para formatear fechas según el idioma actual
@@ -60,34 +62,63 @@ const CreateMapModal = ({ show, onHide, filters, onSuccess }) => {
   useEffect(() => {
     if (show) {
       const names = {
-        country: '',
-        region: '',
-        county: '',
-        city: ''
+        city: null,
+        county: null,
+        region: null,
+        country: null
       };
 
-      // Buscar nombre del país
-      if (filters.country) {
-        const country = locations.countries.find(c => c._id === filters.country || c.id === filters.country);
-        if (country) names.country = country.name;
-      }
-
-      // Buscar nombre de la región
-      if (filters.region) {
-        const region = locations.regions.find(r => r._id === filters.region || r.id === filters.region);
-        if (region) names.region = region.name;
-      }
-
-      // Buscar nombre del condado/provincia
-      if (filters.county) {
-        const county = locations.counties.find(c => c._id === filters.county || c.id === filters.county);
-        if (county) names.county = county.name;
-      }
-
-      // Buscar nombre de la ciudad
+      // Si tenemos una ciudad, obtenemos toda la cadena
       if (filters.city) {
         const city = locations.cities.find(c => c._id === filters.city || c.id === filters.city);
-        if (city) names.city = city.name;
+        if (city) {
+          names.city = city.name;
+          const county = locations.counties.find(c => c._id === city.countyId);
+          if (county) {
+            names.county = county.name;
+            const region = locations.regions.find(r => r._id === county.regionId);
+            if (region) {
+              names.region = region.name;
+              const country = locations.countries.find(c => c._id === region.countryId);
+              if (country) {
+                names.country = country.name;
+              }
+            }
+          }
+        }
+      }
+      // Si tenemos una provincia/county, obtenemos región y país
+      else if (filters.province || filters.county) {
+        const county = locations.counties.find(c => c._id === (filters.province || filters.county) || c.id === (filters.province || filters.county));
+        if (county) {
+          names.county = county.name;
+          const region = locations.regions.find(r => r._id === county.regionId);
+          if (region) {
+            names.region = region.name;
+            const country = locations.countries.find(c => c._id === region.countryId);
+            if (country) {
+              names.country = country.name;
+            }
+          }
+        }
+      }
+      // Si tenemos una región, obtenemos el país
+      else if (filters.region) {
+        const region = locations.regions.find(r => r._id === filters.region || r.id === filters.region);
+        if (region) {
+          names.region = region.name;
+          const country = locations.countries.find(c => c._id === region.countryId);
+          if (country) {
+            names.country = country.name;
+          }
+        }
+      }
+      // Si solo tenemos país
+      else if (filters.country) {
+        const country = locations.countries.find(c => c._id === filters.country || c.id === filters.country);
+        if (country) {
+          names.country = country.name;
+        }
       }
 
       setLocationNames(names);
@@ -156,19 +187,25 @@ const CreateMapModal = ({ show, onHide, filters, onSuccess }) => {
     }
 
     // Ubicación (en su propia carta)
-    if (locationNames.city || locationNames.region || locationNames.country) {
-      let locationText = '';
+    if (locationNames.city || locationNames.region || locationNames.county || locationNames.country) {
+      let mainLocation = '';
       let locationDetail = [];
 
+      // Determinar la ubicación principal (la más específica) y los detalles
       if (locationNames.city) {
-        locationText = locationNames.city;
+        mainLocation = locationNames.city;
+        if (locationNames.county) locationDetail.push(locationNames.county);
+        if (locationNames.region) locationDetail.push(locationNames.region);
+        if (locationNames.country) locationDetail.push(locationNames.country);
+      } else if (locationNames.county) {
+        mainLocation = locationNames.county;
         if (locationNames.region) locationDetail.push(locationNames.region);
         if (locationNames.country) locationDetail.push(locationNames.country);
       } else if (locationNames.region) {
-        locationText = locationNames.region;
+        mainLocation = locationNames.region;
         if (locationNames.country) locationDetail.push(locationNames.country);
-      } else if (locationNames.country) {
-        locationText = locationNames.country;
+      } else {
+        mainLocation = locationNames.country;
       }
 
       formattedFilters.push(
@@ -176,9 +213,9 @@ const CreateMapModal = ({ show, onHide, filters, onSuccess }) => {
           <Card.Body className="py-2">
             <div key="location">
               <div className="fw-bold mb-2">📍 {t('common:filters.location')}</div>
-              <div>{locationText}</div>
+              <div className="fw-bold">{mainLocation}</div>
               {locationDetail.length > 0 && (
-                <div className="text-muted small">{locationDetail.join(', ')}</div>
+                <div className="text-muted small mt-1">{locationDetail.join(', ')}</div>
               )}
             </div>
           </Card.Body>
@@ -299,25 +336,18 @@ const CreateMapModal = ({ show, onHide, filters, onSuccess }) => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>{t('map:create_map.color_theme')}</Form.Label>
-                <div className="d-flex flex-wrap gap-2">
+                <Form.Select
+                  name="colorPalette"
+                  value={mapData.colorPalette}
+                  onChange={handleInputChange}
+                  className="d-flex align-items-center"
+                >
                   {Object.keys(THEMES).map((themeKey) => (
-                    <Button
-                      key={themeKey}
-                      variant={mapData.colorPalette === themeKey ? "primary" : "outline-secondary"}
-                      className="d-flex align-items-center"
-                      style={{
-                        backgroundColor: mapData.colorPalette === themeKey ? THEMES[themeKey].colors.primary : 'transparent',
-                        borderColor: THEMES[themeKey].colors.primary,
-                        color: mapData.colorPalette === themeKey ? '#fff' : THEMES[themeKey].colors.primary
-                      }}
-                      onClick={() => setMapData(prev => ({ ...prev, colorPalette: themeKey }))}
-                      type="button"
-                    >
-                      <span className="me-1">{THEMES[themeKey].icon}</span>
-                      {THEMES[themeKey].name}
-                    </Button>
+                    <option key={themeKey} value={themeKey}>
+                      {THEMES[themeKey].icon} {THEMES[themeKey].name}
+                    </option>
                   ))}
-                </div>
+                </Form.Select>
               </Form.Group>
             </Col>
             <Col md={6}>

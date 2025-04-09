@@ -21,6 +21,7 @@ const PhotoMap = () => {
   });
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState(null);
   const [showCreateMapModal, setShowCreateMapModal] = useState(false);
   const [toast, setToast] = useState(null);
@@ -32,7 +33,10 @@ const PhotoMap = () => {
 
   const fetchPhotos = async () => {
     try {
-      setLoading(true);
+      // Solo mostrar loading en la carga inicial
+      if (initialLoad) {
+        setLoading(true);
+      }
 
       // Crear objeto base con filtros
       const queryParams = {};
@@ -69,6 +73,7 @@ const PhotoMap = () => {
       setError('No pudimos cargar el mapa. Por favor, intenta nuevamente más tarde.');
     } finally {
       setLoading(false);
+      setInitialLoad(false);
     }
   };
 

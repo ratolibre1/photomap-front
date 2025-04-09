@@ -512,28 +512,23 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
       {showCreateMapButton && (
         <Collapse in={showCreateMapSection && hasActiveFilters()}>
           <div className="mt-4 border-top pt-4">
-            <div className="create-map-drawer bg-light rounded p-3 position-relative">
-              {/* Quitamos el badge de característica nueva de la caja */}
-              {/* <NewFeatureBadge position="top-right" rotate={12} /> */}
-
-              <div className="text-center mb-3">
-                <i className="bi bi-map-fill text-success fs-3"></i>
-                <h5 className="mb-0 mt-2">{t('filters:create_map_title')}</h5>
-                <p className="text-muted small">{t('filters:create_map_description')}</p>
-              </div>
-              <div className="d-flex justify-content-center">
-                <Button
-                  variant="success"
-                  className="px-4"
-                  onClick={() => onOpenCreateMapModal(filters)}
-                >
-                  <i className="bi bi-globe me-2"></i>
-                  {t('filters:create_map_button')}
-                  <span className="new-feature-badge-button">
-                    {t('common:badges.new')}
-                  </span>
-                </Button>
-              </div>
+            <div className="text-center mb-3">
+              <i className="bi bi-map-fill text-success fs-3"></i>
+              <h5 className="mb-0 mt-2">{t('filters:create_map_title')}</h5>
+              <p className="text-muted small">{t('filters:create_map_description')}</p>
+            </div>
+            <div className="d-flex justify-content-center">
+              <Button
+                variant="success"
+                className="px-4"
+                onClick={() => onOpenCreateMapModal(filters)}
+              >
+                <i className="bi bi-globe me-2"></i>
+                {t('filters:create_map_button')}
+                <span className="new-feature-badge-button">
+                  {t('common:badges.new')}
+                </span>
+              </Button>
             </div>
           </div>
         </Collapse>
@@ -541,12 +536,6 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
 
       {/* Estilo para la animación */}
       <style jsx="true">{`
-        .create-map-drawer {
-          transition: all 0.3s ease-in-out;
-          border-left: 4px solid var(--success);
-          box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        
         .btn-success {
           position: relative;
         }

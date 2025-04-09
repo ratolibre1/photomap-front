@@ -276,7 +276,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
                   <div class="marker-container">
                     <div class="marker-pin user-pin">
                       <div class="marker-thumbnail-container user-location-container">
-                        <i class="bi bi-person-fill-slash" style="color: white; font-size: 1.2rem;"></i>
+                        <i class="bi bi-incognito" style="color: white; font-size: 1.2rem;"></i>
                       </div>
                     </div>
                   </div>

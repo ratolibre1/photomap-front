@@ -11,19 +11,19 @@
   width: 60px;
 }
 
-.sidebar .nav-link {
+.sidebar .nav-link.nav-link {
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.2s ease;
 }
 
-.sidebar .nav-link:hover {
+.sidebar .nav-link.nav-link:hover {
   color: white;
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.sidebar .nav-link.active {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.25);
+.sidebar .nav-link.nav-link.active {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 .sidebar .nav-link .nav-text {
