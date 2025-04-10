@@ -304,20 +304,15 @@ const DeleteMapModal = ({ show, onHide, onConfirm, mapTitle }) => {
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>
-          <i className="bi bi-trash me-2 text-danger"></i>
-          {t('common:buttons.delete')}
-        </Modal.Title>
+        <Modal.Title>{t('common:mymaps.delete_map_title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>{t('common:mymaps.delete_confirm', { title: mapTitle })}</p>
-        <p className="text-muted mb-0">
-          <i className="bi bi-exclamation-triangle me-2"></i>
-          {t('common:confirmations.irreversible')}
-        </p>
+        <p>{t('common:mymaps.delete_map_confirm')}</p>
+        <p className="text-danger fw-bold">{mapTitle}</p>
+        <p>{t('common:mymaps.delete_map_warning')}</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="light" onClick={onHide}>
+        <Button variant="outline-secondary" onClick={onHide}>
           {t('common:buttons.cancel')}
         </Button>
         <Button variant="danger" onClick={onConfirm}>
@@ -325,6 +320,71 @@ const DeleteMapModal = ({ show, onHide, onConfirm, mapTitle }) => {
         </Button>
       </Modal.Footer>
     </Modal>
+  );
+};
+
+// Componente de skeleton para la carga de mapas
+const MapCardSkeleton = () => {
+  return (
+    <Card className="map-card h-100 shadow-sm border-0 position-relative">
+      <Card.Body className="position-relative p-4">
+        {/* Skeleton para badge de fotos */}
+        <div className="photo-count-badge">
+          <div className="photo-count-icon skeleton-bg"></div>
+          <div className="skeleton-text" style={{ width: '20px', height: '16px' }}></div>
+        </div>
+
+        {/* Skeleton para tema e idioma */}
+        <div className="theme-language-buttons">
+          <div className="theme-button skeleton-bg"></div>
+          <div className="language-button skeleton-bg"></div>
+        </div>
+
+        {/* Skeleton para título y fecha */}
+        <div className="map-title-container">
+          <div className="skeleton-text" style={{ width: '80%', height: '24px', marginBottom: '8px' }}></div>
+          <div className="skeleton-text" style={{ width: '50%', height: '16px', marginBottom: '16px' }}></div>
+        </div>
+
+        {/* Skeleton para descripción */}
+        <div className="map-description">
+          <div className="skeleton-text" style={{ width: '100%', height: '14px', marginBottom: '6px' }}></div>
+          <div className="skeleton-text" style={{ width: '90%', height: '14px' }}></div>
+        </div>
+
+        {/* Skeleton para filtros */}
+        <div className="filter-boxes mt-3">
+          <div className="filter-box mb-2">
+            <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
+            <div className="skeleton-text" style={{ width: '70%', height: '16px' }}></div>
+          </div>
+          <div className="filter-box mb-2">
+            <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
+            <div className="skeleton-text" style={{ width: '60%', height: '16px' }}></div>
+          </div>
+          <div className="filter-box">
+            <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
+            <div className="skeleton-text" style={{ width: '80%', height: '16px' }}></div>
+          </div>
+        </div>
+
+        {/* Skeleton para stats */}
+        <div className="map-stats">
+          <div className="skeleton-text" style={{ width: '60px', height: '20px', borderRadius: '16px' }}></div>
+          <div className="skeleton-text" style={{ width: '70px', height: '20px', borderRadius: '16px' }}></div>
+        </div>
+
+        {/* Skeleton para botones */}
+        <div className="map-actions">
+          <div className="skeleton-text" style={{ width: '100px', height: '36px', borderRadius: '4px' }}></div>
+          <div className="d-flex gap-2">
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
+          </div>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
 
@@ -428,12 +488,13 @@ const MyMaps = () => {
       </div>
 
       {loading ? (
-        <div className="text-center my-5">
-          <Spinner animation="border" role="status" variant="primary">
-            <span className="visually-hidden">{t('common:mymaps.loading')}</span>
-          </Spinner>
-          <p className="mt-2">{t('common:mymaps.loading')}</p>
-        </div>
+        <Row xs={1} md={2} lg={3} className="g-4">
+          {[...Array(5)].map((_, index) => (
+            <Col key={`skeleton-${index}`}>
+              <MapCardSkeleton />
+            </Col>
+          ))}
+        </Row>
       ) : error ? (
         <Alert variant="danger">
           <i className="bi bi-exclamation-triangle me-2"></i>

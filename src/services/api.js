@@ -51,6 +51,21 @@ export const authService = {
   register: (userData) => api.post('/users/register', userData),
   login: (credentials) => api.post('/users/login', credentials),
   updatePreferredLanguage: (languageCode) => api.patch('/users/language', { preferredLanguage: languageCode }),
+  updateProfile: (profileData) => api.patch('/users/profile', profileData),
+  changePassword: (passwordData) => api.patch('/users/password', passwordData),
+  updateProfilePhoto: (photoFile) => {
+    const formData = new FormData();
+    if (photoFile) {
+      formData.append('profilePhoto', photoFile);
+    }
+    return api.patch('/users/profile-photo', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  deleteProfilePhoto: () => api.delete('/users/profile-photo'),
+  getCurrentUser: () => api.get('/users/me'),
 };
 
 // Servicios de fotos

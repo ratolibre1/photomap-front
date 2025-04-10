@@ -8,5 +8,6 @@
   "categories": "Categories",
   "profile": "Profile",
   "admin": "Admin Tools",
-  "logout": "Sign out"
+  "help": "Help",
+  "logout": "Logout"
 }

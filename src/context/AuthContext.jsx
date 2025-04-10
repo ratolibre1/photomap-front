@@ -53,6 +53,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para actualizar los datos del usuario en localStorage
+  const updateUserData = (userData) => {
+    try {
+      // Obtener usuario actual
+      const currentUser = getUserFromStorage();
+
+      // Actualizar los datos con la nueva información
+      const updatedUser = { ...currentUser, ...userData };
+
+      // Guardar en localStorage
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      // Para forzar una actualización en componentes que usen el contexto
+      setLoading(prev => !prev);
+
+      return true;
+    } catch (err) {
+      console.error("Error al actualizar datos de usuario:", err);
+      setError('Error al actualizar datos de usuario');
+      return false;
+    }
+  };
+
   // Función de login
   const login = async (credentials) => {
     try {
@@ -113,7 +136,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: isAuthenticated(),
     getUser: getUserFromStorage,
-    updatePreferredLanguage
+    updatePreferredLanguage,
+    updateUserData
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

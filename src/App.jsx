@@ -18,6 +18,7 @@ import { LocationProvider } from './context/LocationContext';
 import { LabelProvider } from './context/LabelContext';
 import { AuthProvider } from './context/AuthContext';
 import MyMaps from './pages/MyMaps';
+import Help from './pages/Help';
 
 // Importamos el CSS del layout
 import './components/layout.css';
@@ -125,6 +126,13 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <MyMaps />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/help" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Help />
                       </Layout>
                     </ProtectedRoute>
                   } />

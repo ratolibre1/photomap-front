@@ -30,8 +30,10 @@ const MapComponent = ({ photos, loading }) => {
   const [userLocation, setUserLocation] = useState(null);
   const [userLocationLoading, setUserLocationLoading] = useState(false);
   const { user } = useAuth();
-  const { t } = useTranslation(['map']);
+  const { t, i18n } = useTranslation(['map']);
   const apiKey = import.meta.env.VITE_MAPTILER_API_KEY || 'your_maptiler_api_key';
+  // Referencia para almacenar los marcadores de fotos
+  const photoMarkersRef = useRef([]);
 
   // Estilos del mapa con traducciones
   const mapStyles = {
@@ -230,6 +232,95 @@ const MapComponent = ({ photos, loading }) => {
     };
   }, []); // Quitamos la dependencia de user
 
+  // Actualizar el popup cuando cambie el idioma
+  useEffect(() => {
+    if (userLocation && markersLayerRef.current) {
+      // Recrear el marcador del usuario con el idioma actualizado
+      updateUserMarker(userLocation[0], userLocation[1]);
+    }
+
+    // Actualizar los textos de todos los popups de fotos existentes
+    updatePhotoPopupTexts();
+  }, [i18n.language]); // Se ejecuta cuando cambia el idioma
+
+  // Función para actualizar los textos de los popups sin recargar los marcadores
+  const updatePhotoPopupTexts = () => {
+    // Recorrer todos los marcadores guardados y actualizar sus popups
+    photoMarkersRef.current.forEach(markerInfo => {
+      const { marker, photo } = markerInfo;
+      // Solo actualizamos el contenido si el popup existe
+      if (marker && marker._popup) {
+        marker._popup.setContent(createPopupContent(photo));
+      }
+    });
+  };
+
+  // Función para actualizar el marcador del usuario
+  const updateUserMarker = (latitude, longitude) => {
+    if (!markersLayerRef.current) return;
+
+    // Limpiar marcadores de usuario previos
+    markersLayerRef.current.clearLayers();
+
+    // Determinar el contenido del marcador según si el usuario tiene foto o no
+    let markerContent;
+    const userInitial = user && user.name ? user.name.charAt(0).toUpperCase() : '👤';
+
+    if (user && user.profilePhoto && user.profilePhoto.url) {
+      // Si hay foto de perfil, mostrarla
+      markerContent = `
+        <div class="marker-container">
+          <div class="marker-pin user-pin">
+            <div class="marker-thumbnail-container user-location-container">
+              <img src="${user.profilePhoto.url}" alt="${user.name}" class="user-photo">
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      // Si no hay foto, mostrar la inicial
+      markerContent = `
+        <div class="marker-container">
+          <div class="marker-pin user-pin">
+            <div class="marker-thumbnail-container user-location-container">
+              <div class="user-initial">${navigator.onLine ? userInitial : '👤'}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Crear y añadir el marcador del usuario a su propia capa
+    const userMarker = L.marker([latitude, longitude], {
+      icon: L.divIcon({
+        className: 'custom-user-marker',
+        html: markerContent,
+        iconSize: [50, 60],
+        iconAnchor: [25, 55],
+        popupAnchor: [0, -45]
+      })
+    });
+
+    // Añadir el marcador a la capa
+    markersLayerRef.current.addLayer(userMarker);
+
+    // Agregar pop-up al marcador con texto traducido actualizado
+    userMarker.bindPopup(`
+      <div class="user-location-popup text-center">
+        <h6 class="mb-2">${t('map:location.youAreHere')}</h6>
+        <p class="coordinates mb-2">Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}</p>
+      </div>
+    `);
+
+    setTimeout(() => {
+      const popups = document.querySelectorAll('.leaflet-popup-content-wrapper');
+      popups.forEach(popup => {
+        popup.style.padding = '10px';
+        popup.style.borderRadius = '10px';
+      });
+    }, 10);
+  };
+
   // Función para encontrar la ubicación del usuario
   const findUserLocation = (e) => {
     if (e) {
@@ -259,50 +350,8 @@ const MapComponent = ({ photos, loading }) => {
           }
         }, 100);
 
-        const userInitial = user && user.name ? user.name.charAt(0).toUpperCase() : '👤';
-
-        if (markersLayerRef.current) {
-          const userMarkers = document.querySelectorAll('.custom-user-marker');
-          userMarkers.forEach(marker => {
-            const parent = marker.parentElement;
-            if (parent && parent.parentElement) {
-              parent.parentElement.removeChild(parent);
-            }
-          });
-        }
-
-        const userMarker = L.marker([latitude, longitude], {
-          icon: L.divIcon({
-            className: 'custom-user-marker',
-            html: `
-              <div class="marker-container">
-                <div class="marker-pin user-pin">
-                  <div class="marker-thumbnail-container user-location-container">
-                    <div class="user-initial">${navigator.onLine ? userInitial : '👤'}</div>
-                  </div>
-                </div>
-              </div>
-            `,
-            iconSize: [50, 60],
-            iconAnchor: [25, 55],
-            popupAnchor: [0, -45]
-          })
-        }).addTo(markersLayerRef.current);
-
-        userMarker.bindPopup(`
-          <div class="user-location-popup text-center">
-            <h6 class="mb-2">${t('map:location.youAreHere')}</h6>
-            <p class="coordinates mb-2">Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}</p>
-          </div>
-        `);
-
-        setTimeout(() => {
-          const popups = document.querySelectorAll('.leaflet-popup-content-wrapper');
-          popups.forEach(popup => {
-            popup.style.padding = '10px';
-            popup.style.borderRadius = '10px';
-          });
-        }, 10);
+        // Actualizar el marcador con la función centralizada
+        updateUserMarker(latitude, longitude);
 
         setUserLocationLoading(false);
       },
@@ -389,6 +438,8 @@ const MapComponent = ({ photos, loading }) => {
       clusterLayerRef.current.clearLayers();
       const bounds = L.latLngBounds();
       let markersAdded = 0;
+      // Limpiar referencias anteriores
+      photoMarkersRef.current = [];
 
       photos.forEach(photo => {
         if (photo.location && photo.location.coordinates &&
@@ -424,6 +475,9 @@ const MapComponent = ({ photos, loading }) => {
 
             marker.bindPopup(createPopupContent(photo));
             clusterLayerRef.current.addLayer(marker);
+
+            // Guardar referencia al marcador junto con sus datos
+            photoMarkersRef.current.push({ marker, photo });
           }
         }
       });
@@ -434,7 +488,7 @@ const MapComponent = ({ photos, loading }) => {
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
       }
     }
-  }, [photos, loading]); // Quitamos userLocation de las dependencias ya que no es necesario
+  }, [photos, loading]); // Quitamos i18n.language para no recargar todo cuando cambia el idioma
 
   // Estilo CSS para el mapa
   const mapStyle = {
@@ -533,10 +587,11 @@ const MapComponent = ({ photos, loading }) => {
           justify-content: center;
         }
         .user-pin {
-          background: var(--primary, #0dcaf0);  /* Color diferente para distinguir del pin de foto */
+          background: white !important;  /* Fondo blanco */
+          border: 2px solid var(--primary, #0d6efd) !important;  /* Borde del color primario */
         }
         .user-location-container {
-          background: var(--secondary, #0d6efd);
+          background: var(--primary, #0d6efd);  /* Fondo del color primario */
         }
         .user-initial {
           color: white;
@@ -547,6 +602,12 @@ const MapComponent = ({ photos, loading }) => {
           align-items: center;
           width: 100%;
           height: 100%;
+        }
+        .user-photo {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover;
+          object-position: center;
         }
         .user-location-popup {
           text-align: center;

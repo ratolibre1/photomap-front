@@ -13,8 +13,8 @@
     "name": "Name",
     "email": "Email",
     "email_help": "You cannot change your email address.",
-    "bio": "Bio",
-    "bio_placeholder": "Tell us a little about yourself...",
+    "biography": "Biography",
+    "biography_placeholder": "Tell us a little about yourself...",
     "save_button": "Save Changes",
     "saving": "Saving...",
     "success": "Information updated successfully",
@@ -31,5 +31,14 @@
     "success": "Password updated successfully",
     "error": "Error changing password",
     "mismatch": "Passwords do not match"
+  },
+  "photo": {
+    "upload": "Upload photo",
+    "delete": "Delete",
+    "upload_success": "Profile photo updated",
+    "upload_error": "Error uploading photo",
+    "delete_success": "Profile photo deleted",
+    "delete_error": "Error deleting photo",
+    "confirm_delete": "Are you sure you want to delete your profile photo?"
   }
 }

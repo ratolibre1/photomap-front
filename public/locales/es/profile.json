@@ -13,8 +13,8 @@
     "name": "Nombre",
     "email": "Correo electrónico",
     "email_help": "No puedes cambiar tu correo electrónico.",
-    "bio": "Biografía",
-    "bio_placeholder": "Cuéntanos un poco sobre ti...",
+    "biography": "Biografía",
+    "biography_placeholder": "Cuéntanos un poco sobre ti...",
     "save_button": "Guardar cambios",
     "saving": "Guardando...",
     "success": "Información actualizada correctamente",
@@ -31,5 +31,14 @@
     "success": "Contraseña actualizada correctamente",
     "error": "Error al cambiar la contraseña",
     "mismatch": "Las contraseñas no coinciden"
+  },
+  "photo": {
+    "upload": "Subir foto",
+    "delete": "Eliminar",
+    "upload_success": "Foto de perfil actualizada",
+    "upload_error": "Error al subir la foto",
+    "delete_success": "Foto de perfil eliminada",
+    "delete_error": "Error al eliminar la foto",
+    "confirm_delete": "¿Estás seguro que quieres eliminar tu foto de perfil?"
   }
 }
