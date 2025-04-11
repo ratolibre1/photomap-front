@@ -18,7 +18,7 @@ const CreateMapModal = ({ show, onHide, filters, onSuccess }) => {
     title: '',
     description: '',
     isPublic: true,
-    colorPalette: 'magmar', // valor por defecto inicial
+    colorPalette: 'milotic', // valor por defecto inicial
     language: i18n.language.startsWith('es') ? 'es' : 'en'
   }));
 

@@ -35,7 +35,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
   // Seleccionar la paleta de colores a utilizar desde los temas disponibles
   const themeColors = colorPalette && THEMES[colorPalette]
     ? THEMES[colorPalette].colors
-    : THEMES.magmar.colors;
+    : THEMES.milotic.colors;
 
   // Mapeamos los colores para su uso en el mapa
   const palette = {

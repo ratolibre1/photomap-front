@@ -14,10 +14,10 @@
 
   /* Variables para componentes específicos */
   --sidebar-color: var(--light);
-  --sidebar-border: var(--secondary);
+  --sidebar-border: var(--primary);
 
   /* Variables para tarjetas y contenedores */
-  --card-header-bg: var(--light);
+  --card-header-bg: var(--primary);
 
   /* Variables para botones */
   --btn-hover-transform: scale(1.03);
@@ -39,15 +39,16 @@
 
 /* Botones */
 .btn-primary {
-  background-color: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--secondary);
+  border-color: var(--secondary);
   font-weight: bold;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: var(--btn-primary-hover) !important;
-  border-color: var(--btn-primary-hover) !important;
+  background-color: white !important;
+  border-color: var(--secondary) !important;
+  color: var(--secondary) !important;
 }
 
 /* Estilos para botones deshabilitados */
@@ -67,13 +68,13 @@
 }
 
 .btn-outline-primary {
-  color: var(--btn-primary-bg) !important;
-  border-color: var(--btn-primary-bg) !important;
+  color: var(--btn-secondary-bg) !important;
+  border-color: var(--btn-secondary-bg) !important;
 }
 
 .btn-outline-primary:hover {
   color: white !important;
-  background-color: var(--btn-primary-bg) !important;
+  background-color: var(--btn-secondary-bg) !important;
 }
 
 .btn-success {
@@ -113,6 +114,7 @@
   border-color: var(--card-border) !important;
   box-shadow: 0 4px 8px var(--card-shadow) !important;
   transition: transform 0.2s, box-shadow 0.2s;
+  background-color: color-mix(in srgb, var(--light) 30%, white) !important;
 }
 
 .card:hover {

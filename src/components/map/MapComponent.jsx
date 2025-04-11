@@ -587,8 +587,8 @@ const MapComponent = ({ photos, loading }) => {
           justify-content: center;
         }
         .user-pin {
-          background: white !important;  /* Fondo blanco */
-          border: 2px solid var(--primary, #0d6efd) !important;  /* Borde del color primario */
+          background: var(--secondary, #0d6efd) !important;
+          border: 2px solid #fff;  /* Borde del color primario */
         }
         .user-location-container {
           background: var(--primary, #0d6efd);  /* Fondo del color primario */

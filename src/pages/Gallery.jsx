@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Form, Button, Dropdown, Spinner, Alert, Container, Pagination, Badge, Modal, Toast, ToastContainer, InputGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { photoService, categoryService } from '../services/api';
-import axios from 'axios';
 import { API_URL } from '../config';
 import { useLabels } from '../context/LabelContext';
+import { useTranslation } from 'react-i18next';
 
 // Datos de prueba como respaldo
 const MOCK_PHOTOS = [
@@ -66,7 +66,6 @@ const Gallery = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [pagination, setPagination] = useState(null);
-  const [imageErrors, setImageErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20); // Valor predeterminado
   const [sortDirection, setSortDirection] = useState('desc'); // desc (descendente) por defecto
@@ -88,6 +87,9 @@ const Gallery = () => {
 
   // Añadir este hook para acceder al contexto de etiquetas
   const { refreshData: refreshLabels } = useLabels();
+
+  const navigate = useNavigate();
+  const { t } = useTranslation(['photos', 'common']);
 
   // Mover fetchPhotos fuera del useEffect para que sea accesible globalmente
   const fetchPhotos = async (page = 1) => {
@@ -181,69 +183,20 @@ const Gallery = () => {
     loadCategories();
   }, []);
 
-  // Extraer categorías únicas para filtros
-  const allCategories = Array.from(
-    new Set(photos.flatMap(photo => photo.categories || []))
-  ).sort();
-
-  // Formatear datos para mostrar en la galería
-  const displayPhotos = photos.map(photo => ({
-    id: photo._id,
-    title: photo.title || 'Sin título',
-    description: photo.description || 'Sin descripción',
-    thumbnail: photo.thumbnailUrl,
-    imageUrl: photo.originalUrl,
-    location: getLocationName(photo.location),
-    date: photo.timestamp ? new Date(photo.timestamp) : null,
-    tags: photo.categories || [],
-    isPublic: photo.isPublic
-  }));
-
   // Función para obtener una ubicación legible
-  function getLocationName(location) {
-    if (!location || !location.coordinates) return 'Ubicación desconocida';
+  const getLocationName = (hasValidCoordinates, location) => {
+    if (!hasValidCoordinates) {
+      return t('detail.unknown_location');
+    }
+    return `${location.coordinates[1].toFixed(6)}, ${location.coordinates[0].toFixed(6)}`;
+  };
 
-    // Formato simple de coordenadas, esto podría conectarse a una API de geocodificación
-    const [long, lat] = location.coordinates;
-    return `${lat.toFixed(5)}, ${long.toFixed(5)}`;
-  }
-
-  // Filtrado y ordenación
-  const filteredPhotos = displayPhotos
-    .filter(photo => {
-      if (searchTerm && !photo.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !photo.description.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return false;
-      }
-
-      if (selectedTag && !photo.tags.includes(selectedTag)) {
-        return false;
-      }
-
-      return true;
-    })
-    .sort((a, b) => {
-      let comparison = 0;
-
-      if (sortBy === 'timestamp') {
-        comparison = a.date - b.date;
-      } else if (sortBy === 'title') {
-        comparison = a.title.localeCompare(b.title);
-      } else if (sortBy === 'location') {
-        comparison = a.location.localeCompare(b.location);
-      }
-
-      // Invertir el resultado si la dirección es descendente
-      return sortDirection === 'desc' ? -comparison : comparison;
-    });
-
-  // Función para manejar errores de carga de imágenes
-  const handleImageError = (photoId) => {
-    setImageErrors(prev => ({
-      ...prev,
-      [photoId]: true
-    }));
-    console.log(`Error al cargar la imagen para la foto ${photoId}`);
+  // Nueva función para obtener la fecha formateada
+  const getFormattedDate = (hasValidDate, timestamp) => {
+    if (!hasValidDate) {
+      return t('detail.unknown_date');
+    }
+    return new Date(timestamp).toLocaleDateString();
   };
 
   // Función para cambiar visibilidad
@@ -772,7 +725,7 @@ const Gallery = () => {
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {photos.map(photo => (
             <Col key={photo._id}>
-              <Card className="h-100 hover-scale shadow-sm position-relative">
+              <Card className="h-100 hover-border shadow-sm position-relative">
                 {/* Checkbox de selección visible en modo selección */}
                 {selectMode && (
                   <div
@@ -795,18 +748,6 @@ const Gallery = () => {
                     title="Foto sin revisar"
                   >
                     <i className="bi bi-pencil-fill"></i>
-                  </Button>
-                )}
-
-                {/* Indicador de coordenadas inválidas */}
-                {photo.hasValidCoordinates === false && (
-                  <Button
-                    as={Link}
-                    to={`/photo/${photo._id}`}
-                    className="no-coordinates"
-                    title="Coordenadas inválidas - Requiere ubicación manual"
-                  >
-                    <i className="bi bi-geo-alt-fill"></i>
                   </Button>
                 )}
 
@@ -842,13 +783,15 @@ const Gallery = () => {
                     </Card.Title>
 
                     <div className="photo-info d-flex justify-content-between align-items-center">
-                      <small className="text-muted">
+                      <small className={photo.hasValidCoordinates === false ? "text-danger fw-bold text-decoration-underline" : "text-muted"}
+                        title={photo.hasValidCoordinates === false ? t('detail.invalid_coordinates') : ""}>
                         <i className="bi bi-geo-alt me-1"></i>
-                        {getLocationName(photo.location)}
+                        {getLocationName(photo.hasValidCoordinates, photo.location)}
                       </small>
-                      <small className="text-muted">
+                      <small className={photo.hasValidDate === false ? "text-danger fw-bold text-decoration-underline" : "text-muted"}
+                        title={photo.hasValidDate === false ? t('detail.invalid_date') : ""}>
                         <i className="bi bi-calendar me-1"></i>
-                        {new Date(photo.timestamp).toLocaleDateString()}
+                        {getFormattedDate(photo.hasValidDate, photo.timestamp)}
                       </small>
                     </div>
                   </Card.Body>

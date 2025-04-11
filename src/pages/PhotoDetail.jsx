@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, Form, Toast } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, Form, Toast, ToastContainer } from 'react-bootstrap';
 import { photoService } from '../services/api';
 import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
@@ -25,7 +25,9 @@ const PhotoDetail = () => {
     description: '',
     labels: [],
     isPublic: false,
-    coordinates: ''
+    coordinates: '',
+    date: '',
+    time: ''
   });
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
@@ -92,15 +94,16 @@ const PhotoDetail = () => {
 
   useEffect(() => {
     if (showEditModal && photo) {
-      const coordsString = photo.location?.coordinates ?
-        `${photo.location.coordinates[1].toFixed(6)}, ${photo.location.coordinates[0].toFixed(6)}` : '';
-
+      const timestamp = photo.timestamp ? new Date(photo.timestamp) : null;
       setEditForm({
         title: photo.title || '',
         description: photo.description || '',
-        isPublic: photo.isPublic || false,
         labels: photo.labels || [],
-        coordinates: coordsString
+        isPublic: photo.isPublic || false,
+        coordinates: photo.location?.coordinates ?
+          `${photo.location.coordinates[1]}, ${photo.location.coordinates[0]}` : '',
+        date: timestamp ? timestamp.toISOString().split('T')[0] : '',
+        time: timestamp ? timestamp.toTimeString().slice(0, 5) : ''
       });
     }
   }, [photo, showEditModal]);
@@ -158,7 +161,9 @@ const PhotoDetail = () => {
           photo.isPublic === true ||
           photo.public === true,
         coordinates: photo.location?.coordinates ?
-          `${photo.location.coordinates[1].toFixed(6)}, ${photo.location.coordinates[0].toFixed(6)}` : ''
+          `${photo.location.coordinates[1]}, ${photo.location.coordinates[0]}` : '',
+        date: photo.timestamp ? new Date(photo.timestamp).toISOString().split('T')[0] : '',
+        time: photo.timestamp ? new Date(photo.timestamp).toTimeString().slice(0, 5) : ''
       });
 
       setShowEditModal(true);
@@ -180,18 +185,31 @@ const PhotoDetail = () => {
       setSaving(true);
       setSaveError(null);
 
-      const formData = new FormData();
-      formData.append('title', editForm.title);
-      formData.append('description', editForm.description);
-      formData.append('isPublic', editForm.isPublic);
-      formData.append('coordinates', editForm.coordinates);
+      // Preparar los datos para enviar
+      const updateData = {
+        title: editForm.title,
+        description: editForm.description,
+        isPublic: editForm.isPublic,
+        labels: editForm.labels.map(label => label._id || label)
+      };
 
-      // Convertir etiquetas a array de IDs antes de enviar
-      const labelIds = editForm.labels.map(label => label._id || label.id);
-      formData.append('labels', labelIds);
+      // Agregar coordenadas si existen
+      if (editForm.coordinates.trim()) {
+        const [lat, lng] = editForm.coordinates.split(',').map(coord => parseFloat(coord.trim()));
+        if (!isNaN(lat) && !isNaN(lng)) {
+          updateData.coordinates = [lng, lat]; // MongoDB usa [longitude, latitude]
+        }
+      }
 
-      // Enviar formData al API
-      await photoService.updatePhoto(id, formData);
+      // Agregar fecha y hora si existen
+      if (editForm.date) {
+        updateData.date = editForm.date;
+        if (editForm.time) {
+          updateData.time = editForm.time;
+        }
+      }
+
+      const response = await photoService.updatePhoto(id, updateData);
 
       // Actualizar el contexto de etiquetas para reflejar los cambios en los contadores
       await refreshLabels();
@@ -200,8 +218,19 @@ const PhotoDetail = () => {
       setShowEditModal(false);
 
       // Recargar los datos de la foto para mostrar la información actualizada
-      const response = await photoService.getPhoto(id);
       const updatedPhoto = response.data.data.photo || response.data.data;
+
+      // Si las etiquetas vienen como IDs, obtener los objetos completos del contexto
+      if (Array.isArray(updatedPhoto.labels) && updatedPhoto.labels.length > 0 && typeof updatedPhoto.labels[0] === 'string') {
+        // Obtener todas las etiquetas disponibles del contexto
+        const allLabels = categoriesWithLabels.flatMap(cat => cat.labels || []);
+
+        // Reemplazar los IDs con los objetos completos del contexto
+        updatedPhoto.labels = updatedPhoto.labels.map(labelId =>
+          allLabels.find(label => (label._id || label.id) === labelId) || { _id: labelId, name: 'Label' }
+        );
+      }
+
       setPhoto(updatedPhoto);
 
       // Mostrar notificación de éxito
@@ -431,36 +460,53 @@ const PhotoDetail = () => {
                   {photo.description || t('detail.no_description')}
                 </p>
 
-                <strong>{t('detail.date')}:</strong> {photo.timestamp ? new Date(photo.timestamp).toLocaleString() : t('detail.unknown_date')}
+                <strong>{t('detail.date')}:</strong>
+                <p className={photo.hasValidDate === false ? "text-danger mb-2" : "mb-2"}>
+                  {photo.timestamp ? new Date(photo.timestamp).toLocaleString() : t('detail.unknown_date')}
+                  {photo.hasValidDate === false && (
+                    <i className="bi bi-exclamation-circle ms-2" title={t('detail.invalid_date')}></i>
+                  )}
+                </p>
                 <hr></hr>
                 <strong>{t('detail.location')}:</strong>
                 {photo.geocodingDetails?.displayName && (
                   <p>{photo.geocodingDetails.displayName}</p>
                 )}
-                {photo.location?.coordinates && (
-                  <p className="text d-flex align-items-center">
-                    ({photo.location.coordinates[1].toFixed(6)}, {photo.location.coordinates[0].toFixed(6)})
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      onClick={copyCoordinates}
-                      title={t('detail.copy_coordinates')}
-                      className="ms-2 icon-button"
-                    >
-                      <i className="bi bi-clipboard"></i>
-                    </Button>
-
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${photo.location.coordinates[1]},${photo.location.coordinates[0]}`, '_blank')}
-                      title={t('detail.view_in_maps')}
-                      className="ms-1 icon-button"
-                    >
-                      <i className="bi bi-globe2"></i>
-                    </Button>
-                  </p>
-                )}
+                <p className="text d-flex align-items-center">
+                  {photo.hasValidCoordinates === false ? (
+                    <span className="text-danger"
+                      title={t('detail.invalid_coordinates')}>
+                      {t('detail.unknown_location')}
+                      <i className="bi bi-exclamation-circle ms-2"></i>
+                    </span>
+                  ) : photo.location?.coordinates ? (
+                    <>
+                      ({photo.location.coordinates[1].toFixed(6)}, {photo.location.coordinates[0].toFixed(6)})
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={copyCoordinates}
+                        title={t('detail.copy_coordinates')}
+                        className="ms-2 icon-button"
+                      >
+                        <i className="bi bi-clipboard"></i>
+                      </Button>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() => window.open('https://maps.google.com/', '_blank')}
+                        title={t('detail.view_in_maps')}
+                        className="ms-1 icon-button"
+                      >
+                        <i className="bi bi-globe2"></i>
+                      </Button>
+                    </>
+                  ) : (
+                    <span className="text-muted">
+                      {t('detail.unknown_location_feminine')}
+                    </span>
+                  )}
+                </p>
 
                 <hr></hr>
 
@@ -582,12 +628,13 @@ const PhotoDetail = () => {
 
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>{t('edit.photo_title')}</Form.Label>
+              <Form.Label>{t('edit.photo_title')} <span className="text-danger">*</span></Form.Label>
               <Form.Control
                 type="text"
                 name="title"
                 value={editForm.title}
                 onChange={handleFormChange}
+                required
               />
             </Form.Group>
 
@@ -647,6 +694,32 @@ const PhotoDetail = () => {
                 {t('edit.coordinates_help')}
               </Form.Text>
             </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('edit.date')}</Form.Label>
+              <Row>
+                <Col>
+                  <Form.Control
+                    type="date"
+                    value={editForm.date}
+                    onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                  />
+                  <Form.Text className="text-muted">
+                    {t('edit.date_help')}
+                  </Form.Text>
+                </Col>
+                <Col>
+                  <Form.Control
+                    type="time"
+                    value={editForm.time}
+                    onChange={(e) => setEditForm({ ...editForm, time: e.target.value })}
+                  />
+                  <Form.Text className="text-muted">
+                    {t('edit.time_help')}
+                  </Form.Text>
+                </Col>
+              </Row>
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -656,7 +729,7 @@ const PhotoDetail = () => {
           <Button
             variant="primary"
             onClick={handleSaveChanges}
-            disabled={saving}
+            disabled={saving || !editForm.title?.trim()}
           >
             {saving ? (
               <>
@@ -690,25 +763,23 @@ const PhotoDetail = () => {
       </Modal>
 
       {/* Toast para notificación de copia */}
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        delay={3000}
-        autohide
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          zIndex: 9999
-        }}
-      >
-        <Toast.Header>
-          <i className="bi bi-info-circle me-2"></i>
-          <strong className="me-auto">{t('toast.title')}</strong>
-          <small>{t('toast.now')}</small>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
+      <ToastContainer position="bottom-end" className="p-3">
+        <Toast
+          show={showToast}
+          onClose={() => setShowToast(false)}
+          delay={3000}
+          autohide
+          bg="info"
+          className="text-white"
+        >
+          <Toast.Header>
+            <i className="bi bi-info-circle me-2"></i>
+            <strong className="me-auto">{t('toast.title')}</strong>
+            <small>{t('toast.now')}</small>
+          </Toast.Header>
+          <Toast.Body>{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
 
       <style dangerouslySetInnerHTML={{
         __html: `

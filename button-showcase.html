@@ -10,7 +10,7 @@
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <style>
-    /* Variables de tema - Basado en Magmar */
+    /* Variables de tema - Basado en Milotic */
     :root {
       --primary: #2b2a2c;
       --secondary: #da2f37;
@@ -270,7 +270,7 @@
       opacity: 1;
     }
 
-    .magmar-theme {
+    .milotic-theme {
       background-color: #ece7d7;
     }
 
@@ -535,8 +535,8 @@
     }
 
     /* Estilos para los diferentes temas */
-    /* Tema Magmar (default) */
-    .magmar-theme-vars {
+    /* Tema Milotic (default) */
+    .milotic-theme-vars {
       --primary: #2b2a2c;
       --secondary: #da2f37;
       --info: #eaa845;
@@ -602,13 +602,13 @@
   </style>
 </head>
 
-<body class="magmar-theme-vars">
+<body class="milotic-theme-vars">
   <div class="sticky-palette">
     <h3>Selector de Tema</h3>
     <div class="theme-selector">
-      <div class="theme-option active" data-theme="magmar">
-        <div class="theme-icon magmar-theme">🌋</div>
-        <span>Magmar</span>
+      <div class="theme-option active" data-theme="milotic">
+        <div class="theme-icon milotic-theme">🌋</div>
+        <span>Milotic</span>
       </div>
       <div class="theme-option" data-theme="caterpie">
         <div class="theme-icon caterpie-theme">🐛</div>
@@ -1257,7 +1257,7 @@
         <div>
           <div class="state-title">Temas (Normal, Hover, Seleccionado)</div>
           <div class="theme-buttons">
-            <button class="theme-button magmar-theme">🌋</button>
+            <button class="theme-button milotic-theme">🌋</button>
             <button class="theme-button caterpie-theme hover-simulation">🐛</button>
             <button class="theme-button oddish-theme selected">🌱</button>
           </div>
@@ -1278,7 +1278,7 @@
             <span class="color-box" style="background-color: #999;"></span> Fondo: #999 |
             <span class="color-box" style="background-color: white;"></span> Texto: Blanco
           </div>
-          <button class="theme-button magmar-theme" disabled>🌋</button>
+          <button class="theme-button milotic-theme" disabled>🌋</button>
           <button class="language-button" disabled>🇨🇱</button>
         </div>
       </div>
@@ -1433,7 +1433,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       // Definición de los temas y sus valores hexadecimales
       const themes = {
-        magmar: {
+        milotic: {
           primary: '#2b2a2c',
           secondary: '#da2f37',
           info: '#eaa845',
@@ -1500,7 +1500,7 @@
       }
 
       // Inicializa los valores de colores
-      updateColorValues('magmar');
+      updateColorValues('milotic');
 
       // Selector de temas
       const themeOptions = document.querySelectorAll('.theme-option');

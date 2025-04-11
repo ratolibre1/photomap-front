@@ -13,7 +13,7 @@ Los botones se clasifican según su tipo, estilo y propósito. Para cada grupo, 
 
 El proyecto utiliza una paleta de colores dinámica basada en temas. Las variables de color principales son:
 
-| Variable     | Descripción                              | Ejemplo (tema Magmar) |
+| Variable     | Descripción                              | Ejemplo (tema Milotic) |
 |--------------|------------------------------------------|----------------------|
 | `--primary`  | Color principal de la aplicación         | `#2b2a2c`            |
 | `--secondary`| Color secundario / de acento             | `#da2f37`            |
@@ -32,7 +32,7 @@ El proyecto utiliza una paleta de colores dinámica basada en temas. Las variabl
 
 **Apariencia:**
 - **Normal:** 
-  - Fondo: `var(--primary)` (#2b2a2c en tema Magmar)
+  - Fondo: `var(--primary)` (#2b2a2c en tema Milotic)
   - Texto: Blanco (#FFFFFF)
   - Borde: `var(--primary)`
   
@@ -103,7 +103,7 @@ El proyecto utiliza una paleta de colores dinámica basada en temas. Las variabl
 
 **Apariencia:**
 - **Normal:** 
-  - Fondo: `var(--success)` (#20a166 en tema Magmar)
+  - Fondo: `var(--success)` (#20a166 en tema Milotic)
   - Texto: `var(--btn-success-text)` (blanco o negro dependiendo del contraste)
   - Borde: `var(--success)`
   
@@ -164,7 +164,7 @@ El proyecto utiliza una paleta de colores dinámica basada en temas. Las variabl
 
 **Apariencia:**
 - **Normal:** 
-  - Fondo: `var(--danger)` (#e92f10 en tema Magmar)
+  - Fondo: `var(--danger)` (#e92f10 en tema Milotic)
   - Texto: `var(--btn-danger-text)` (blanco o negro dependiendo del contraste)
   - Borde: `var(--danger)`
   

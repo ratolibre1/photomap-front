@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Badge, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Badge, OverlayTrigger, Tooltip, Modal, Toast, ToastContainer } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { publicMapService } from '../services/api';
 import { THEMES } from '../context/ThemeContext';
@@ -12,7 +12,7 @@ import './MyMaps.css';
 
 const MapCard = ({ map, onDelete, onEdit, onShare }) => {
   const { t } = useTranslation(['common']);
-  const themeData = THEMES[map.colorPalette] || THEMES.magmar;
+  const themeData = THEMES[map.colorPalette] || THEMES.milotic;
   const mapDate = new Date(map.createdAt);
   const photoCount = map.stats?.photoCount || 0;
   const { labels } = useLabels();
@@ -525,25 +525,26 @@ const MyMaps = () => {
       )}
 
       {/* Toast de confirmación */}
-      {toast && (
-        <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 2000 }}>
-          <div className={`toast show ${toast.type === 'error' ? 'bg-danger text-white' : ''}`} role="alert" aria-live="assertive" aria-atomic="true">
-            <div className="toast-header">
-              <i className={`bi ${toast.type === 'error' ? 'bi-exclamation-circle text-danger' : 'bi-clipboard-check text-success'} me-2`}></i>
+      <ToastContainer position="bottom-end" className="p-3">
+        {toast && (
+          <Toast
+            onClose={() => setToast(null)}
+            show={true}
+            delay={3000}
+            autohide
+            bg={toast.type === 'error' ? 'danger' : 'success'}
+            className="text-white"
+          >
+            <Toast.Header>
+              <i className={`bi ${toast.type === 'error' ? 'bi-exclamation-circle' : 'bi-clipboard-check'} me-2`}></i>
               <strong className="me-auto">{toast.title}</strong>
-              <button
-                type="button"
-                className="btn-close"
-                onClick={() => setToast(null)}
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="toast-body">
+            </Toast.Header>
+            <Toast.Body>
               {toast.message}
-            </div>
-          </div>
-        </div>
-      )}
+            </Toast.Body>
+          </Toast>
+        )}
+      </ToastContainer>
 
       {/* Modal de confirmación de borrado */}
       <DeleteMapModal

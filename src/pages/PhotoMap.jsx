@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Alert, Toast } from 'react-bootstrap';
+import { Container, Row, Col, Card, Alert, Toast, ToastContainer } from 'react-bootstrap';
 import MapComponent from '../components/map/MapComponent';
 import SearchFilters from '../components/gallery/SearchFilters';
 import { photoService } from '../services/api';
@@ -209,8 +209,8 @@ const PhotoMap = () => {
       />
 
       {/* Toast para mostrar mensajes de confirmación */}
-      {toast && (
-        <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 2000 }}>
+      <ToastContainer position="bottom-end" className="p-3">
+        {toast && (
           <Toast
             onClose={() => setToast(null)}
             show={true}
@@ -232,8 +232,8 @@ const PhotoMap = () => {
               </div>
             </Toast.Body>
           </Toast>
-        </div>
-      )}
+        )}
+      </ToastContainer>
     </Container>
   );
 };
