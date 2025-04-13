@@ -777,9 +777,9 @@ const Gallery = () => {
                   <Card.Body>
                     <Card.Title
                       className="text-truncate text-center mb-3"
-                      style={{ color: 'var(--primary)' }}
+                      style={{ color: 'var(--bs-secondary-color)' }}
                     >
-                      {photo.title || 'Sin título'}
+                      {photo.title || '-Sin título-'}
                     </Card.Title>
 
                     <div className="photo-info d-flex justify-content-between align-items-center">

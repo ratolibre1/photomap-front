@@ -422,6 +422,10 @@ const MapComponent = ({ photos, loading }) => {
     linkButton.className = 'btn btn-sm btn-primary';
     linkButton.textContent = t('map:photo.viewDetails');
     linkButton.style.marginTop = '8px';
+    // Forzar estilos para sobrescribir Leaflet
+    linkButton.style.backgroundColor = 'var(--secondary)';
+    linkButton.style.borderColor = 'var(--secondary)';
+    linkButton.style.color = 'white';
 
     linkButton.addEventListener('click', function (e) {
       e.preventDefault();

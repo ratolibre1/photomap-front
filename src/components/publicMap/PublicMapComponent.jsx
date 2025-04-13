@@ -346,7 +346,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
   // Función para generar el contenido del popup
   const createPopupContent = (photo) => {
     const popupContent = document.createElement('div');
-    popupContent.style.width = '200px';
+    popupContent.style.width = '220px';
     popupContent.style.textAlign = 'center';
 
     const title = document.createElement('h6');
@@ -360,6 +360,9 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
       img.style.maxWidth = '100%';
       img.style.height = 'auto';
       img.style.maxHeight = '150px';
+      img.style.minHeight = '100px';
+      img.style.minWidth = '100px';
+      img.style.objectFit = 'cover';
       img.style.borderRadius = '5px';
       popupContent.appendChild(img);
     } else {
@@ -376,8 +379,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
       popupContent.appendChild(description);
     }
 
-    // En el mapa público, no permitimos ver detalles ya que el usuario no está autenticado
-    // Solo mostramos la información básica de la foto
+    // En el mapa público, no mostramos el botón de ver detalles
 
     return popupContent;
   };

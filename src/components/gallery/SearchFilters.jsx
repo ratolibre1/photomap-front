@@ -9,6 +9,8 @@ import enUS from 'date-fns/locale/en-US'; // Importar localización inglesa
 import { useTranslation } from 'react-i18next';
 import { photoService } from '../../services/api';
 import LabelSelector from '../common/LabelSelector';
+import LocationSelector from '../common/LocationSelector';
+import { DropdownProvider } from '../../context/DropdownContext';
 import NewFeatureBadge from '../common/NewFeatureBadge';
 
 const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, onOpenCreateMapModal }) => {
@@ -372,163 +374,170 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
     <div className="search-filters p-3 bg-light border rounded mb-3">
       <h6 className="mb-3">{t('title')}</h6>
 
-      <Row>
-        {/* COLUMNA IZQUIERDA: Filtros de ubicación y etiquetas */}
-        <Col md={5} lg={4}>
-          {/* Filtros de ubicación en vertical */}
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.country')}</Form.Label>
-            <Form.Select
-              value={filters.country || ''}
-              onChange={(e) => handleLocationChange('country', e.target.value)}
-            >
-              <option value="">{t('location.select_country')}</option>
-              {filteredLocations.countries.map(country => (
-                <option key={country.id || country._id} value={country.id || country._id}>
-                  {country.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.countries && <small className="text-muted">{t('location.loading_countries')}</small>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.region')}</Form.Label>
-            <Form.Select
-              value={filters.region || ''}
-              onChange={(e) => handleLocationChange('region', e.target.value)}
-            >
-              <option value="">{t('location.select_region')}</option>
-              {filteredLocations.regions.map(region => (
-                <option key={region.id || region._id} value={region.id || region._id}>
-                  {region.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.regions && <small className="text-muted">{t('location.loading_regions')}</small>}
-            {filteredLocations.regions.length === 0 && filters.country &&
-              <small className="text-muted">{t('location.no_regions')}</small>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.province')}</Form.Label>
-            <Form.Select
-              value={filters.county || ''}
-              onChange={(e) => handleLocationChange('county', e.target.value)}
-            >
-              <option value="">{t('location.select_province')}</option>
-              {filteredLocations.counties.map(county => (
-                <option key={county.id || county._id} value={county.id || county._id}>
-                  {county.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.counties && <small className="text-muted">{t('location.loading_provinces')}</small>}
-            {filteredLocations.counties.length === 0 && filters.region &&
-              <small className="text-muted">{t('location.no_provinces')}</small>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.city')}</Form.Label>
-            <Form.Select
-              value={filters.city || ''}
-              onChange={(e) => handleLocationChange('city', e.target.value)}
-            >
-              <option value="">{t('location.select_city')}</option>
-              {filteredLocations.cities.map(city => (
-                <option key={city.id || city._id} value={city.id || city._id}>
-                  {city.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.cities && <small className="text-muted">{t('location.loading_cities')}</small>}
-            {filteredLocations.cities.length === 0 && filters.county &&
-              <small className="text-muted">{t('location.no_cities')}</small>}
-          </Form.Group>
-
-          {/* Selector de etiquetas */}
-          <Form.Group className="mb-3">
-            <Form.Label>{t('labels:title')}</Form.Label>
-            <LabelSelector
-              selectedLabels={filters.labels || []}
-              onLabelSelect={handleLabelSelect}
-              onLabelRemove={handleLabelRemove}
-              showPhotoCount={true}
-            />
-          </Form.Group>
-
-          {/* Botón de reinicio de filtros */}
-          {hasActiveFilters() && (
-            <div className="d-flex justify-content-center mt-3">
-              <Button
-                variant="outline-secondary"
-                size="sm"
-                onClick={handleResetFilters}
-              >
-                <i className="bi bi-x-circle me-2"></i>
-                {t('filters:reset_filters')}
-              </Button>
-            </div>
-          )}
-        </Col>
-
-        {/* COLUMNA DERECHA: Calendario */}
-        <Col md={7} lg={8}>
-          <Form.Group>
-            <Form.Label>{t('date.title')}</Form.Label>
-            <div className="date-range-container">
-              {loadingCalendarData && (
-                <div className="calendar-loading-overlay">
-                  <div className="text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                </div>
-              )}
-              <DateRange
-                key={`date-range-${i18n.language}`}
-                editableDateInputs={true}
-                onChange={handleDateRangeChange}
-                moveRangeOnFirstSelection={false}
-                ranges={dateRangeState}
-                months={2}
-                direction="horizontal"
-                locale={currentLocale}
-                weekdayDisplayFormat="EEEEE"
-                rangeColors={["var(--secondary)"]}
-                showMonthAndYearPickers={true}
-                onShownDateChange={handleShownDateChange}
-                dayContentRenderer={renderDayContent}
-                startDatePlaceholder={currentDatePlaceholder}
-                endDatePlaceholder={currentDatePlaceholder}
-                showSelectionPreview={true}
-                className="w-100"
+      <DropdownProvider>
+        <Row>
+          {/* COLUMNA IZQUIERDA: Filtros de ubicación y etiquetas */}
+          <Col md={5} lg={4}>
+            {/* Filtros de ubicación en vertical */}
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.country')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.countries}
+                selectedValue={filters.country || ''}
+                onSelect={(value) => handleLocationChange('country', value)}
+                placeholder={t('location.select_country')}
+                loading={loading.countries}
+                noOptionsMessage={t('location.no_countries')}
+                icon="globe"
+                id="country-selector"
               />
-            </div>
-          </Form.Group>
-        </Col>
-      </Row>
+              {loading.countries && <small className="text-muted">{t('location.loading_countries')}</small>}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.region')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.regions}
+                selectedValue={filters.region || ''}
+                onSelect={(value) => handleLocationChange('region', value)}
+                placeholder={t('location.select_region')}
+                loading={loading.regions}
+                noOptionsMessage={
+                  filters.country
+                    ? t('location.no_regions')
+                    : t('location.select_country_first')
+                }
+                icon="map"
+                id="region-selector"
+              />
+              {loading.regions && <small className="text-muted">{t('location.loading_regions')}</small>}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.province')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.counties}
+                selectedValue={filters.county || ''}
+                onSelect={(value) => handleLocationChange('county', value)}
+                placeholder={t('location.select_province')}
+                loading={loading.counties}
+                noOptionsMessage={
+                  filters.region
+                    ? t('location.no_provinces')
+                    : t('location.select_region_first')
+                }
+                icon="geo-alt-fill"
+                id="province-selector"
+              />
+              {loading.counties && <small className="text-muted">{t('location.loading_provinces')}</small>}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.city')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.cities}
+                selectedValue={filters.city || ''}
+                onSelect={(value) => handleLocationChange('city', value)}
+                placeholder={t('location.select_city')}
+                loading={loading.cities}
+                noOptionsMessage={
+                  filters.county
+                    ? t('location.no_cities')
+                    : t('location.select_province_first')
+                }
+                icon="building"
+                id="city-selector"
+              />
+              {loading.cities && <small className="text-muted">{t('location.loading_cities')}</small>}
+            </Form.Group>
+
+            {/* Selector de etiquetas */}
+            <Form.Group className="mb-3">
+              <Form.Label>{t('labels:title')}</Form.Label>
+              <div className="w-100">
+                <LabelSelector
+                  selectedLabels={filters.labels || []}
+                  onLabelSelect={handleLabelSelect}
+                  onLabelRemove={handleLabelRemove}
+                  showPhotoCount={true}
+                  id="labels-selector"
+                />
+              </div>
+            </Form.Group>
+
+            {/* Botón de reinicio de filtros */}
+            {hasActiveFilters() && (
+              <div className="d-flex justify-content-center mt-3">
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={handleResetFilters}
+                >
+                  <i className="bi bi-x-circle me-2"></i>
+                  {t('filters:reset_filters')}
+                </Button>
+              </div>
+            )}
+          </Col>
+
+          {/* COLUMNA DERECHA: Calendario */}
+          <Col md={7} lg={8}>
+            <Form.Group>
+              <Form.Label>{t('date.title')}</Form.Label>
+              <div className="date-range-container">
+                {loadingCalendarData && (
+                  <div className="calendar-loading-overlay">
+                    <div className="text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                )}
+                <DateRange
+                  key={`date-range-${i18n.language}`}
+                  editableDateInputs={true}
+                  onChange={handleDateRangeChange}
+                  moveRangeOnFirstSelection={false}
+                  ranges={dateRangeState}
+                  months={2}
+                  direction="horizontal"
+                  locale={currentLocale}
+                  weekdayDisplayFormat="EEEEE"
+                  rangeColors={["var(--secondary)"]}
+                  showMonthAndYearPickers={true}
+                  onShownDateChange={handleShownDateChange}
+                  dayContentRenderer={renderDayContent}
+                  startDatePlaceholder={currentDatePlaceholder}
+                  endDatePlaceholder={currentDatePlaceholder}
+                  showSelectionPreview={true}
+                  className="w-100"
+                />
+              </div>
+            </Form.Group>
+          </Col>
+        </Row>
+      </DropdownProvider>
 
       {/* Cajón animado para el botón de crear mapa */}
       {showCreateMapButton && (
         <Collapse in={showCreateMapSection && hasActiveFilters()}>
           <div className="mt-4 border-top pt-4">
             <div className="text-center mb-3">
-              <i className="bi bi-map-fill text-success fs-3"></i>
+              <i className="bi bi-map-fill text-primary fs-3"></i>
               <h5 className="mb-0 mt-2">{t('filters:create_map_title')}</h5>
-              <p className="text-muted small">{t('filters:create_map_description')}</p>
+              <p className="text-muted">{t('filters:create_map_description')}</p>
             </div>
             <div className="d-flex justify-content-center">
-              <Button
-                variant="success"
-                className="px-4"
-                onClick={() => onOpenCreateMapModal(filters)}
-              >
-                <i className="bi bi-globe me-2"></i>
-                {t('filters:create_map_button')}
-                <span className="new-feature-badge-button">
-                  {t('common:badges.new')}
-                </span>
-              </Button>
+              <div className="position-relative">
+                <Button
+                  variant="primary"
+                  className="px-4"
+                  onClick={() => onOpenCreateMapModal(filters)}
+                >
+                  <i className="bi bi-globe me-2"></i>
+                  {t('filters:create_map_button')}
+                </Button>
+                <NewFeatureBadge className="position-absolute" rotate={12} />
+              </div>
             </div>
           </div>
         </Collapse>

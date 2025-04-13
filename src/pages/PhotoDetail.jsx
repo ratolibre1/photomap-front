@@ -440,15 +440,25 @@ const PhotoDetail = () => {
               </div>
             )}
 
-            <Card className="shadow-sm">
-              <div style={{ maxHeight: '70vh', overflow: 'hidden' }}>
-                <DisplayCroppedImage
-                  imageUrl={photo.originalUrl}
-                  transformations={showOriginalPhoto ? null : photo.cssTransform}
-                  showOriginal={showOriginalPhoto}
-                />
-              </div>
-            </Card>
+            <div className="d-flex justify-content-center w-100">
+              <Card className="shadow-sm" style={{ width: 'fit-content' }}>
+                <div className="photo-container p-2">
+                  <DisplayCroppedImage
+                    imageUrl={photo.originalUrl}
+                    transformations={showOriginalPhoto ? null : photo.cssTransform}
+                    showOriginal={showOriginalPhoto}
+                  />
+                </div>
+              </Card>
+            </div>
+
+            {/* Estilos simplificados */}
+            <style jsx="true">{`
+              .photo-container {
+                background-color: transparent;
+                overflow: hidden;
+              }
+            `}</style>
           </Col>
 
           <Col lg={4}>

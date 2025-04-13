@@ -17,7 +17,12 @@
     "loading_cities": "Loading cities...",
     "no_regions": "No regions available",
     "no_provinces": "No provinces available",
-    "no_cities": "No cities available"
+    "no_cities": "No cities available",
+    "no_countries": "No countries available",
+    "select_country_first": "Select a country first",
+    "select_region_first": "Select a region first",
+    "select_province_first": "Select a province first",
+    "select": "Select location"
   },
   "date": {
     "title": "Date Range",
@@ -26,6 +31,13 @@
     "apply_range": "Apply",
     "photo_count": "{{count}} photo",
     "photo_count_plural": "{{count}} photos"
+  },
+  "dropdown": {
+    "select": "Select",
+    "search": "Search...",
+    "no_results": "No results found",
+    "none_selected": "None selected",
+    "clear_selection": "Clear selection"
   },
   "labels": {
     "title": "Labels",
