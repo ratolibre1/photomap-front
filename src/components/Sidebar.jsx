@@ -84,7 +84,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
 
   return (
     <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}
-      style={{ backgroundColor: THEMES[theme].colors.primary }}>
+      style={{ backgroundColor: THEMES[theme].colors.primary, display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* Logo/Brand sin botón */}
       <div className="p-3 d-flex align-items-center">
         <Link to="/dashboard" className="brand-link d-flex align-items-center">
@@ -106,7 +106,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
       </div>
 
       {/* Menú de navegación */}
-      <Nav className="flex-column mb-auto">
+      <Nav className="flex-column">
         {/* Botón de expandir - solo visible cuando está colapsado */}
         {!expanded && (
           <Nav.Link
@@ -398,8 +398,24 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
         </div>
       )}
 
+      {/* El espacio flexible para empujar el footer hacia abajo */}
+      <div className="flex-grow-1"></div>
+
       {/* Footer */}
-      <div className={`${expanded ? 'p-3' : 'px-2 py-3'} mt-auto`}>
+      <div className={`${expanded ? 'p-3' : 'px-2 py-3'}`}>
+        {/* Enlace al Changelog */}
+        <div className="position-relative mb-3 text-center">
+          <Link
+            to="/changelog"
+            className={`d-inline-flex align-items-center ${expanded ? 'text-decoration-none' : 'mx-auto'}`}
+            style={!expanded ? { width: '40px', height: '40px', borderRadius: '50%', opacity: 0.7 } : { color: 'rgba(255,255,255,0.8)' }}
+            title={t('nav:changelog')}
+          >
+            <span className={expanded ? "me-2" : ""} style={{ paddingTop: '3px' }}>📜</span>
+            {expanded && <small className="text-decoration-underline">v1.1.0</small>}
+          </Link>
+        </div>
+
         <Button
           variant="outline-light"
           className={`${expanded ? 'w-100' : 'mx-auto'} d-flex align-items-center justify-content-center`}

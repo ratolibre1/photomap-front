@@ -19,6 +19,7 @@ import { LabelProvider } from './context/LabelContext';
 import { AuthProvider } from './context/AuthContext';
 import MyMaps from './pages/MyMaps';
 import Help from './pages/Help';
+import Changelog from './pages/Changelog';
 
 // Importamos el CSS del layout
 import './components/layout.css';
@@ -133,6 +134,13 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <Help />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/changelog" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Changelog />
                       </Layout>
                     </ProtectedRoute>
                   } />

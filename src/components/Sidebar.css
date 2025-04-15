@@ -1,6 +1,10 @@
 .sidebar {
   transition: width 0.3s;
   border-right: 1px solid var(--info);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .sidebar.expanded {
@@ -90,4 +94,10 @@
   color: var(--light);
   margin-bottom: 0.5rem;
   font-weight: 500;
+}
+
+/* Estilos para asegurar que el footer esté al final */
+.sidebar .flex-grow-1 {
+  flex-grow: 1;
+  min-height: 20px;
 }
