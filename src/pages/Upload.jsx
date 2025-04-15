@@ -6,6 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import { photoService } from '../services/api';
 import LabelSelector from '../components/common/LabelSelector';
 import { useTranslation } from 'react-i18next';
+import { DropdownProvider } from '../context/DropdownContext';
 
 const Upload = () => {
   const { t } = useTranslation(['upload', 'common']);
@@ -22,7 +23,7 @@ const Upload = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedLabels, setSelectedLabels] = useState([]);
-  const [visibility, setVisibility] = useState('public');
+  const [isPublic, setIsPublic] = useState(true);
 
   // Configuración de dropzone para subida de archivos
   const { getRootProps, getInputProps } = useDropzone({
@@ -85,7 +86,7 @@ const Upload = () => {
         });
 
         // Añadir visibilidad
-        formData.append('visibility', visibility);
+        formData.append('isPublic', isPublic);
 
         // Configurar el tracking de progreso para este archivo
         setUploadProgress(prev => ({
@@ -289,11 +290,13 @@ const Upload = () => {
 
                       <Form.Group className="mb-3">
                         <Form.Label>{t('form.labels')}</Form.Label>
-                        <LabelSelector
-                          selectedLabels={selectedLabels}
-                          onLabelSelect={handleLabelSelect}
-                          onLabelRemove={handleLabelRemove}
-                        />
+                        <DropdownProvider>
+                          <LabelSelector
+                            selectedLabels={selectedLabels}
+                            onLabelSelect={handleLabelSelect}
+                            onLabelRemove={handleLabelRemove}
+                          />
+                        </DropdownProvider>
                       </Form.Group>
 
                       <Form.Group className="mb-3">
@@ -302,19 +305,19 @@ const Upload = () => {
                           <Form.Check
                             type="radio"
                             id="visibility-public"
-                            name="visibility"
+                            name="isPublic"
                             label={t('visibility.public')}
-                            checked={visibility === 'public'}
-                            onChange={() => setVisibility('public')}
+                            checked={isPublic}
+                            onChange={() => setIsPublic(true)}
                             className="mb-2"
                           />
                           <Form.Check
                             type="radio"
                             id="visibility-private"
-                            name="visibility"
+                            name="isPublic"
                             label={t('visibility.private')}
-                            checked={visibility === 'private'}
-                            onChange={() => setVisibility('private')}
+                            checked={!isPublic}
+                            onChange={() => setIsPublic(false)}
                           />
                         </div>
                       </Form.Group>

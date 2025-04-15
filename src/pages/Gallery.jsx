@@ -192,8 +192,8 @@ const Gallery = () => {
   };
 
   // Nueva función para obtener la fecha formateada
-  const getFormattedDate = (hasValidDate, timestamp) => {
-    if (!hasValidDate) {
+  const getFormattedDate = (hasValidTimestamp, timestamp) => {
+    if (!hasValidTimestamp) {
       return t('detail.unknown_date');
     }
     return new Date(timestamp).toLocaleDateString();
@@ -788,10 +788,10 @@ const Gallery = () => {
                         <i className="bi bi-geo-alt me-1"></i>
                         {getLocationName(photo.hasValidCoordinates, photo.location)}
                       </small>
-                      <small className={photo.hasValidDate === false ? "text-danger fw-bold text-decoration-underline" : "text-muted"}
-                        title={photo.hasValidDate === false ? t('detail.invalid_date') : ""}>
+                      <small className={photo.hasValidTimestamp === false ? "text-danger fw-bold text-decoration-underline" : "text-muted"}
+                        title={photo.hasValidTimestamp === false ? t('detail.invalid_date') : ""}>
                         <i className="bi bi-calendar me-1"></i>
-                        {getFormattedDate(photo.hasValidDate, photo.timestamp)}
+                        {getFormattedDate(photo.hasValidTimestamp, photo.timestamp)}
                       </small>
                     </div>
                   </Card.Body>

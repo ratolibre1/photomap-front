@@ -11,7 +11,8 @@ const LocationSelector = ({
   loading = false,
   noOptionsMessage = 'No hay opciones disponibles',
   icon = 'geo-alt',
-  id // ID único para este selector
+  id, // ID único para este selector
+  disabled = false // Agregar prop disabled
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { t, i18n } = useTranslation(['filters', 'common']);
@@ -22,6 +23,11 @@ const LocationSelector = ({
   // Ordenar opciones alfabéticamente respetando las reglas de localización
   const sortedOptions = useMemo(() => {
     if (!options || options.length === 0) return [];
+
+    // Si la primera opción tiene disableSort, retornar el array sin ordenar
+    if (options[0]?.disableSort) {
+      return [...options];
+    }
 
     // Crear un comparador que respete las reglas de ordenación del idioma actual
     const collator = new Intl.Collator(i18n.language, { sensitivity: 'base' });
@@ -46,6 +52,7 @@ const LocationSelector = ({
 
   // Gestionar apertura/cierre del dropdown
   const handleToggleDropdown = (isOpen) => {
+    if (disabled) return; // No abrir si está deshabilitado
     if (isOpen) {
       openDropdown(id);
     } else {
@@ -77,11 +84,12 @@ const LocationSelector = ({
           variant="outline-secondary"
           size="sm"
           id={`location-dropdown-${id}`}
-          className="w-100 d-flex justify-content-between align-items-center text-start"
+          className={`w-100 d-flex justify-content-between align-items-center text-start ${disabled ? 'disabled' : ''}`}
+          disabled={disabled}
         >
           <div className="text-truncate">
             <i className={`bi bi-${icon} me-2 ${selectedOption ? 'text-primary' : ''}`}></i>
-            <span className={selectedOption ? 'fw-bold' : 'text-muted'}>{displayText}</span>
+            <span className={`${selectedOption ? 'fw-bold' : 'text-muted'} ${disabled ? 'opacity-50' : ''}`}>{displayText}</span>
           </div>
           <i className="bi bi-chevron-down"></i>
         </Dropdown.Toggle>

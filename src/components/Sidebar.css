@@ -59,12 +59,14 @@
 .sidebar .theme-button {
   width: 32px;
   height: 32px;
-  padding: 0.25rem;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  position: relative;
 }
 
 .sidebar .theme-button:not(.active) {
@@ -76,11 +78,16 @@
 }
 
 .sidebar .theme-button.active {
-  border: 3px solid var(--info);
+  transform: scale(1.1);
+}
+
+.sidebar .theme-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px var(--secondary);
 }
 
 .sidebar .section-title {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
+  color: var(--light);
   margin-bottom: 0.5rem;
+  font-weight: 500;
 }

@@ -144,11 +144,14 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
         ))}
       </Nav>
 
+      {/* Línea divisoria entre el menú y las opciones de tema/idioma */}
+      <hr className="mx-3 my-3 border-light" />
+
       {/* Selector de tema cuando está expandido */}
       {expanded && (
         <>
           <div className="px-3 mb-3">
-            <p className="section-title">{t('common:theme.title')}:</p>
+            <p className="section-title fs-6 fw-bold">{t('common:theme.title')}</p>
             <div className="d-flex flex-wrap gap-2">
               {Object.keys(THEMES).map((themeKey) => (
                 <button
@@ -158,6 +161,8 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                   style={{
                     backgroundColor: THEMES[themeKey].colors.light,
                     color: THEMES[themeKey].colors.light,
+                    boxShadow: theme === themeKey ? `0 0 0 3px var(--secondary)` : 'none',
+                    border: 'none',
                   }}
                   title={THEMES[themeKey].name}
                 >
@@ -169,7 +174,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
 
           {/* Selector de idioma */}
           <div className="px-3 mb-3">
-            <p className="section-title">{t('common:language.title')}:</p>
+            <p className="section-title fs-6 fw-bold">{t('common:language.title')}</p>
             <div className="d-flex flex-wrap gap-2">
               {LANGUAGES.map((lang) => (
                 <button
@@ -183,10 +188,11 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: i18n.language === lang.code ? '3px solid var(--info)' : 'none',
+                    border: 'none',
                     borderRadius: '50%',
                     transition: 'all 0.3s ease',
                     opacity: i18n.language === lang.code ? 1 : 0.7,
+                    boxShadow: i18n.language === lang.code ? `0 0 0 3px var(--secondary)` : 'none',
                   }}
                   title={t(`common:${lang.name}`)}
                   onMouseEnter={(e) => {

@@ -4,7 +4,9 @@
   "map": {
     "title": "Explore your memories on the map 🗺️",
     "description": "View all your photos geographically distributed and discover the places you've visited.",
-    "button": "View map"
+    "button": "View map",
+    "featured_title": "Explore your memories on the map 🗺️",
+    "featured_description": "View all your photos geographically distributed and discover the places you've visited."
   },
   "stats": {
     "title": "Your stats 📊",

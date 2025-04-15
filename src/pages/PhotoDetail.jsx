@@ -8,6 +8,7 @@ import LabelSelector from '../components/common/LabelSelector';
 import { useTranslation } from 'react-i18next';
 import DisplayCroppedImage from '../components/common/DisplayCroppedImage';
 import SimpleImageEditor from '../components/common/SimpleImageEditor';
+import { DropdownProvider } from '../context/DropdownContext';
 
 const PhotoDetail = () => {
   const { id } = useParams();
@@ -156,10 +157,7 @@ const PhotoDetail = () => {
         title: photo.title || '',
         description: photo.description || '',
         labels: formattedLabels,
-        isPublic: photo.visibility === 'public' ||
-          photo.visibility === true ||
-          photo.isPublic === true ||
-          photo.public === true,
+        isPublic: photo.isPublic || false,
         coordinates: photo.location?.coordinates ?
           `${photo.location.coordinates[1]}, ${photo.location.coordinates[0]}` : '',
         date: photo.timestamp ? new Date(photo.timestamp).toISOString().split('T')[0] : '',
@@ -195,10 +193,8 @@ const PhotoDetail = () => {
 
       // Agregar coordenadas si existen
       if (editForm.coordinates.trim()) {
-        const [lat, lng] = editForm.coordinates.split(',').map(coord => parseFloat(coord.trim()));
-        if (!isNaN(lat) && !isNaN(lng)) {
-          updateData.coordinates = [lng, lat]; // MongoDB usa [longitude, latitude]
-        }
+        // Pasar directamente las coordenadas como string sin procesar
+        updateData.coordinates = editForm.coordinates.trim();
       }
 
       // Agregar fecha y hora si existen
@@ -471,9 +467,9 @@ const PhotoDetail = () => {
                 </p>
 
                 <strong>{t('detail.date')}:</strong>
-                <p className={photo.hasValidDate === false ? "text-danger mb-2" : "mb-2"}>
+                <p className={photo.hasValidTimestamp === false ? "text-danger mb-2" : "mb-2"}>
                   {photo.timestamp ? new Date(photo.timestamp).toLocaleString() : t('detail.unknown_date')}
-                  {photo.hasValidDate === false && (
+                  {photo.hasValidTimestamp === false && (
                     <i className="bi bi-exclamation-circle ms-2" title={t('detail.invalid_date')}></i>
                   )}
                 </p>
@@ -513,7 +509,7 @@ const PhotoDetail = () => {
                     </>
                   ) : (
                     <span className="text-muted">
-                      {t('detail.unknown_location_feminine')}
+                      {t('detail.unknown_location')}
                     </span>
                   )}
                 </p>
@@ -664,16 +660,18 @@ const PhotoDetail = () => {
               {labelsLoading ? (
                 <Spinner animation="border" size="sm" />
               ) : (
-                <LabelSelector
-                  selectedLabels={editForm.labels.map(label =>
-                    typeof label === 'object' ? label :
-                      categoriesWithLabels
-                        .flatMap(cat => cat.labels || [])
-                        .find(l => (l._id || l.id) === label) || { name: 'Etiqueta', _id: label }
-                  )}
-                  onLabelSelect={handleAddLabel}
-                  onLabelRemove={handleRemoveLabel}
-                />
+                <DropdownProvider>
+                  <LabelSelector
+                    selectedLabels={editForm.labels.map(label =>
+                      typeof label === 'object' ? label :
+                        categoriesWithLabels
+                          .flatMap(cat => cat.labels || [])
+                          .find(l => (l._id || l.id) === label) || { name: 'Etiqueta', _id: label }
+                    )}
+                    onLabelSelect={handleAddLabel}
+                    onLabelRemove={handleRemoveLabel}
+                  />
+                </DropdownProvider>
               )}
             </Form.Group>
 

@@ -21,78 +21,22 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      <div className="dashboard-stats-row row">
-        <style jsx="true">{`
-          .dashboard-stats-row {
-            display: flex;
-            flex-wrap: wrap;
-          }
-          
-          .dashboard-stats-row > div {
-            display: flex;
-            margin-bottom: 1.5rem;
-          }
-          
-          .dashboard-stats-row .card {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-          }
-          
-          /* Para la tarjeta del mapa */
-          .dashboard-map-card {
-            background-color: #1b5441 !important;
-            color: white !important;
-            height: 100%;
-          }
-          
-          /* Estilo especial para el botón del mapa */
-          .dashboard-map-button {
-            font-weight: 600;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            letter-spacing: 0.03em;
-          }
-          
-          .dashboard-map-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-          }
-          
-          .dashboard-map-button:active {
-            transform: translateY(1px);
-          }
-          
-          /* Estilo para el título de la tarjeta de mapa */
-          .dashboard-map-title {
-            font-size: 2.2rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-          }
-        `}</style>
-
-        {/* Mapa - Ocupa todo el ancho */}
-        <div className="col-12">
-          <Card className="shadow-sm bg-primary text-white">
-            <Card.Body className="p-4 d-flex flex-column justify-content-center align-items-center text-center">
-              <h2 className="mb-3 dashboard-map-title">{t('map.title')}</h2>
-              <p>{t('map.description')}</p>
-              <Button
-                as={Link}
-                to="/photo-map"
-                variant="light"
-                size="lg"
-                className="mt-3 dashboard-map-button"
-              >
-                <i className="bi bi-geo-alt-fill me-2"></i>
-                {t('map.button')}
-              </Button>
-            </Card.Body>
-          </Card>
-        </div>
+      <div className="featured-map-box p-5 mb-4 rounded text-center">
+        <h2 className="display-5 mb-3 fw-bold">{t('map.featured_title')}</h2>
+        <p className="lead text-muted mb-4">
+          {t('map.featured_description')}
+        </p>
+        <Button
+          as={Link}
+          to="/map"
+          variant="primary"
+          size="lg"
+          className="px-5 py-3"
+          style={{ fontSize: '1.2rem' }}
+        >
+          <i className="bi bi-geo-alt me-2"></i>
+          {t('map.button')}
+        </Button>
       </div>
 
       <Row>
@@ -134,6 +78,17 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
+
+      <style jsx="true">{`
+        .featured-map-box {
+          background: var(--bs-primary);
+          color: white;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .featured-map-box .text-muted {
+          color: rgba(255,255,255,0.8) !important;
+        }
+      `}</style>
     </Container>
   );
 };

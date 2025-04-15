@@ -133,6 +133,21 @@
   margin: 0;
 }
 
+/* Hover para los botones circulares - sobreescribiendo btn-primary */
+.visibility-toggle.btn-primary:hover,
+.edit-pending.btn-primary:hover,
+.no-coordinates.btn-primary:hover {
+  background-color: var(--light) !important;
+  border-color: var(--secondary) !important;
+  color: var(--secondary) !important;
+}
+
+/* Cambio de color del ícono en hover */
+.visibility-toggle.btn-primary:hover i,
+.edit-pending.btn-primary:hover i {
+  color: var(--secondary) !important;
+}
+
 /* Posicionamiento específico para cada botón */
 .edit-pending {
   top: 45px;
@@ -140,11 +155,6 @@
 
 .no-coordinates {
   top: 80px;
-}
-
-/* Color específico para el ícono de coordenadas faltantes */
-.no-coordinates i {
-  color: var(--warning);
 }
 
 /* Estilos para la paginación */
