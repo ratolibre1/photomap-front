@@ -2,7 +2,7 @@
   "title": "Tu Perfil",
   "avatar": {
     "default_user": "Usuario",
-    "default_email": "correo@ejemplo.com"
+    "default_email": "usuario@ejemplo.com"
   },
   "nav": {
     "personal_info": "Información personal",
@@ -11,34 +11,38 @@
   "personal_info": {
     "title": "Información Personal",
     "name": "Nombre",
-    "email": "Correo electrónico",
-    "email_help": "No puedes cambiar tu correo electrónico.",
+    "edit_button": "Editar",
+    "no_name": "Sin nombre",
+    "email": "Email",
     "biography": "Biografía",
-    "biography_placeholder": "Cuéntanos un poco sobre ti...",
+    "biography_placeholder": "Cuéntanos algo sobre ti...",
+    "no_biography": "Sin biografía",
     "save_button": "Guardar cambios",
     "saving": "Guardando...",
-    "success": "Información actualizada correctamente",
-    "error": "Error al actualizar la información"
+    "success": "¡Información personal actualizada correctamente!",
+    "error": "Ha ocurrido un error al actualizar la información"
   },
   "password": {
     "title": "Cambiar Contraseña",
     "current": "Contraseña actual",
     "new": "Nueva contraseña",
     "confirm": "Confirmar nueva contraseña",
-    "requirements": "La contraseña debe tener al menos 6 caracteres.",
+    "requirements": "La contraseña debe tener al menos 6 caracteres",
     "save_button": "Cambiar contraseña",
-    "saving": "Actualizando...",
-    "success": "Contraseña actualizada correctamente",
-    "error": "Error al cambiar la contraseña",
-    "mismatch": "Las contraseñas no coinciden"
+    "saving": "Cambiando...",
+    "success": "¡Contraseña actualizada correctamente!",
+    "error": "Ha ocurrido un error al cambiar la contraseña",
+    "mismatch": "Las contraseñas no coinciden",
+    "incorrect": "Contraseña actual incorrecta"
   },
   "photo": {
     "upload": "Subir foto",
     "delete": "Eliminar",
-    "upload_success": "Foto de perfil actualizada",
-    "upload_error": "Error al subir la foto",
-    "delete_success": "Foto de perfil eliminada",
-    "delete_error": "Error al eliminar la foto",
-    "confirm_delete": "¿Estás seguro que quieres eliminar tu foto de perfil?"
+    "delete_title": "Eliminar foto de perfil",
+    "upload_success": "¡Foto de perfil actualizada correctamente!",
+    "upload_error": "Ha ocurrido un error al subir la foto",
+    "delete_success": "¡Foto de perfil eliminada correctamente!",
+    "delete_error": "Ha ocurrido un error al eliminar la foto",
+    "confirm_delete": "¿Estás seguro de que quieres eliminar tu foto de perfil?"
   }
 }

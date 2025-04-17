@@ -8,7 +8,9 @@
     "close": "Cerrar",
     "upload": "Subir",
     "confirm": "Confirmar",
-    "share": "Compartir"
+    "share": "Compartir",
+    "add": "Agregar",
+    "accept": "Aceptar"
   },
   "actions": {
     "reset": "Restaurar",
@@ -71,7 +73,8 @@
     "share_title": "Compartir: {{title}}",
     "share_link": "Link para compartir:",
     "copied": "¡Link copiado al portapapeles!",
-    "views": "{{count}} vistas",
+    "views_one": "{{count}} vista",
+    "views_other": "{{count}} vistas",
     "date_from": "Desde {{date}}",
     "date_to": "Hasta {{date}}",
     "date_range": "{{startDate}} - {{endDate}}",
@@ -85,7 +88,10 @@
     "location_filter": "📍 {{location}}",
     "worldwide": "Todo el mundo",
     "all_dates": "Todas las fechas",
-    "no_labels": "Sin etiquetas"
+    "no_labels": "Sin etiquetas",
+    "delete_map_title": "Eliminar mapa",
+    "delete_map_confirm": "¿Estás seguro que quieres eliminar este mapa?",
+    "delete_map_warning": "Esta acción no se puede deshacer."
   },
   "error": {
     "create_map": "No se pudo crear el mapa. Intenta nuevamente."
@@ -96,7 +102,9 @@
     "date_range": "Rango de fechas",
     "date_from": "Desde",
     "date_to": "Hasta",
-    "location": "Ubicación"
+    "location": "Ubicación",
+    "title": "Filtros",
+    "match": "cumplen los filtros"
   },
   "to": "hasta",
   "badges": {
@@ -105,5 +113,21 @@
   "visibility": {
     "public": "Público",
     "private": "Privado"
+  },
+  "messages": {
+    "success": "¡Éxito!",
+    "error": "¡Error!"
+  },
+  "time": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "days_ago_one": "Hace {{count}} día",
+    "days_ago_other": "Hace {{count}} días",
+    "weeks_ago_one": "Hace {{count}} semana",
+    "weeks_ago_other": "Hace {{count}} semanas",
+    "months_ago_one": "Hace {{count}} mes",
+    "months_ago_other": "Hace {{count}} meses",
+    "years_ago_one": "Hace {{count}} año",
+    "years_ago_other": "Hace {{count}} años"
   }
 }

@@ -14,7 +14,7 @@ export const THEMES = {
     name: 'Milotic',
     icon: '🐍',
     colors: {
-      light: '#ffffe6',
+      light: '#ffe6b4',
       dark: '#313131',
       primary: '#ee6a7b',
       secondary: '#39acd5',

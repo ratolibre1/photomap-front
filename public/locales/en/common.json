@@ -8,7 +8,9 @@
     "close": "Close",
     "upload": "Upload",
     "confirm": "Confirm",
-    "share": "Share"
+    "share": "Share",
+    "add": "Add",
+    "accept": "Accept"
   },
   "actions": {
     "reset": "Reset",
@@ -25,7 +27,7 @@
     "location_denied": "You have denied permission to access your location",
     "location_unavailable": "Location information is unavailable",
     "location_timeout": "The request to get your location has timed out",
-    "location_unknown": "An unknown error occurred while getting your location"
+    "location_unknown": "An unknown error occurred when trying to get your location"
   },
   "success": {
     "saved": "Saved successfully",
@@ -52,7 +54,7 @@
     "unknown": "? photos"
   },
   "navigation": {
-    "home": "Go to home",
+    "home": "Go to Home",
     "publicMaps": "View public maps",
     "back": "Go back",
     "next": "Next",
@@ -71,12 +73,13 @@
     "share_title": "Share: {{title}}",
     "share_link": "Share link:",
     "copied": "Link copied to clipboard!",
-    "views": "{{count}} views",
+    "views_one": "{{count}} view",
+    "views_other": "{{count}} views",
     "date_from": "From {{date}}",
     "date_to": "To {{date}}",
     "date_range": "{{startDate}} - {{endDate}}",
     "view_all": "View all my maps",
-    "anywhere": "Any location",
+    "anywhere": "Anywhere",
     "any_date": "Any date",
     "any_label": "Any label",
     "delete_confirm": "Are you sure you want to delete the map \"{{title}}\"?",
@@ -105,5 +108,21 @@
   "visibility": {
     "public": "Public",
     "private": "Private"
+  },
+  "messages": {
+    "success": "Success!",
+    "error": "Error!"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "days_ago_one": "{{count}} day ago",
+    "days_ago_other": "{{count}} days ago",
+    "weeks_ago_one": "{{count}} week ago",
+    "weeks_ago_other": "{{count}} weeks ago",
+    "months_ago_one": "{{count}} month ago",
+    "months_ago_other": "{{count}} months ago",
+    "years_ago_one": "{{count}} year ago",
+    "years_ago_other": "{{count}} years ago"
   }
 }

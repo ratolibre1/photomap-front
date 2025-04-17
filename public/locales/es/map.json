@@ -64,8 +64,10 @@
     "from": "Desde",
     "to": "hasta",
     "all_dates": "Todas las fechas",
-    "photo_count": "{{count}} foto",
-    "photo_count_plural": "{{count}} fotos",
+    "photo_count": {
+      "one": "{{count}} foto",
+      "other": "{{count}} fotos"
+    },
     "photo_singular": "foto",
     "photo_plural": "fotos",
     "about": "Acerca de este mapa",

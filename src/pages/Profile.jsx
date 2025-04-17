@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Card, Form, Button, Row, Col, Alert, Tab, Nav, Container, Image } from 'react-bootstrap';
+import { Card, Form, Button, Row, Col, Alert, Tab, Nav, Container, Image, Toast, ToastContainer, Modal } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { authService } from '../services/api';
@@ -16,6 +16,9 @@ const Profile = () => {
     biography: user?.biography || ''
   });
 
+  // Agregar estado para controlar si el formulario está en modo edición
+  const [isEditing, setIsEditing] = useState(false);
+
   // Estados para cambio de contraseña
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -26,8 +29,10 @@ const Profile = () => {
   // Estados para control de formularios
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [photoLoading, setPhotoLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Manejar cambios en el formulario de info
   const handleInfoChange = (e) => {
@@ -47,11 +52,28 @@ const Profile = () => {
     }));
   };
 
+  // Activar modo edición
+  const handleEnableEdit = () => {
+    setIsEditing(true);
+    setError('');
+    setToastMessage('');
+  };
+
+  // Cancelar edición
+  const handleCancelEdit = () => {
+    setUserInfo({
+      name: user?.name || '',
+      biography: user?.biography || ''
+    });
+    setIsEditing(false);
+    setError('');
+    setToastMessage('');
+  };
+
   // Guardar información personal
   const handleSaveInfo = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
     setLoading(true);
 
     try {
@@ -68,7 +90,10 @@ const Profile = () => {
         updateUserData(response.data.data.user);
       }
 
-      setSuccess(t('personal_info.success'));
+      // Mostrar el toast de éxito
+      setToastMessage(t('personal_info.success'));
+      setShowToast(true);
+      setIsEditing(false); // Volver al modo de visualización después de guardar
     } catch (err) {
       console.error('Error al actualizar la información:', err);
       setError(err.response?.data?.message || t('personal_info.error'));
@@ -81,7 +106,6 @@ const Profile = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
 
     // Validar que las contraseñas coincidan
     if (passwordData.newPassword !== passwordData.confirmPassword) {
@@ -97,7 +121,9 @@ const Profile = () => {
         newPassword: passwordData.newPassword
       });
 
-      setSuccess(t('password.success'));
+      // Mostrar el toast de éxito
+      setToastMessage(t('password.success'));
+      setShowToast(true);
       setPasswordData({
         currentPassword: '',
         newPassword: '',
@@ -105,7 +131,11 @@ const Profile = () => {
       });
     } catch (err) {
       console.error('Error al cambiar la contraseña:', err);
-      setError(err.response?.data?.message || t('password.error'));
+      // Mostrar el error como toast
+      setToastMessage(err.response?.data?.message === 'Current password is incorrect'
+        ? t('password.incorrect')
+        : t('password.error'));
+      setShowToast(true);
     } finally {
       setLoading(false);
     }
@@ -122,7 +152,6 @@ const Profile = () => {
 
     const file = e.target.files[0];
     setError('');
-    setSuccess('');
     setPhotoLoading(true);
 
     try {
@@ -133,7 +162,9 @@ const Profile = () => {
         updateUserData(response.data.data.user);
       }
 
-      setSuccess(t('photo.upload_success'));
+      // Mostrar el toast de éxito
+      setToastMessage(t('photo.upload_success'));
+      setShowToast(true);
     } catch (err) {
       console.error('Error al actualizar la foto:', err);
       setError(err.response?.data?.message || t('photo.upload_error'));
@@ -146,11 +177,15 @@ const Profile = () => {
 
   // Eliminar foto de perfil
   const handleDeletePhoto = async () => {
-    if (!window.confirm(t('photo.confirm_delete'))) return;
+    // Mostrar modal de confirmación personalizado
+    setShowDeleteModal(true);
+  };
 
+  // Ejecuta la eliminación después de confirmar
+  const confirmDeletePhoto = async () => {
     setError('');
-    setSuccess('');
     setPhotoLoading(true);
+    setShowDeleteModal(false);
 
     try {
       const response = await authService.deleteProfilePhoto();
@@ -160,7 +195,9 @@ const Profile = () => {
         updateUserData(response.data.data.user);
       }
 
-      setSuccess(t('photo.delete_success'));
+      // Mostrar el toast de éxito
+      setToastMessage(t('photo.delete_success'));
+      setShowToast(true);
     } catch (err) {
       console.error('Error al eliminar la foto:', err);
       setError(err.response?.data?.message || t('photo.delete_error'));
@@ -214,7 +251,7 @@ const Profile = () => {
                   style={{ display: 'none' }}
                 />
                 <Button
-                  variant="outline-primary"
+                  variant="dark-inverse"
                   size="sm"
                   onClick={handlePhotoButtonClick}
                   disabled={photoLoading}
@@ -223,7 +260,7 @@ const Profile = () => {
                 </Button>
                 {user?.profilePhoto?.url && (
                   <Button
-                    variant="outline-danger"
+                    variant="danger"
                     size="sm"
                     onClick={handleDeletePhoto}
                     disabled={photoLoading}
@@ -232,69 +269,110 @@ const Profile = () => {
                   </Button>
                 )}
               </div>
-
-              <Nav variant="pills" className="flex-column mt-4" onSelect={(key) => setActiveTab(key)}>
-                <Nav.Item>
-                  <Nav.Link eventKey="info" className={activeTab === 'info' ? 'active' : ''}>
-                    <i className="bi bi-person me-2"></i> {t('nav.personal_info')}
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="security" className={activeTab === 'security' ? 'active' : ''}>
-                    <i className="bi bi-shield-lock me-2"></i> {t('nav.security')}
-                  </Nav.Link>
-                </Nav.Item>
-              </Nav>
             </Card.Body>
           </Card>
         </Col>
 
         <Col lg={9} md={8}>
           <Card className="shadow-sm">
+            <Card.Header>
+              <Nav variant="tabs" className="flex-row">
+                <Nav.Item>
+                  <Nav.Link
+                    active={activeTab === 'info'}
+                    onClick={() => setActiveTab('info')}
+                    className="text-decoration-none"
+                  >
+                    <i className="bi bi-person-fill me-1"></i> {t('nav.personal_info')}
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    active={activeTab === 'security'}
+                    onClick={() => setActiveTab('security')}
+                    className="text-decoration-none"
+                  >
+                    <i className="bi bi-shield-lock-fill me-1"></i> {t('nav.security')}
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+            </Card.Header>
             <Card.Body className="p-4">
               {error && <Alert variant="danger">{error}</Alert>}
-              {success && <Alert variant="success">{success}</Alert>}
 
               <Tab.Content>
                 <Tab.Pane active={activeTab === 'info'}>
-                  <h3 className="mb-4">{t('personal_info.title')}</h3>
+                  <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h3 className="mb-0">{t('personal_info.title')}</h3>
+                    {!isEditing && (
+                      <Button
+                        variant="dark-inverse"
+                        onClick={handleEnableEdit}
+                      >
+                        <i className="bi bi-pencil-fill me-1"></i>
+                        {t('personal_info.edit_button')}
+                      </Button>
+                    )}
+                  </div>
+
                   <Form onSubmit={handleSaveInfo}>
                     <Row>
                       <Col md={12}>
                         <Form.Group className="mb-3">
-                          <Form.Label>{t('personal_info.name')}</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="name"
-                            value={userInfo.name}
-                            onChange={handleInfoChange}
-                            required
-                          />
+                          <Form.Label style={{ fontWeight: 'bold' }}>{t('personal_info.name')}</Form.Label>
+                          {isEditing ? (
+                            <Form.Control
+                              type="text"
+                              name="name"
+                              value={userInfo.name}
+                              onChange={handleInfoChange}
+                              required
+                            />
+                          ) : (
+                            <p className="form-control border-0" style={{ backgroundColor: 'transparent' }}>
+                              {userInfo.name || t('personal_info.no_name')}
+                            </p>
+                          )}
                         </Form.Group>
                       </Col>
                     </Row>
 
                     <Form.Group className="mb-3">
-                      <Form.Label>{t('personal_info.biography')}</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={4}
-                        name="biography"
-                        value={userInfo.biography}
-                        onChange={handleInfoChange}
-                        placeholder={t('personal_info.biography_placeholder')}
-                      />
+                      <Form.Label style={{ fontWeight: 'bold' }}>{t('personal_info.biography')}</Form.Label>
+                      {isEditing ? (
+                        <Form.Control
+                          as="textarea"
+                          rows={4}
+                          name="biography"
+                          value={userInfo.biography}
+                          onChange={handleInfoChange}
+                          placeholder={t('personal_info.biography_placeholder')}
+                        />
+                      ) : (
+                        <p className="form-control border-0" style={{ minHeight: '100px', backgroundColor: 'transparent' }}>
+                          {userInfo.biography || t('personal_info.no_biography')}
+                        </p>
+                      )}
                     </Form.Group>
 
-                    <div className="d-flex justify-content-end">
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        disabled={loading}
-                      >
-                        {loading ? t('personal_info.saving') : t('personal_info.save_button')}
-                      </Button>
-                    </div>
+                    {isEditing && (
+                      <div className="d-flex justify-content-end gap-2">
+                        <Button
+                          variant="dark-inverse"
+                          onClick={handleCancelEdit}
+                          disabled={loading}
+                        >
+                          {t('common:buttons.cancel')}
+                        </Button>
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          disabled={loading}
+                        >
+                          {loading ? t('personal_info.saving') : t('personal_info.save_button')}
+                        </Button>
+                      </div>
+                    )}
                   </Form>
                 </Tab.Pane>
 
@@ -321,10 +399,13 @@ const Profile = () => {
                         onChange={handlePasswordChange}
                         required
                         minLength={6}
+                        isInvalid={passwordData.newPassword && passwordData.newPassword.length < 6}
                       />
-                      <Form.Text className="text-muted">
-                        {t('password.requirements')}
-                      </Form.Text>
+                      {passwordData.newPassword && passwordData.newPassword.length < 6 && (
+                        <Form.Control.Feedback type="invalid">
+                          {t('password.requirements')}
+                        </Form.Control.Feedback>
+                      )}
                     </Form.Group>
 
                     <Form.Group className="mb-3">
@@ -336,14 +417,25 @@ const Profile = () => {
                         onChange={handlePasswordChange}
                         required
                         minLength={6}
+                        isInvalid={passwordData.confirmPassword && passwordData.newPassword !== passwordData.confirmPassword}
                       />
+                      {passwordData.confirmPassword && passwordData.newPassword !== passwordData.confirmPassword && (
+                        <Form.Control.Feedback type="invalid">
+                          {t('password.mismatch')}
+                        </Form.Control.Feedback>
+                      )}
                     </Form.Group>
 
                     <div className="d-flex justify-content-end">
                       <Button
                         variant="primary"
                         type="submit"
-                        disabled={loading}
+                        disabled={loading ||
+                          !passwordData.currentPassword ||
+                          !passwordData.newPassword ||
+                          !passwordData.confirmPassword ||
+                          passwordData.newPassword !== passwordData.confirmPassword ||
+                          passwordData.newPassword.length < 6}
                       >
                         {loading ? t('password.saving') : t('password.save_button')}
                       </Button>
@@ -355,6 +447,50 @@ const Profile = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Toast para notificaciones */}
+      <ToastContainer position="bottom-end" className="p-3">
+        <Toast
+          show={showToast}
+          onClose={() => setShowToast(false)}
+          delay={3000}
+          autohide
+          bg={toastMessage === t('password.success') || toastMessage === t('personal_info.success') ||
+            toastMessage === t('photo.upload_success') || toastMessage === t('photo.delete_success')
+            ? "success" : "danger"}
+          className="text-white"
+        >
+          <Toast.Header closeButton>
+            <i className={`bi ${toastMessage === t('password.success') || toastMessage === t('personal_info.success') ||
+              toastMessage === t('photo.upload_success') || toastMessage === t('photo.delete_success')
+              ? "bi-check-circle-fill" : "bi-exclamation-circle-fill"} me-2`}></i>
+            <strong className="me-auto">
+              {toastMessage === t('password.success') || toastMessage === t('personal_info.success') ||
+                toastMessage === t('photo.upload_success') || toastMessage === t('photo.delete_success')
+                ? t('common:messages.success') : t('common:messages.error')}
+            </strong>
+          </Toast.Header>
+          <Toast.Body>{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
+
+      {/* Modal de confirmación para eliminar foto */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{t('photo.delete_title')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{t('photo.confirm_delete')}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            {t('common:buttons.cancel')}
+          </Button>
+          <Button variant="danger" onClick={confirmDeletePhoto}>
+            {t('common:buttons.accept')}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

@@ -364,7 +364,7 @@ const PhotoDetail = () => {
     <Container>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <Button
-          variant="outline-secondary"
+          variant="dark-inverse"
           onClick={() => navigate(-1)}
         >
           ← {t('detail.back_to_gallery')}
@@ -372,7 +372,7 @@ const PhotoDetail = () => {
 
         <div>
           <Button
-            variant="outline-primary"
+            variant="dark-inverse"
             className="me-2"
             onClick={() => window.open(photo?.originalUrl, '_blank')}
             disabled={imageError || !photo}
@@ -489,7 +489,7 @@ const PhotoDetail = () => {
                     <>
                       ({photo.location.coordinates[1].toFixed(6)}, {photo.location.coordinates[0].toFixed(6)})
                       <Button
-                        variant="outline-secondary"
+                        variant="dark-inverse"
                         size="sm"
                         onClick={copyCoordinates}
                         title={t('detail.copy_coordinates')}
@@ -498,9 +498,9 @@ const PhotoDetail = () => {
                         <i className="bi bi-clipboard"></i>
                       </Button>
                       <Button
-                        variant="outline-secondary"
+                        variant="dark-inverse"
                         size="sm"
-                        onClick={() => window.open('https://maps.google.com/', '_blank')}
+                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${photo.location.coordinates[1]},${photo.location.coordinates[0]}`, '_blank')}
                         title={t('detail.view_in_maps')}
                         className="ms-1 icon-button"
                       >
@@ -547,7 +547,7 @@ const PhotoDetail = () => {
 
                 <div className="d-grid gap-2 mt-4">
                   <Button
-                    variant="outline-primary"
+                    variant="dark-inverse"
                     onClick={() => window.open(photo.originalUrl, '_blank')}
                     disabled={imageError}
                   >
@@ -578,7 +578,7 @@ const PhotoDetail = () => {
 
                 <div className="action-buttons mt-4 d-flex justify-content-between">
                   <Button
-                    variant="outline-primary"
+                    variant="dark-inverse"
                     onClick={handleEditClick}
                   >
                     <i className="bi bi-pencil-fill me-1"></i>
@@ -586,7 +586,7 @@ const PhotoDetail = () => {
                   </Button>
 
                   <Button
-                    variant="outline-danger"
+                    variant="dark-inverse"
                     onClick={() => setShowDeleteModal(true)}
                   >
                     <i className="bi bi-trash me-1"></i>

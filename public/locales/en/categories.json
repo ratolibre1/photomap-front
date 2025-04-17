@@ -20,8 +20,8 @@
   "delete": {
     "confirm_category": "Are you sure you want to delete the category {{name}}?",
     "confirm_label": "Are you sure you want to delete the label {{name}}?",
-    "photos_affected": "This label will be removed from {{count}} photo",
-    "photos_affected_plural": "This label will be removed from {{count}} photos",
+    "photos_affected_one": "This label will be removed from {{count}} photo",
+    "photos_affected_other": "This label will be removed from {{count}} photos",
     "no_photos": "This label is not being used in any photos",
     "labels_to_delete": "The following labels will be deleted:"
   }

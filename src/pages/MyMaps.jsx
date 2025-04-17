@@ -14,9 +14,41 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
   const { t } = useTranslation(['common']);
   const themeData = THEMES[map.colorPalette] || THEMES.milotic;
   const mapDate = new Date(map.createdAt);
-  const photoCount = map.stats?.photoCount || 0;
   const { labels } = useLabels();
   const { locations } = useLocation();
+
+  // Calcular tiempo relativo para última modificación
+  const lastModified = new Date(map.updatedAt ? map.updatedAt : map.createdAt);
+  const timeAgo = (() => {
+    const now = new Date();
+    const diffMs = now - lastModified;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return t('common:time.today');
+    } else if (diffDays === 1) {
+      return t('common:time.yesterday');
+    } else if (diffDays < 7) {
+      return diffDays === 1
+        ? t('common:time.days_ago_one', { count: diffDays })
+        : t('common:time.days_ago_other', { count: diffDays });
+    } else if (diffDays < 30) {
+      const weeks = Math.floor(diffDays / 7);
+      return weeks === 1
+        ? t('common:time.weeks_ago_one', { count: weeks })
+        : t('common:time.weeks_ago_other', { count: weeks });
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return months === 1
+        ? t('common:time.months_ago_one', { count: months })
+        : t('common:time.months_ago_other', { count: months });
+    } else {
+      const years = Math.floor(diffDays / 365);
+      return years === 1
+        ? t('common:time.years_ago_one', { count: years })
+        : t('common:time.years_ago_other', { count: years });
+    }
+  })();
 
   // Obtener nombres de ubicaciones con cadena completa
   const locationNames = (() => {
@@ -108,66 +140,67 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
   const isNew = (new Date() - mapDate) < 7 * 24 * 60 * 60 * 1000;
 
   return (
-    <Card className="map-card h-100 shadow-sm border-0">
-      <Card.Body className="position-relative p-4">
-        {/* Badge de Nuevo */}
-        {isNew && (
-          <div className="new-feature-badge">
-            {t('common:badges.new')}
-          </div>
-        )}
+    <Card className="map-card h-100 shadow-sm ">
+      {/* Header Section */}
+      <Card.Header className="bg-light border-bottom">
+        <div className="d-flex justify-content-between align-items-center mb-1">
+          <h5 className="map-title mb-0">{map.title}</h5>
 
-        {/* Conteo de fotos */}
-        <div className="photo-count-badge">
-          <span className="photo-count-icon">
-            <i className="bi bi-camera"></i>
-          </span>
-          <span className="photo-count-number">{photoCount}</span>
-        </div>
-
-        {/* Botones flotantes de tema e idioma */}
-        <div className="theme-language-buttons">
-          <OverlayTrigger
-            placement="left"
-            overlay={<Tooltip>{themeData.name}</Tooltip>}
-          >
-            <div
-              className="theme-button"
-              style={{
-                backgroundColor: themeData.colors.light,
-                color: themeData.colors.primary,
-                border: `2px solid ${themeData.colors.primary}`
-              }}
+          {/* Tema e idioma */}
+          <div className="d-flex gap-2">
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>{themeData.name}</Tooltip>}
             >
-              {themeData.icon}
-            </div>
-          </OverlayTrigger>
+              <div
+                className="map-theme-button"
+                style={{
+                  backgroundColor: themeData.colors.light,
+                  color: themeData.colors.primary
+                }}
+              >
+                <span>{themeData.icon}</span>
+              </div>
+            </OverlayTrigger>
 
-          <OverlayTrigger
-            placement="left"
-            overlay={<Tooltip>{t(`common:language.${map.language || 'es'}`)}</Tooltip>}
-          >
-            <div className="language-button">
-              {map.language === 'en' ? '🇬🇧' : '🇨🇱'}
-            </div>
-          </OverlayTrigger>
-        </div>
-
-        {/* Título y fecha con nuevas clases */}
-        <div className="map-title-container">
-          <h5 className="map-title">{map.title}</h5>
-          <div className="map-date">
-            <i className="bi bi-calendar3 me-1"></i> {formattedDate}
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip>{t(`common:language.${map.language || 'es'}`)}</Tooltip>}
+            >
+              <div className="map-language-button">
+                <span>{map.language === 'en' ? '🇬🇧' : '🇨🇱'}</span>
+              </div>
+            </OverlayTrigger>
           </div>
         </div>
 
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="map-date small text-muted d-flex align-items-center">
+            <i className="bi bi-calendar3 me-1"></i> {formattedDate}
+            {/* Badge de Nuevo */}
+            {isNew && (
+              <NewFeatureBadge size="sm" rotate={12} className="ms-2" />
+            )}
+          </div>
+        </div>
+      </Card.Header>
+
+      {/* Content Section */}
+      <Card.Body className="position-relative p-4">
         {/* Descripción */}
-        {map.description && (
-          <div className="map-description">{map.description}</div>
+        {map.description ? (
+          <div className="map-description mb-3">{map.description}</div>
+        ) : (
+          <div className="map-description mb-3 text-muted fst-italic">Sin descripción</div>
         )}
 
-        {/* Cajitas de filtros */}
-        <div className="filter-boxes mt-3">
+        {/* Filtros Section */}
+        <section className="filters-section">
+          <h6 className="section-title fw-bold text-muted">
+            <i className="bi bi-funnel-fill me-2"></i>
+            {t('common:filters.title')}
+          </h6>
+
           {/* Filtro de ubicación */}
           <div className="filter-box mb-2">
             <i className="bi bi-geo-alt text-primary me-2"></i>
@@ -231,29 +264,36 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
               )}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Estadísticas */}
-        <div className="map-stats">
-          <Badge bg="info" pill className="me-2 stats-badge">
+        {/* Estadísticas y metadata */}
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <Badge bg="primary" pill className="stats-badge">
             <i className="bi bi-eye-fill me-1"></i>
-            {t('common:mymaps.views', { count: map.stats?.viewCount || 0 })}
+            {map.stats?.viewCount === 1
+              ? t('common:mymaps.views_one', { count: map.stats?.viewCount || 0 })
+              : t('common:mymaps.views_other', { count: map.stats?.viewCount || 0 })}
           </Badge>
 
-          <Badge
-            bg={map.isPublic ? "success" : "secondary"}
-            pill
-            className="stats-badge"
-          >
-            <i className={`bi ${map.isPublic ? 'bi-unlock' : 'bi-lock'} me-1`}></i>
-            {map.isPublic ? t('common:visibility.public') : t('common:visibility.private')}
+          <Badge bg="primary" pill className="stats-badge">
+            <i className="bi bi-clock-history me-1"></i>
+            {timeAgo}
           </Badge>
         </div>
+
+        {/* Información de fotos filtradas */}
+        {map.stats?.matchingPhotos !== undefined && (
+          <div className="text-center mt-3 small">
+            <span className="text-primary">
+              <strong>{map.stats.matchingPhotos}</strong> {t('common:photo.plural')} {t('common:filters.match')}
+            </span>
+          </div>
+        )}
       </Card.Body>
 
       {/* Acciones */}
-      <Card.Footer className="bg-transparent border-0 px-4 pb-4 pt-0">
-        <div className="d-flex justify-content-between align-items-center map-actions">
+      <Card.Footer className="border-top px-4 py-3" style={{ backgroundColor: 'var(--light)' }}>
+        <div className="d-flex justify-content-between align-items-center">
           <Button
             variant="primary"
             className="view-map-btn"
@@ -265,9 +305,19 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
           </Button>
 
           <div className="action-buttons">
+            {/* Botón para cambiar visibilidad */}
             <Button
-              variant="light"
-              className="action-btn share-btn"
+              variant="dark-inverse"
+              className="action-btn"
+              onClick={() => onEdit(map)} // Por ahora usa onEdit, luego se implementará la funcionalidad real
+              title={map.isPublic ? t('common:visibility.public') : t('common:visibility.private')}
+            >
+              <i className={`bi ${map.isPublic ? 'bi-eye-fill' : 'bi-eye-slash-fill'}`}></i>
+            </Button>
+
+            <Button
+              variant="dark-inverse"
+              className="action-btn"
               onClick={() => onShare(map)}
               title={t('common:buttons.share')}
             >
@@ -275,8 +325,8 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
             </Button>
 
             <Button
-              variant="light"
-              className="action-btn edit-btn"
+              variant="dark-inverse"
+              className="action-btn"
               onClick={() => onEdit(map)}
               title={t('common:buttons.edit')}
             >
@@ -284,8 +334,8 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
             </Button>
 
             <Button
-              variant="light"
-              className="action-btn delete-btn"
+              variant="dark-inverse"
+              className="action-btn"
               onClick={() => onDelete(map)}
               title={t('common:buttons.delete')}
             >
@@ -326,34 +376,37 @@ const DeleteMapModal = ({ show, onHide, onConfirm, mapTitle }) => {
 // Componente de skeleton para la carga de mapas
 const MapCardSkeleton = () => {
   return (
-    <Card className="map-card h-100 shadow-sm border-0 position-relative">
-      <Card.Body className="position-relative p-4">
-        {/* Skeleton para badge de fotos */}
-        <div className="photo-count-badge">
-          <div className="photo-count-icon skeleton-bg"></div>
-          <div className="skeleton-text" style={{ width: '20px', height: '16px' }}></div>
+    <Card className="map-card h-100 shadow-sm position-relative">
+      <Card.Header className="bg-light border-bottom">
+        <div className="d-flex justify-content-between align-items-center mb-1">
+          <div className="skeleton-text" style={{ width: '60%', height: '24px' }}></div>
+          <div className="d-flex gap-2">
+            <div className="skeleton-circle" style={{ width: '34px', height: '34px' }}></div>
+          </div>
         </div>
+        <div className="d-flex align-items-center">
+          <div className="skeleton-text" style={{ width: '40%', height: '16px' }}></div>
+        </div>
+      </Card.Header>
 
+      <Card.Body className="position-relative p-4">
         {/* Skeleton para tema e idioma */}
         <div className="theme-language-buttons">
-          <div className="theme-button skeleton-bg"></div>
-          <div className="language-button skeleton-bg"></div>
-        </div>
-
-        {/* Skeleton para título y fecha */}
-        <div className="map-title-container">
-          <div className="skeleton-text" style={{ width: '80%', height: '24px', marginBottom: '8px' }}></div>
-          <div className="skeleton-text" style={{ width: '50%', height: '16px', marginBottom: '16px' }}></div>
+          <div className="map-theme-button skeleton-bg"></div>
+          <div className="map-language-button skeleton-bg"></div>
         </div>
 
         {/* Skeleton para descripción */}
-        <div className="map-description">
+        <div className="map-description mb-3">
           <div className="skeleton-text" style={{ width: '100%', height: '14px', marginBottom: '6px' }}></div>
           <div className="skeleton-text" style={{ width: '90%', height: '14px' }}></div>
         </div>
 
+        {/* Título de filtros */}
+        <h6 className="section-title fw-bold text-muted mb-3 skeleton-text" style={{ width: '120px', height: '16px' }}></h6>
+
         {/* Skeleton para filtros */}
-        <div className="filter-boxes mt-3">
+        <div className="filter-boxes">
           <div className="filter-box mb-2">
             <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
             <div className="skeleton-text" style={{ width: '70%', height: '16px' }}></div>
@@ -369,21 +422,29 @@ const MapCardSkeleton = () => {
         </div>
 
         {/* Skeleton para stats */}
-        <div className="map-stats">
+        <div className="d-flex justify-content-between align-items-center mt-3">
           <div className="skeleton-text" style={{ width: '60px', height: '20px', borderRadius: '16px' }}></div>
           <div className="skeleton-text" style={{ width: '70px', height: '20px', borderRadius: '16px' }}></div>
         </div>
 
-        {/* Skeleton para botones */}
-        <div className="map-actions">
+        {/* Skeleton para info de fotos filtradas */}
+        <div className="text-center mt-3">
+          <div className="skeleton-text mx-auto" style={{ width: '150px', height: '16px' }}></div>
+        </div>
+      </Card.Body>
+
+      {/* Card Footer para acciones */}
+      <Card.Footer className="bg-light border-top px-4 py-3">
+        <div className="d-flex justify-content-between align-items-center">
           <div className="skeleton-text" style={{ width: '100px', height: '36px', borderRadius: '4px' }}></div>
           <div className="d-flex gap-2">
             <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
             <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
             <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
           </div>
         </div>
-      </Card.Body>
+      </Card.Footer>
     </Card>
   );
 };
@@ -525,7 +586,7 @@ const MyMaps = () => {
       )}
 
       {/* Toast de confirmación */}
-      <ToastContainer position="bottom-end" className="p-3">
+      <ToastContainer position="bottom-end" className="p-3 position-fixed" style={{ zIndex: 1030 }}>
         {toast && (
           <Toast
             onClose={() => setToast(null)}
@@ -535,13 +596,12 @@ const MyMaps = () => {
             bg={toast.type === 'error' ? 'danger' : 'success'}
             className="text-white"
           >
-            <Toast.Header>
-              <i className={`bi ${toast.type === 'error' ? 'bi-exclamation-circle' : 'bi-clipboard-check'} me-2`}></i>
-              <strong className="me-auto">{toast.title}</strong>
+            <Toast.Header closeButton={true}>
+              <strong className="me-auto">
+                {toast.type === 'error' ? '❌ ' + t('common:messages.error') : '✅ ' + t('common:messages.success')}
+              </strong>
             </Toast.Header>
-            <Toast.Body>
-              {toast.message}
-            </Toast.Body>
+            <Toast.Body>{toast.message}</Toast.Body>
           </Toast>
         )}
       </ToastContainer>

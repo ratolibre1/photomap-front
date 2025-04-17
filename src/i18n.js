@@ -5,8 +5,8 @@ import Backend from 'i18next-http-backend';
 
 console.log('🌎 Iniciando configuración de i18n...');
 
-// Ya no limpiamos la configuración previa de idioma para respetar preferencias
-// localStorage.removeItem('i18nextLng');
+// Limpiar la caché para forzar recarga de traducciones
+localStorage.removeItem('i18nextResources');
 
 // Función para obtener el idioma preferido del usuario (si hay sesión)
 const getUserPreferredLanguage = () => {
@@ -51,7 +51,7 @@ i18n
     },
 
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: '/locales/{{lng}}/{{ns}}.json?v=' + new Date().getTime(),
     },
 
     // Usar idioma preferido del usuario si existe, sino español chileno

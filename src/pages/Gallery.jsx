@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Form, Button, Dropdown, Spinner, Alert, Container, Pagination, Badge, Modal, Toast, ToastContainer, InputGroup } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { photoService, categoryService } from '../services/api';
 import { API_URL } from '../config';
 import { useLabels } from '../context/LabelContext';
@@ -88,7 +88,6 @@ const Gallery = () => {
   // Añadir este hook para acceder al contexto de etiquetas
   const { refreshData: refreshLabels } = useLabels();
 
-  const navigate = useNavigate();
   const { t } = useTranslation(['photos', 'common']);
 
   // Mover fetchPhotos fuera del useEffect para que sea accesible globalmente

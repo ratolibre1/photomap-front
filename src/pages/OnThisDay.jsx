@@ -224,7 +224,7 @@ const OnThisDay = () => {
 
                     <Button
                       type="button"
-                      variant="outline-secondary"
+                      variant="dark-inverse"
                       onClick={handleReset}
                     >
                       <i className="bi bi-arrow-counterclockwise me-1"></i>

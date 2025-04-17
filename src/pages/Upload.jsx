@@ -151,7 +151,7 @@ const Upload = () => {
                 onClick={() => setActiveTab('photos')}
                 className="text-decoration-none"
               >
-                📷 {t('tabs.photos')}
+                <i className="bi bi-camera-fill"></i> {t('tabs.photos')}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -160,7 +160,7 @@ const Upload = () => {
                 onClick={() => setActiveTab('zip')}
                 className="text-decoration-none"
               >
-                📁 {t('tabs.zip')}
+                <i className="bi bi-file-earmark-zip-fill"></i> {t('tabs.zip')}
               </Nav.Link>
             </Nav.Item>
           </Nav>

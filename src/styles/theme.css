@@ -89,6 +89,12 @@
   color: var(--btn-danger-text, white);
 }
 
+.btn-danger:hover {
+  background-color: var(--bs-white) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
 /* Sidebar */
 .sidebar {
   background-color: var(--sidebar-bg);
@@ -124,6 +130,16 @@
 .card-header {
   background-color: var(--card-header-bg) !important;
   color: var(--primary-dark) !important;
+}
+
+.card-header .nav-link {
+  color: var(--dark) !important;
+  font-weight: bold;
+}
+
+.card-header .nav-link.active {
+  background-color: color-mix(in srgb, var(--light) 30%, white) !important;
+  border-color: color-mix(in srgb, var(--light) 30%, white) !important;
 }
 
 /* Alertas */
@@ -389,4 +405,32 @@ h1 {
 
 .clear-selection-item i {
   color: var(--danger) !important;
+}
+
+/* Nuevo estilo de botón secundario/terciario */
+.btn-dark-inverse {
+  color: var(--bs-white) !important;
+  background-color: var(--dark);
+  border-color: var(--dark);
+}
+
+.btn-dark-inverse:hover,
+.btn-dark-inverse:focus,
+.btn-dark-inverse:active {
+  color: var(--dark) !important;
+  background-color: var(--bs-white);
+  border-color: var(--dark);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  /* Gris */
+  color: white;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: white;
+  color: #6c757d;
+  border-color: #6c757d;
 }

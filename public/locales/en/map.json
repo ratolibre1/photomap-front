@@ -64,8 +64,10 @@
     "from": "From",
     "to": "to",
     "all_dates": "All dates",
-    "photo_count": "{{count}} photo",
-    "photo_count_plural": "{{count}} photos",
+    "photo_count": {
+      "one": "{{count}} photo",
+      "other": "{{count}} photos"
+    },
     "photo_singular": "photo",
     "photo_plural": "photos",
     "about": "About this map",

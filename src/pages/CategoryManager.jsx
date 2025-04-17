@@ -378,7 +378,7 @@ const CategoryManager = () => {
                         <span className="fw-bold text-light">{category.name}</span>
                         <div className="d-flex">
                           <Button
-                            variant="outline-primary"
+                            variant="dark-inverse"
                             size="sm"
                             className="me-2"
                             onClick={() => handleNewLabel(category._id || category.id)}
@@ -387,7 +387,7 @@ const CategoryManager = () => {
                             <i className="bi bi-tag-fill"></i> {t('label.new')}
                           </Button>
                           <Button
-                            variant="outline-primary"
+                            variant="dark-inverse"
                             size="sm"
                             className="me-2"
                             onClick={() => handleEditCategory(category)}
@@ -396,7 +396,7 @@ const CategoryManager = () => {
                             <i className="bi bi-pencil-fill"></i>
                           </Button>
                           <Button
-                            variant="outline-primary"
+                            variant="dark-inverse"
                             size="sm"
                             onClick={() => handleDeleteCategoryClick(category)}
                             title={t('common:buttons.delete')}
@@ -601,8 +601,8 @@ const CategoryManager = () => {
                 <p className="text-warning">
                   <i className="bi bi-exclamation-triangle me-2"></i>
                   {labelToDelete.photoCount === 1
-                    ? t('delete.photos_affected', { count: labelToDelete.photoCount })
-                    : t('delete.photos_affected_plural', { count: labelToDelete.photoCount })}
+                    ? t('delete.photos_affected_one', { count: labelToDelete.photoCount })
+                    : t('delete.photos_affected_other', { count: labelToDelete.photoCount })}
                 </p>
               ) : (
                 <p className="text-info">
@@ -663,10 +663,10 @@ const CategoryManager = () => {
                       <div>
                         {typeof label.photoCount !== 'undefined' ? (
                           <Badge bg={label.photoCount > 0 ? "warning" : "secondary"} text={label.photoCount > 0 ? "dark" : "light"}>
-                            {label.photoCount} {label.photoCount === 1 ? t('common:photo.singular', 'foto') : t('common:photo.plural', 'fotos')}
+                            {label.photoCount} {label.photoCount === 1 ? t('common:photo.singular') : t('common:photo.plural')}
                           </Badge>
                         ) : (
-                          <Badge bg="secondary">{t('common:photo.unknown', '? fotos')}</Badge>
+                          <Badge bg="secondary">{t('common:photo.unknown')}</Badge>
                         )}
                       </div>
                     </ListGroup.Item>
