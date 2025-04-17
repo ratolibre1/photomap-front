@@ -1,21 +1,22 @@
 /* Estilos para las tarjetas de mapas */
 .map-card {
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   overflow: hidden;
   border-radius: 12px;
   position: relative;
   background-color: #fff;
-  outline: 1px solid transparent;
+  border-width: var(--bs-border-width);
+  border-color: var(--bs-border-color-translucent);
+  border-radius: var(--bs-border-radius);
+  outline: none;
   padding-top: 0;
 }
 
 .map-card:hover {
-  border: none;
-  /* Quitamos la transformación y la sombra */
   transform: none;
-  outline: 1px solid;
+  outline: 2px solid #000;
   outline-offset: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: none;
 }
 
 /* Botones flotantes de tema e idioma */

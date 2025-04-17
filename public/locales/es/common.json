@@ -53,6 +53,7 @@
     "plural": "fotos",
     "unknown": "? fotos"
   },
+  "no_description": "Sin descripción",
   "navigation": {
     "home": "Ir al inicio",
     "publicMaps": "Ver mapas públicos",

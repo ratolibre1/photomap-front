@@ -191,7 +191,7 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
         {map.description ? (
           <div className="map-description mb-3">{map.description}</div>
         ) : (
-          <div className="map-description mb-3 text-muted fst-italic">Sin descripción</div>
+          <div className="map-description mb-3 text-muted fst-italic">{t('common:no_description', 'Sin descripción')}</div>
         )}
 
         {/* Filtros Section */}
@@ -434,7 +434,7 @@ const MapCardSkeleton = () => {
       </Card.Body>
 
       {/* Card Footer para acciones */}
-      <Card.Footer className="bg-light border-top px-4 py-3">
+      <Card.Footer className="border-top px-4 py-3" style={{ backgroundColor: 'var(--light)' }}>
         <div className="d-flex justify-content-between align-items-center">
           <div className="skeleton-text" style={{ width: '100px', height: '36px', borderRadius: '4px' }}></div>
           <div className="d-flex gap-2">
