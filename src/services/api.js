@@ -187,9 +187,9 @@ export const photoService = {
       data: { photoIds }
     });
   },
-  uploadTakeoutZip: (zipFile, options = {}) => {
+  uploadPhotoZip: (zipFile, options = {}) => {
     const formData = new FormData();
-    formData.append('takeoutZip', zipFile);
+    formData.append('photoZip', zipFile);
 
     const uploadConfig = {
       headers: {
@@ -290,6 +290,10 @@ export const publicMapService = {
   },
   deleteMap: async (mapId) => {
     return await api.delete(`/public-maps/${mapId}`);
+  },
+  updateMapVisibility: async (mapId, isPublic) => {
+    // Usamos el endpoint genérico de actualización pero solo enviamos el campo isPublic
+    return await api.put(`/public-maps/${mapId}`, { isPublic });
   },
 };
 

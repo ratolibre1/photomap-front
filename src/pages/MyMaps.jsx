@@ -10,7 +10,7 @@ import { useLocation } from '../context/LocationContext';
 import LabelBadge from '../components/common/LabelBadge';
 import './MyMaps.css';
 
-const MapCard = ({ map, onDelete, onEdit, onShare }) => {
+const MapCard = ({ map, onDelete, onEdit, onShare, onVisibilityChange }) => {
   const { t } = useTranslation(['common']);
   const themeData = THEMES[map.colorPalette] || THEMES.milotic;
   const mapDate = new Date(map.createdAt);
@@ -309,7 +309,7 @@ const MapCard = ({ map, onDelete, onEdit, onShare }) => {
             <Button
               variant="dark-inverse"
               className="action-btn"
-              onClick={() => onEdit(map)} // Por ahora usa onEdit, luego se implementará la funcionalidad real
+              onClick={() => onVisibilityChange(map)}
               title={map.isPublic ? t('common:visibility.public') : t('common:visibility.private')}
             >
               <i className={`bi ${map.isPublic ? 'bi-eye-fill' : 'bi-eye-slash-fill'}`}></i>
@@ -516,6 +516,36 @@ const MyMaps = () => {
     alert(`Función de edición no implementada para: ${map.title}`);
   };
 
+  const handleVisibilityChange = async (map) => {
+    try {
+      // Llamar al servicio para cambiar la visibilidad
+      await publicMapService.updateMapVisibility(map._id, !map.isPublic);
+
+      // Actualizar el estado local
+      setMaps(prevMaps => prevMaps.map(m =>
+        m._id === map._id ? { ...m, isPublic: !m.isPublic } : m
+      ));
+
+      // Mostrar toast de confirmación
+      setToast({
+        message: map.isPublic
+          ? t('common:mymaps.visibility_private_success')
+          : t('common:mymaps.visibility_public_success'),
+        title: map.title,
+        type: 'success'
+      });
+    } catch (error) {
+      console.error('Error al cambiar la visibilidad:', error);
+
+      // Mostrar toast de error
+      setToast({
+        message: t('common:mymaps.visibility_change_error'),
+        title: map.title,
+        type: 'error'
+      });
+    }
+  };
+
   const handleShareMap = (map) => {
     console.log('Compartir mapa:', map);
     // Copiar directamente el link al portapapeles
@@ -579,6 +609,7 @@ const MyMaps = () => {
                 onDelete={handleDeleteMap}
                 onEdit={handleEditMap}
                 onShare={handleShareMap}
+                onVisibilityChange={handleVisibilityChange}
               />
             </Col>
           ))}

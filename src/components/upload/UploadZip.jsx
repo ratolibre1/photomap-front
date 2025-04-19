@@ -36,7 +36,7 @@ const UploadZip = () => {
       setError(null);
       setSuccess(false);
 
-      await photoService.uploadTakeoutZip(file, {
+      await photoService.uploadPhotoZip(file, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
