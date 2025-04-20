@@ -61,6 +61,9 @@ const PhotoMap = () => {
         queryParams.isPublic = filters.isPublic;
       }
 
+      // Agregar flag para excluir fotos sin ubicación conocida
+      queryParams.excludeUnknowns = true;
+
       queryParams.limit = 1000;
 
       console.log('🔍 Filtros de búsqueda enviados:', queryParams);
@@ -173,6 +176,7 @@ const PhotoMap = () => {
                   onFilterChange={handleFilterChange}
                   showCreateMapButton={true}
                   onOpenCreateMapModal={handleOpenCreateMapModal}
+                  excludeUnknowns={true}
                 />
               )}
             </Card.Body>

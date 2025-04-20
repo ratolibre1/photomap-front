@@ -191,6 +191,11 @@ export const photoService = {
     const formData = new FormData();
     formData.append('photoZip', zipFile);
 
+    // Añadir parámetro de visibilidad si está en options.data
+    if (options.data && options.data.isPublic !== undefined) {
+      formData.append('isPublic', options.data.isPublic);
+    }
+
     const uploadConfig = {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -200,8 +205,15 @@ export const photoService = {
 
     return api.post('/upload/zip', formData, uploadConfig);
   },
-  getPhotoCalendar: async (month, year) => {
-    return await api.get(`/photos/calendar?month=${month}&year=${year}`);
+  getPhotoCalendar: async (month, year, excludeUnknowns = false) => {
+    let url = `/photos/calendar?month=${month}&year=${year}`;
+
+    // Añadir el parámetro excludeUnknowns si es true
+    if (excludeUnknowns) {
+      url += '&excludeUnknowns=true';
+    }
+
+    return await api.get(url);
   },
   getPhotosOnThisDay: (params = {}) => {
     const { day, month } = params;
@@ -275,7 +287,11 @@ export const publicMapService = {
   },
   getPublicMapPhotos: async (shareId) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/public-maps/share/${shareId}/photos`);
+      const response = await axios.get(`${API_BASE_URL}/public-maps/share/${shareId}/photos`, {
+        params: {
+          excludeUnknowns: true
+        }
+      });
       return response;
     } catch (error) {
       console.error('Error al obtener las fotos del mapa público:', error);

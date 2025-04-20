@@ -51,6 +51,10 @@
         "search": {
           "title": "Búsqueda y filtros",
           "content": "Usa las opciones de búsqueda y filtros para encontrar fotos específicas. Puedes filtrar por ubicación, fecha, etiquetas y más para encontrar exactamente lo que buscas."
+        },
+        "visibility": {
+          "title": "Cambiar la visibilidad de fotos",
+          "content": "Desde la galería puedes gestionar la visibilidad de tus fotos. Para cambiar si una foto es pública o privada, selecciona la foto y usa la opción de visibilidad en el panel de detalles. También puedes seleccionar múltiples fotos y cambiar su visibilidad en lote usando las opciones de acciones masivas."
         }
       }
     },
@@ -86,6 +90,10 @@
         "zip_upload": {
           "title": "Importación desde archivo ZIP",
           "content": "**PhotoMap** te permite importar directamente tus fotos desde cualquier archivo ZIP que contenga imágenes. Esta es una manera rápida y conveniente de subir múltiples fotos a la vez, manteniendo los metadatos como ubicación, fecha y etiquetas si están disponibles en las imágenes originales."
+        },
+        "visibility": {
+          "title": "Visibilidad de las fotos",
+          "content": "Al subir fotos, puedes elegir entre visibilidad **Pública** o **Privada**. Las fotos **públicas** aparecerán en el mapa general y podrán incluirse en mapas compartidos. Las fotos **privadas** solo serán visibles para ti y no aparecerán en el mapa a menos que cambies su configuración. Puedes modificar la visibilidad de tus fotos en cualquier momento desde la galería."
         }
       }
     },

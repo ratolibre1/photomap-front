@@ -232,6 +232,12 @@ const Help = () => {
                     <div dangerouslySetInnerHTML={{ __html: renderMarkdownText(t('help:sections.gallery.items.search.content')) }}></div>
                   </Accordion.Body>
                 </Accordion.Item>
+                <Accordion.Item eventKey="gallery-3">
+                  <Accordion.Header>{t('help:sections.gallery.items.visibility.title')}</Accordion.Header>
+                  <Accordion.Body>
+                    <div dangerouslySetInnerHTML={{ __html: renderMarkdownText(t('help:sections.gallery.items.visibility.content')) }}></div>
+                  </Accordion.Body>
+                </Accordion.Item>
               </Accordion>
             </section>
 
@@ -281,6 +287,12 @@ const Help = () => {
                   <Accordion.Header>{t('help:sections.upload.items.zip_upload.title')}</Accordion.Header>
                   <Accordion.Body>
                     <div dangerouslySetInnerHTML={{ __html: renderMarkdownText(t('help:sections.upload.items.zip_upload.content')) }}></div>
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="upload-3">
+                  <Accordion.Header>{t('help:sections.upload.items.visibility.title')}</Accordion.Header>
+                  <Accordion.Body>
+                    <div dangerouslySetInnerHTML={{ __html: renderMarkdownText(t('help:sections.upload.items.visibility.content')) }}></div>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

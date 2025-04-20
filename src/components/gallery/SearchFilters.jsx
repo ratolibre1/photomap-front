@@ -13,7 +13,7 @@ import LocationSelector from '../common/LocationSelector';
 import { DropdownProvider } from '../../context/DropdownContext';
 import NewFeatureBadge from '../common/NewFeatureBadge';
 
-const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, onOpenCreateMapModal }) => {
+const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, onOpenCreateMapModal, excludeUnknowns = false }) => {
   // Obtenemos funciones y datos del contexto de ubicación
   const { locations: filteredLocations, loading, selectLocation } = useLocation();
   const { t, i18n } = useTranslation(['filters', 'labels']);
@@ -84,12 +84,26 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
       const month = firstMonth.getMonth() + 1; // getMonth() devuelve 0-11, necesitamos 1-12
       const year = firstMonth.getFullYear();
 
-      // El backend ya devuelve los datos para los dos meses visibles
-      const response = await photoService.getPhotoCalendar(month, year);
-      const calendarData = response.data.data.calendar || [];
+      // Calcular el mes siguiente y su año correspondiente
+      const nextMonth = month === 12 ? 1 : month + 1;
+      const nextMonthYear = month === 12 ? year + 1 : year;
 
-      setCalendarData(calendarData);
-      console.log('Datos del calendario cargados:', calendarData);
+      // Realizar ambas solicitudes en paralelo
+      const [currentMonthResponse, nextMonthResponse] = await Promise.all([
+        photoService.getPhotoCalendar(month, year, excludeUnknowns),
+        photoService.getPhotoCalendar(nextMonth, nextMonthYear, excludeUnknowns)
+      ]);
+
+      // Extraer y combinar los datos de ambos meses
+      const currentMonthData = currentMonthResponse.data.data.calendar || [];
+      const nextMonthData = nextMonthResponse.data.data.calendar || [];
+
+      // Combinar los datos de ambos meses en un solo array
+      const combinedCalendarData = [...currentMonthData, ...nextMonthData];
+
+      setCalendarData(combinedCalendarData);
+      console.log('Datos del calendario cargados para meses:', `${month}/${year}`, `${nextMonth}/${nextMonthYear}`);
+      console.log('Total de días con datos:', combinedCalendarData.length);
     } catch (error) {
       console.error('Error al cargar datos del calendario:', error);
     } finally {
