@@ -301,7 +301,7 @@ const MapCard = ({ map, onDelete, onEdit, onShare, onVisibilityChange }) => {
             to={`/mapa-publico/${map.shareId}`}
             target="_blank"
           >
-            <i className="bi bi-map me-2"></i> {t('common:mymaps.view')}
+            <i className="bi bi-map-fill me-2"></i> {t('common:mymaps.view')}
           </Button>
 
           <div className="action-buttons">
@@ -377,25 +377,21 @@ const DeleteMapModal = ({ show, onHide, onConfirm, mapTitle }) => {
 const MapCardSkeleton = () => {
   return (
     <Card className="map-card h-100 shadow-sm position-relative">
+      {/* Header Section - mismas dimensiones que la tarjeta real */}
       <Card.Header className="bg-light border-bottom">
         <div className="d-flex justify-content-between align-items-center mb-1">
           <div className="skeleton-text" style={{ width: '60%', height: '24px' }}></div>
           <div className="d-flex gap-2">
             <div className="skeleton-circle" style={{ width: '34px', height: '34px' }}></div>
+            <div className="skeleton-circle" style={{ width: '34px', height: '34px' }}></div>
           </div>
         </div>
         <div className="d-flex align-items-center">
-          <div className="skeleton-text" style={{ width: '40%', height: '16px' }}></div>
+          <div className="skeleton-text" style={{ width: '40%', height: '21px', marginBottom: '10px' }}></div>
         </div>
       </Card.Header>
 
       <Card.Body className="position-relative p-4">
-        {/* Skeleton para tema e idioma */}
-        <div className="theme-language-buttons">
-          <div className="map-theme-button skeleton-bg"></div>
-          <div className="map-language-button skeleton-bg"></div>
-        </div>
-
         {/* Skeleton para descripción */}
         <div className="map-description mb-3">
           <div className="skeleton-text" style={{ width: '100%', height: '14px', marginBottom: '6px' }}></div>
@@ -405,43 +401,38 @@ const MapCardSkeleton = () => {
         {/* Título de filtros */}
         <h6 className="section-title fw-bold text-muted mb-3 skeleton-text" style={{ width: '120px', height: '16px' }}></h6>
 
-        {/* Skeleton para filtros */}
+        {/* Skeleton para filtros - mantener los 3 filtros como en la tarjeta real */}
         <div className="filter-boxes">
           <div className="filter-box mb-2">
-            <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
+            <div style={{ width: '20px', height: '26px', marginRight: '12px' }}></div>
             <div className="skeleton-text" style={{ width: '70%', height: '16px' }}></div>
           </div>
           <div className="filter-box mb-2">
-            <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
+            <div style={{ width: '20px', height: '26px', marginRight: '12px' }}></div>
             <div className="skeleton-text" style={{ width: '60%', height: '16px' }}></div>
           </div>
-          <div className="filter-box">
-            <div className="skeleton-circle" style={{ width: '20px', height: '20px', marginRight: '12px' }}></div>
+          <div className="filter-box mb-2">
+            <div style={{ width: '20px', height: '26px', marginRight: '12px' }}></div>
             <div className="skeleton-text" style={{ width: '80%', height: '16px' }}></div>
           </div>
         </div>
 
-        {/* Skeleton para stats */}
+        {/* Skeleton para stats - mantener la estructura visual */}
         <div className="d-flex justify-content-between align-items-center mt-3">
-          <div className="skeleton-text" style={{ width: '60px', height: '20px', borderRadius: '16px' }}></div>
-          <div className="skeleton-text" style={{ width: '70px', height: '20px', borderRadius: '16px' }}></div>
-        </div>
-
-        {/* Skeleton para info de fotos filtradas */}
-        <div className="text-center mt-3">
-          <div className="skeleton-text mx-auto" style={{ width: '150px', height: '16px' }}></div>
+          <div className="skeleton-text" style={{ width: '60px', height: '20px', borderRadius: '16px', backgroundColor: 'var(--primary)' }}></div>
+          <div className="skeleton-text" style={{ width: '70px', height: '20px', borderRadius: '16px', backgroundColor: 'var(--primary)' }}></div>
         </div>
       </Card.Body>
 
-      {/* Card Footer para acciones */}
+      {/* Card Footer para acciones - mantener la estructura visual */}
       <Card.Footer className="border-top px-4 py-3" style={{ backgroundColor: 'var(--light)' }}>
         <div className="d-flex justify-content-between align-items-center">
-          <div className="skeleton-text" style={{ width: '100px', height: '36px', borderRadius: '4px' }}></div>
+          <div className="skeleton-text" style={{ width: '100px', height: '42px', borderRadius: '4px', backgroundColor: 'var(--secondary)' }}></div>
           <div className="d-flex gap-2">
-            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
-            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
-            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
-            <div className="skeleton-circle" style={{ width: '36px', height: '36px' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
+            <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
           </div>
         </div>
       </Card.Footer>
@@ -574,7 +565,7 @@ const MyMaps = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>{t('common:mymaps.title')}</h1>
         <Button variant="primary" size="lg" className="create-map-btn">
-          <i className="bi bi-plus-lg me-2"></i> {t('common:mymaps.create')}
+          <i className="bi bi-map-fill me-2"></i> {t('common:mymaps.create')}
         </Button>
       </div>
 
@@ -603,6 +594,7 @@ const MyMaps = () => {
       ) : (
         <Row xs={1} md={2} lg={3} className="g-4">
           {maps.map(map => (
+
             <Col key={map._id}>
               <MapCard
                 map={map}
