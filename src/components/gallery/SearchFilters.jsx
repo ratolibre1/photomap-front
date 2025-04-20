@@ -154,6 +154,12 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
     // Actualizamos el estado con la selección del usuario
     setDateRangeState([item.selection]);
 
+    // Verificar si las fechas son válidas
+    if (!item.selection.startDate || !item.selection.endDate) {
+      console.log('⚠️ Fechas inválidas en la selección:', item.selection);
+      return; // Salir si alguna fecha es nula
+    }
+
     // Verificar si es un solo día (inicio y fin iguales)
     const isSingleDay = item.selection.startDate.getTime() === item.selection.endDate.getTime();
 
@@ -508,7 +514,7 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
                 )}
                 <DateRange
                   key={`date-range-${i18n.language}`}
-                  editableDateInputs={true}
+                  editableDateInputs={false}
                   onChange={handleDateRangeChange}
                   moveRangeOnFirstSelection={false}
                   ranges={dateRangeState}
@@ -561,6 +567,53 @@ const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, o
       <style jsx="true">{`
         .btn-success {
           position: relative;
+        }
+        
+        /* Estilos para los inputs de fecha */
+        .rdrDateDisplay {
+          display: flex !important;
+          cursor: default !important;
+        }
+        
+        /* Eliminar el borde rojo usando border-color personalizado */
+        .rdrDateDisplayItem {
+          border: 1px solid #ced4da !important;
+          background-color: white !important;
+          cursor: default !important;
+        }
+        
+        .rdrDateDisplayItemActive {
+          border-color: #ced4da !important;
+          color: #212529 !important;
+          cursor: default !important;
+        }
+        
+        /* Estilo para los inputs dentro de los contenedores */
+        .rdrDateInput input {
+          color: #212529 !important;
+          border: none !important;
+          box-shadow: none !important;
+          background-color: transparent !important;
+          cursor: default !important;
+        }
+        
+        /* Eliminar estilos de foco */
+        .rdrDateDisplayItem:focus-within,
+        .rdrDateInput input:focus {
+          border-color: #ced4da !important;
+          box-shadow: none !important;
+          outline: none !important;
+          cursor: default !important;
+        }
+        
+        /* Clase específica para anular estilos de rojo */
+        .rdrDateDisplay,
+        .rdrDateDisplayItem,
+        .rdrDateDisplayItemActive,
+        .rdrDateDisplayWrapper,
+        .rdrDateInput {
+          border-color: #ced4da !important;
+          box-shadow: none !important;
         }
       `}</style>
     </div>
