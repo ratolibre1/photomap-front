@@ -18,6 +18,16 @@
         "avatar_upload": "Profile avatar upload",
         "search": "Search improvements"
       },
+      "improvements": {
+        "i18n": "Complete internationalization",
+        "gallery_filters": "Gallery filters simplification",
+        "help_center": "Enhanced Help Center"
+      },
+      "fixes": {
+        "text_format": "Text formatting fixes",
+        "pagination": "Pagination correction",
+        "search_placeholder": "Search field improvements"
+      },
       "ui": {
         "theme_update": "Theme update",
         "sidebar_improvement": "Sidebar improvements",
@@ -50,6 +60,16 @@
         "location_selector": "New component for selecting locations with optimized search. Includes autocomplete and regional grouping.",
         "avatar_upload": "Now you can upload and customize your profile avatar. Supports interactive cropping and real-time preview.",
         "search": "Advanced filters to find photos by date, location, and tags. The system saves your recent searches."
+      },
+      "improvements": {
+        "i18n": "The application is now fully internationalized in English and Spanish. All texts, messages, and help content are available in both languages.",
+        "gallery_filters": "Simplified filter interface in the Gallery for a more intuitive experience, removing rarely used advanced filters.",
+        "help_center": "Enhanced Help Center with complete documentation and rich formatting for better readability."
+      },
+      "fixes": {
+        "text_format": "Fixed text formatting throughout the application, ensuring that bold text and other styles display correctly.",
+        "pagination": "Solved an issue where numbers in the paginator weren't correctly displayed in bold.",
+        "search_placeholder": "Help texts in search fields now display in the user's selected language."
       },
       "ui": {
         "theme_update": "Complete theme redesign using more harmonious color palettes. Better contrast and accessibility in dark and light modes.",

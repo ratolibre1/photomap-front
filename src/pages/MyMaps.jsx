@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Badge, OverlayTrigger, Tooltip, Modal, Toast, ToastContainer } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Alert, Badge, OverlayTrigger, Tooltip, Modal, Toast, ToastContainer } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { publicMapService } from '../services/api';
 import { THEMES } from '../context/ThemeContext';
@@ -10,7 +10,7 @@ import { useLocation } from '../context/LocationContext';
 import LabelBadge from '../components/common/LabelBadge';
 import './MyMaps.css';
 
-const MapCard = ({ map, onDelete, onEdit, onShare, onVisibilityChange }) => {
+const MapCard = ({ map, onDelete, onShare, onVisibilityChange }) => {
   const { t } = useTranslation(['common']);
   const themeData = THEMES[map.colorPalette] || THEMES.milotic;
   const mapDate = new Date(map.createdAt);

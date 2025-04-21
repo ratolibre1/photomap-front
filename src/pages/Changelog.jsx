@@ -18,7 +18,7 @@ const Changelog = () => {
       <Card className="mb-4 shadow-sm">
         <Card.Header className="d-flex justify-content-between align-items-center bg-light">
           <span className="fw-bold">🚀 v1.1.0 - {t('current_version')}</span>
-          <NewFeatureBadge rotate={12}>{t('common:new')}</NewFeatureBadge>
+          <NewFeatureBadge rotate={12}>{t('common:badges.new')}</NewFeatureBadge>
         </Card.Header>
         <Card.Body>
           <Row className="mb-4">
@@ -43,7 +43,24 @@ const Changelog = () => {
                   <strong>{t('changes.v1_1_0.features.search')}</strong> - {t('descriptions.v1_1_0.features.search')}
                 </li>
               </ul>
+
+              <h5 className="d-flex align-items-center mt-4">
+                <i className="bi bi-arrow-up-circle me-2 text-primary"></i>
+                {t('categories.improvements')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_1_0.improvements.i18n')}</strong> - {t('descriptions.v1_1_0.improvements.i18n')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_1_0.improvements.gallery_filters')}</strong> - {t('descriptions.v1_1_0.improvements.gallery_filters')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_1_0.improvements.help_center')}</strong> - {t('descriptions.v1_1_0.improvements.help_center')}
+                </li>
+              </ul>
             </Col>
+
             <Col md={6}>
               <h5 className="d-flex align-items-center">
                 <i className="bi bi-palette me-2 text-primary"></i>
@@ -64,6 +81,22 @@ const Changelog = () => {
                 </li>
                 <li>
                   <strong>{t('changes.v1_1_0.ui.responsive')}</strong> - {t('descriptions.v1_1_0.ui.responsive')}
+                </li>
+              </ul>
+
+              <h5 className="d-flex align-items-center mt-4">
+                <i className="bi bi-bug me-2 text-primary"></i>
+                {t('categories.fixes')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_1_0.fixes.text_format')}</strong> - {t('descriptions.v1_1_0.fixes.text_format')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_1_0.fixes.pagination')}</strong> - {t('descriptions.v1_1_0.fixes.pagination')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_1_0.fixes.search_placeholder')}</strong> - {t('descriptions.v1_1_0.fixes.search_placeholder')}
                 </li>
               </ul>
             </Col>

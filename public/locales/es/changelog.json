@@ -18,6 +18,16 @@
         "avatar_upload": "Subida de avatar de perfil",
         "search": "Mejoras en la búsqueda"
       },
+      "improvements": {
+        "i18n": "Internacionalización completa",
+        "gallery_filters": "Simplificación de filtros en Galería",
+        "help_center": "Centro de Ayuda mejorado"
+      },
+      "fixes": {
+        "text_format": "Correcciones de formato en textos",
+        "pagination": "Corrección en paginador",
+        "search_placeholder": "Mejoras en campo de búsqueda"
+      },
       "ui": {
         "theme_update": "Actualización de temas",
         "sidebar_improvement": "Mejoras en la barra lateral",
@@ -50,6 +60,16 @@
         "location_selector": "Nuevo componente para seleccionar ubicaciones con búsqueda optimizada. Incluye autocompletado y agrupación por regiones.",
         "avatar_upload": "Ahora puedes subir y personalizar tu avatar de perfil. Soporta recorte interactivo y vista previa en tiempo real.",
         "search": "Filtros avanzados para encontrar fotos por fecha, ubicación y etiquetas. El sistema guarda tus búsquedas recientes."
+      },
+      "improvements": {
+        "i18n": "La aplicación ahora está completamente internacionalizada en español e inglés. Todos los textos, mensajes y ayudas están disponibles en ambos idiomas.",
+        "gallery_filters": "Simplificación de la interfaz de filtros en la Galería para una experiencia más intuitiva, eliminando los filtros avanzados poco utilizados.",
+        "help_center": "Centro de Ayuda mejorado con documentación completa y formato enriquecido para una mejor legibilidad."
+      },
+      "fixes": {
+        "text_format": "Corrección del formato de texto en toda la aplicación, asegurando que las negritas y otros estilos se muestren correctamente.",
+        "pagination": "Solución al problema donde los números en el paginador no se mostraban correctamente en negrita.",
+        "search_placeholder": "Los textos de ayuda en los campos de búsqueda ahora se muestran en el idioma seleccionado por el usuario."
       },
       "ui": {
         "theme_update": "Rediseño completo de los temas usando paletas de colores más armoniosas. Mejor contraste y accesibilidad en modo oscuro y claro.",
