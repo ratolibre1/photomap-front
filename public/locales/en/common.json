@@ -103,7 +103,9 @@
     "date_range": "Date range",
     "date_from": "From",
     "date_to": "To",
-    "location": "Location"
+    "location": "Location",
+    "title": "Filters",
+    "match": "match filters"
   },
   "to": "to",
   "badges": {
@@ -116,6 +118,10 @@
   "messages": {
     "success": "Success!",
     "error": "Error!"
+  },
+  "toast": {
+    "success": "✅ Success",
+    "error": "❌ Error"
   },
   "time": {
     "today": "Today",

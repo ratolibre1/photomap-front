@@ -32,7 +32,7 @@ const GeocodingPanel = () => {
     <Card className="mb-4">
       <Card.Header className="d-flex justify-content-between align-items-center">
         <h5 className="mb-0">{t('geocoding.title')}</h5>
-        <Badge bg="primary" className="ms-2">
+        <Badge className="ms-2" style={{ backgroundColor: 'var(--secondary) !important' }}>
           {t('geocoding.badge')}
         </Badge>
       </Card.Header>

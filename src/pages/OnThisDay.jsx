@@ -267,7 +267,7 @@ const OnThisDay = () => {
             <div key={memory.year} className="mb-5">
               <div className="d-flex align-items-center mb-3">
                 <h2 className="mb-0">{memory.year}</h2>
-                <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--info)', color: 'var(--dark)' }}>
+                <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--primary)', color: 'white' }}>
                   {new Date().getFullYear() - memory.year} {new Date().getFullYear() - memory.year === 1 ? t('year_ago') : t('years_ago')}
                 </div>
                 <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--secondary)', color: 'white' }}>

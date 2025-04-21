@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Form, Button, Dropdown, Spinner, Alert, Container, Pagination, Badge, Modal, Toast, ToastContainer, InputGroup } from 'react-bootstrap';
+import { Card, Row, Col, Form, Button, Dropdown, Spinner, Alert, Container, Pagination, Badge, Modal, Toast, ToastContainer } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { photoService, categoryService } from '../services/api';
 import { API_URL } from '../config';
 import { useLabels } from '../context/LabelContext';
 import { useTranslation } from 'react-i18next';
+import SearchBar from '../components/gallery/SearchBar';
 
 // Datos de prueba como respaldo
 const MOCK_PHOTOS = [
@@ -78,11 +79,6 @@ const Gallery = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState('success');
-  const [showSearchFilters, setShowSearchFilters] = useState(false);
-  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
-  const [locationFilter, setLocationFilter] = useState({ country: '', region: '', city: '' });
-  const [geoSearch, setGeoSearch] = useState({ lat: '', lng: '', distance: 10000 });
-  const [visibilityFilter, setVisibilityFilter] = useState('all'); // 'all', 'public', 'private'
   const [categories, setCategories] = useState([]);
 
   // Añadir este hook para acceder al contexto de etiquetas
@@ -99,30 +95,12 @@ const Gallery = () => {
       // Preparar filtros base (no relacionados con ubicación)
       const searchFilters = {
         searchTerm,
-        startDate: dateRange.startDate || undefined,
-        endDate: dateRange.endDate || undefined,
         page: page,
         limit: pageSize,
         sortDirection: sortDirection,
         category: selectedTag,
         sortBy: sortBy,
-        // Solo incluir isPublic si no es 'all'
-        ...(visibilityFilter !== 'all' && {
-          isPublic: visibilityFilter === 'public'
-        }),
-        lat: geoSearch.lat,
-        lng: geoSearch.lng,
-        distance: geoSearch.distance
       };
-
-      // Agregar solo el filtro de ubicación más específico
-      if (locationFilter.city) {
-        searchFilters.cityId = locationFilter.city;
-      } else if (locationFilter.region) {
-        searchFilters.regionId = locationFilter.region;
-      } else if (locationFilter.country) {
-        searchFilters.countryId = locationFilter.country;
-      }
 
       console.log('Enviando filtros:', searchFilters);
       const response = await photoService.getPhotos(searchFilters);
@@ -149,7 +127,7 @@ const Gallery = () => {
       setPagination(paginationInfo);
     } catch (err) {
       console.error('Error al cargar las fotos:', err.response || err);
-      setError('No pudimos cargar las fotos 😕');
+      setError(t('photos:gallery.load_error'));
       if (page === 1 && photos.length === 0) {
         setPhotos(MOCK_PHOTOS); // Solo usar datos de prueba si no hay fotos
       }
@@ -185,7 +163,7 @@ const Gallery = () => {
   // Función para obtener una ubicación legible
   const getLocationName = (hasValidCoordinates, location) => {
     if (!hasValidCoordinates) {
-      return t('detail.unknown_location');
+      return t('photos:detail.unknown_location');
     }
     return `${location.coordinates[1].toFixed(6)}, ${location.coordinates[0].toFixed(6)}`;
   };
@@ -193,7 +171,7 @@ const Gallery = () => {
   // Nueva función para obtener la fecha formateada
   const getFormattedDate = (hasValidTimestamp, timestamp) => {
     if (!hasValidTimestamp) {
-      return t('detail.unknown_date');
+      return t('photos:detail.unknown_date');
     }
     return new Date(timestamp).toLocaleDateString();
   };
@@ -235,7 +213,7 @@ const Gallery = () => {
       console.error('❌ Error detallado al cambiar visibilidad:', err);
       console.error('❌ Mensaje de error:', err.message);
       console.error('❌ Respuesta del servidor si existe:', err.response?.data);
-      alert(`No se pudo cambiar la visibilidad de la foto. ${err.message || 'Intenta nuevamente más tarde.'}`);
+      alert(t('photos:gallery.visibility_error'));
     } finally {
       setChangingVisibility(false);
     }
@@ -311,7 +289,7 @@ const Gallery = () => {
 
     } catch (err) {
       console.error('Error al cambiar visibilidad en lote:', err);
-      alert('Hubo un error al actualizar la visibilidad de las fotos seleccionadas');
+      alert(t('photos:gallery.batch_visibility_error'));
     } finally {
       setChangingVisibility(false);
     }
@@ -344,7 +322,9 @@ const Gallery = () => {
 
       // Mostrar toast de éxito en lugar de alert
       setToastVariant('success');
-      setToastMessage(`${selectedPhotos.length} foto${selectedPhotos.length !== 1 ? 's' : ''} eliminada${selectedPhotos.length !== 1 ? 's' : ''} correctamente.`);
+      setToastMessage(
+        t('photos:gallery.delete_success', { count: selectedPhotos.length })
+      );
       setShowToast(true);
 
       // Si se han eliminado todas las fotos de la página actual, volver a la página 1
@@ -357,7 +337,7 @@ const Gallery = () => {
       console.error('Error al eliminar fotos:', err);
       // Mostrar toast de error en lugar de alert
       setToastVariant('danger');
-      setToastMessage(`No se pudieron eliminar las fotos. ${err.message || 'Intenta nuevamente más tarde.'}`);
+      setToastMessage(t('photos:gallery.delete_error'));
       setShowToast(true);
     } finally {
       setDeleting(false);
@@ -367,7 +347,7 @@ const Gallery = () => {
   return (
     <Container fluid className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Galería de Fotos</h1>
+        <h1>{t('photos:gallery.title')}</h1>
 
         <div className="d-flex align-items-center">
           <Button
@@ -377,85 +357,62 @@ const Gallery = () => {
             onClick={toggleSelectMode}
           >
             <i className="bi bi-check-square me-1"></i>
-            {selectMode ? 'Cancelar selección' : 'Seleccionar varias'}
+            {selectMode ? t('photos:gallery.cancel_selection') : t('photos:gallery.select_multiple')}
           </Button>
         </div>
       </div>
 
-      {/* Barra de búsqueda y filtros básicos */}
-      <div className="d-flex flex-wrap gap-2 mb-4 align-items-end">
-        <div className="search-bar flex-grow-1 me-2" style={{ minWidth: '250px', maxWidth: '400px' }}>
-          <Form.Group>
-            <Form.Label>Buscar</Form.Label>
-            <div className="input-group">
-              <Form.Control
-                type="text"
-                placeholder="Buscar por título o descripción..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => setSearchTerm('')}
+      <div className="d-flex align-items-end justify-content-between mb-4">
+        <div className="search-controls flex-grow-1 me-2">
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
+          />
+          <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <div className="category-filter" style={{ minWidth: '200px' }}>
+              <Form.Group>
+                <Form.Label>{t('photos:gallery.category')}</Form.Label>
+                <Form.Select
+                  value={selectedTag}
+                  onChange={(e) => setSelectedTag(e.target.value)}
                 >
-                  <i className="bi bi-x"></i>
-                </Button>
-              )}
+                  <option value="">{t('photos:gallery.all_categories')}</option>
+                  {categories.map(category => (
+                    <option key={category._id} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
             </div>
-          </Form.Group>
-        </div>
 
-        <div className="category-filter" style={{ minWidth: '200px' }}>
-          <Form.Group>
-            <Form.Label>Categoría</Form.Label>
-            <Form.Select
-              value={selectedTag}
-              onChange={(e) => setSelectedTag(e.target.value)}
-            >
-              <option value="">Todas las categorías</option>
-              {categories.map(category => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </div>
-
-        <div className="sort-filter d-flex" style={{ minWidth: '200px' }}>
-          <Form.Group className="w-100">
-            <Form.Label>Ordenar por</Form.Label>
-            <div className="d-flex">
-              <Form.Select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="me-2"
-              >
-                <option value="timestamp">Fecha</option>
-                <option value="title">Título</option>
-                <option value="location">Ubicación</option>
-              </Form.Select>
-              <Button
-                variant="outline-secondary"
-                onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-                title={`Ordenar ${sortDirection === 'asc' ? 'descendente' : 'ascendente'}`}
-              >
-                <i className={`bi bi-sort-${sortDirection === 'asc' ? 'down' : 'up'}`}></i>
-              </Button>
+            <div className="sort-filter d-flex" style={{ minWidth: '200px' }}>
+              <Form.Group className="w-100">
+                <Form.Label>{t('photos:gallery.sort_by')}</Form.Label>
+                <div className="d-flex">
+                  <Form.Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="me-2"
+                  >
+                    <option value="timestamp">{t('photos:gallery.sort_options.date')}</option>
+                    <option value="title">{t('photos:gallery.sort_options.title')}</option>
+                    <option value="location">{t('photos:gallery.sort_options.location')}</option>
+                  </Form.Select>
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+                    title={t(sortDirection === 'asc' ? 'photos:gallery.sort_desc' : 'photos:gallery.sort_asc')}
+                  >
+                    <i className={`bi bi-sort-${sortDirection === 'asc' ? 'down' : 'up'}`}></i>
+                  </Button>
+                </div>
+              </Form.Group>
             </div>
-          </Form.Group>
+          </div>
         </div>
 
         <div className="ms-auto d-flex align-items-end">
-          <Button
-            variant="link"
-            className="text-decoration-none"
-            onClick={() => setShowSearchFilters(!showSearchFilters)}
-          >
-            {showSearchFilters ? '✨ Filtros simples' : '✨ Filtros avanzados'}
-          </Button>
-
           <Button
             variant="outline-secondary"
             size="sm"
@@ -467,175 +424,23 @@ const Gallery = () => {
             }}
           >
             <i className="bi bi-arrow-counterclockwise me-1"></i>
-            Limpiar
+            {t('photos:gallery.clear_filters')}
           </Button>
         </div>
       </div>
-
-      {/* Filtros avanzados - versión limpia y simple */}
-      {showSearchFilters && (
-        <Card className="mb-4 shadow-sm">
-          <Card.Body>
-            <h6 className="mb-3 text-muted">Filtros avanzados</h6>
-
-            <Row className="mb-3">
-              {/* Filtros de fecha */}
-              <Col md={6} lg={3} className="mb-3 mb-lg-0">
-                <Form.Group>
-                  <Form.Label>Rango de fechas</Form.Label>
-                  <Row>
-                    <Col>
-                      <Form.Control
-                        type="date"
-                        placeholder="Desde"
-                        value={dateRange.startDate}
-                        onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-                      />
-                    </Col>
-                    <Col>
-                      <Form.Control
-                        type="date"
-                        placeholder="Hasta"
-                        value={dateRange.endDate}
-                        onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-                      />
-                    </Col>
-                  </Row>
-                </Form.Group>
-              </Col>
-
-              {/* Filtro de visibilidad */}
-              <Col md={6} lg={3} className="mb-3 mb-lg-0">
-                <Form.Group>
-                  <Form.Label>Visibilidad</Form.Label>
-                  <div>
-                    <Form.Check
-                      inline
-                      type="radio"
-                      label="Todas"
-                      name="visibilityFilter"
-                      id="visibility-all"
-                      checked={visibilityFilter === 'all'}
-                      onChange={() => setVisibilityFilter('all')}
-                    />
-                    <Form.Check
-                      inline
-                      type="radio"
-                      label="Públicas"
-                      name="visibilityFilter"
-                      id="visibility-public"
-                      checked={visibilityFilter === 'public'}
-                      onChange={() => setVisibilityFilter('public')}
-                    />
-                    <Form.Check
-                      inline
-                      type="radio"
-                      label="Privadas"
-                      name="visibilityFilter"
-                      id="visibility-private"
-                      checked={visibilityFilter === 'private'}
-                      onChange={() => setVisibilityFilter('private')}
-                    />
-                  </div>
-                </Form.Group>
-              </Col>
-
-              {/* Filtros de ubicación */}
-              <Col md={6} lg={3} className="mb-3 mb-lg-0">
-                <Form.Group>
-                  <Form.Label>Ubicación</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="País"
-                    value={locationFilter.country}
-                    onChange={(e) => setLocationFilter({ ...locationFilter, country: e.target.value })}
-                    className="mb-2"
-                  />
-                  <Form.Control
-                    type="text"
-                    placeholder="Región"
-                    value={locationFilter.region}
-                    onChange={(e) => setLocationFilter({ ...locationFilter, region: e.target.value })}
-                    className="mb-2"
-                  />
-                  <Form.Control
-                    type="text"
-                    placeholder="Ciudad"
-                    value={locationFilter.city}
-                    onChange={(e) => setLocationFilter({ ...locationFilter, city: e.target.value })}
-                  />
-                </Form.Group>
-              </Col>
-
-              {/* Búsqueda por coordenadas */}
-              <Col md={6} lg={3}>
-                <Form.Group>
-                  <Form.Label>Búsqueda por radio</Form.Label>
-                  <Form.Control
-                    type="number"
-                    placeholder="Latitud"
-                    value={geoSearch.lat}
-                    onChange={(e) => setGeoSearch({ ...geoSearch, lat: e.target.value })}
-                    className="mb-2"
-                  />
-                  <Form.Control
-                    type="number"
-                    placeholder="Longitud"
-                    value={geoSearch.lng}
-                    onChange={(e) => setGeoSearch({ ...geoSearch, lng: e.target.value })}
-                    className="mb-2"
-                  />
-                  <InputGroup>
-                    <Form.Control
-                      type="number"
-                      placeholder="Distancia"
-                      value={geoSearch.distance}
-                      onChange={(e) => setGeoSearch({ ...geoSearch, distance: e.target.value })}
-                    />
-                    <InputGroup.Text>m</InputGroup.Text>
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <div className="d-flex justify-content-end">
-              <Button
-                variant="outline-secondary"
-                className="me-2"
-                onClick={() => {
-                  setDateRange({ startDate: '', endDate: '' });
-                  setLocationFilter({ country: '', region: '', city: '' });
-                  setGeoSearch({ lat: '', lng: '', distance: 10000 });
-                  setVisibilityFilter('all');
-                }}
-              >
-                Limpiar filtros
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => fetchPhotos(1)}
-              >
-                Aplicar filtros
-              </Button>
-            </div>
-          </Card.Body>
-        </Card>
-      )}
 
       {/* Barra de acciones por lotes - aparece cuando hay fotos seleccionadas */}
       {showBatchActions && (
         <div className="batch-actions mb-4 p-3 bg-light rounded shadow-sm">
           <div className="d-flex flex-wrap align-items-center gap-2">
             <Badge bg="primary" className="me-2">
-              {selectedPhotos.length} foto{selectedPhotos.length !== 1 ? 's' : ''} seleccionada{selectedPhotos.length !== 1 ? 's' : ''}
+              {t('photos:gallery.selected_photos', { count: selectedPhotos.length })}
             </Badge>
 
             <Button size="sm" variant="outline-secondary" onClick={selectAllPhotos}>
-              {selectedPhotos.length === photos.length ? (
-                <>Deseleccionar Todas</>
-              ) : (
-                <>Seleccionar Todas</>
-              )}
+              {selectedPhotos.length === photos.length
+                ? t('photos:gallery.deselect_all')
+                : t('photos:gallery.select_all')}
             </Button>
 
             <Button
@@ -645,7 +450,7 @@ const Gallery = () => {
               disabled={changingVisibility || selectedPhotos.length === 0}
             >
               <i className="bi bi-eye-fill me-1"></i>
-              Marcar como Públicas
+              {t('photos:gallery.mark_public')}
             </Button>
 
             <Button
@@ -655,7 +460,7 @@ const Gallery = () => {
               disabled={changingVisibility || selectedPhotos.length === 0}
             >
               <i className="bi bi-eye-slash-fill me-1"></i>
-              Marcar como Privadas
+              {t('photos:gallery.mark_private')}
             </Button>
 
             {/* Nuevo botón para eliminar */}
@@ -666,7 +471,7 @@ const Gallery = () => {
               disabled={selectedPhotos.length === 0}
             >
               <i className="bi bi-trash me-1"></i>
-              Eliminar seleccionadas
+              {t('photos:gallery.delete_selected')}
             </Button>
           </div>
         </div>
@@ -675,15 +480,15 @@ const Gallery = () => {
       {/* Modal de confirmación para eliminar fotos */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar eliminación</Modal.Title>
+          <Modal.Title>{t('photos:delete.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>¿Estás seguro que quieres eliminar {selectedPhotos.length} foto{selectedPhotos.length !== 1 ? 's' : ''}?</p>
-          <p className="text-danger fw-bold">Esta acción no se puede deshacer.</p>
+          <p>{t('photos:gallery.confirm_delete', { count: selectedPhotos.length })}</p>
+          <p className="text-danger fw-bold">{t('photos:delete.warning')}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)} disabled={deleting}>
-            Cancelar
+            {t('common:buttons.cancel')}
           </Button>
           <Button
             variant="danger"
@@ -693,10 +498,10 @@ const Gallery = () => {
             {deleting ? (
               <>
                 <Spinner size="sm" animation="border" className="me-1" />
-                Eliminando...
+                {t('photos:gallery.deleting')}
               </>
             ) : (
-              <>Eliminar</>
+              t('common:buttons.delete')
             )}
           </Button>
         </Modal.Footer>
@@ -707,17 +512,17 @@ const Gallery = () => {
       {loading ? (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Cargando...</span>
+            <span className="visually-hidden">{t('common:loading.default')}</span>
           </div>
-          <p className="mt-3">Cargando fotos...</p>
+          <p className="mt-3">{t('photos:gallery.loading_photos')}</p>
         </div>
       ) : photos.length === 0 ? (
         <div className="text-center py-5">
           <div className="display-1 mb-4">📷</div>
-          <h3>No hay fotos aún</h3>
-          <p className="text-muted">¡Comienza a subir tus fotos para verlas aquí!</p>
+          <h3>{t('photos:gallery.no_photos_title')}</h3>
+          <p className="text-muted">{t('photos:gallery.no_photos_description')}</p>
           <Button as={Link} to="/upload" variant="primary" className="mt-3">
-            Subir Fotos
+            {t('photos:gallery.upload_photos')}
           </Button>
         </div>
       ) : (
@@ -744,7 +549,7 @@ const Gallery = () => {
                     as={Link}
                     to={`/photo/${photo._id}`}
                     className="edit-pending"
-                    title="Foto sin revisar"
+                    title={t('photos:gallery.review_needed')}
                   >
                     <i className="bi bi-pencil-fill"></i>
                   </Button>
@@ -759,7 +564,7 @@ const Gallery = () => {
                     togglePhotoVisibility(photo._id, !photo.isPublic);
                   }}
                   disabled={changingVisibility}
-                  title={photo.isPublic ? 'Foto pública' : 'Foto privada'}
+                  title={photo.isPublic ? t('photos:gallery.public_photo') : t('photos:gallery.private_photo')}
                 >
                   <i className={`bi ${photo.isPublic ? 'bi-eye-fill' : 'bi-eye-slash-fill'}`}></i>
                 </Button>
@@ -769,7 +574,7 @@ const Gallery = () => {
                     <Card.Img
                       variant="top"
                       src={photo.thumbnailUrl || photo.url}
-                      alt={photo.title || 'Foto'}
+                      alt={photo.title || t('photos:detail.no_title')}
                       className="gallery-img"
                     />
                   </div>
@@ -778,17 +583,17 @@ const Gallery = () => {
                       className="text-truncate text-center mb-3"
                       style={{ color: 'var(--bs-secondary-color)' }}
                     >
-                      {photo.title || '-Sin título-'}
+                      {photo.title || t('photos:detail.no_title')}
                     </Card.Title>
 
                     <div className="photo-info d-flex justify-content-between align-items-center">
                       <small className={photo.hasValidCoordinates === false ? "text-danger fw-bold text-decoration-underline" : "text-muted"}
-                        title={photo.hasValidCoordinates === false ? t('detail.invalid_coordinates') : ""}>
+                        title={photo.hasValidCoordinates === false ? t('photos:detail.invalid_coordinates') : ""}>
                         <i className="bi bi-geo-alt me-1"></i>
                         {getLocationName(photo.hasValidCoordinates, photo.location)}
                       </small>
                       <small className={photo.hasValidTimestamp === false ? "text-danger fw-bold text-decoration-underline" : "text-muted"}
-                        title={photo.hasValidTimestamp === false ? t('detail.invalid_date') : ""}>
+                        title={photo.hasValidTimestamp === false ? t('photos:detail.invalid_date') : ""}>
                         <i className="bi bi-calendar me-1"></i>
                         {getFormattedDate(photo.hasValidTimestamp, photo.timestamp)}
                       </small>
@@ -807,18 +612,15 @@ const Gallery = () => {
             {/* Información de paginación */}
             <div className="col-md-4 mb-3 mb-md-0">
               <div className="d-flex align-items-center">
-                <span className="text-secondary">
-                  Mostrando
-                  <strong className="mx-1">
-                    {/* Calcular rango de fotos mostradas actualmente */}
-                    {((currentPage - 1) * pageSize) + 1}-{Math.min(currentPage * pageSize, pagination?.total || photos.length)}
-                  </strong>
-                  de
-                  <strong className="mx-1">
-                    {pagination?.total || photos.length}
-                  </strong>
-                  fotos
-                </span>
+                <span className="text-secondary"
+                  dangerouslySetInnerHTML={{
+                    __html: t('photos:gallery.showing', {
+                      start: ((currentPage - 1) * pageSize) + 1,
+                      end: Math.min(currentPage * pageSize, pagination?.total || photos.length),
+                      total: pagination?.total || photos.length
+                    })
+                  }}
+                />
               </div>
             </div>
 
@@ -897,7 +699,7 @@ const Gallery = () => {
 
             {/* Selector de tamaño de página */}
             <div className="col-md-4 d-flex justify-content-md-end align-items-center">
-              <span className="me-2 text-secondary">Fotos por página:</span>
+              <span className="me-2 text-secondary">{t('photos:gallery.photos_per_page')}:</span>
               <Form.Select
                 className="w-auto"
                 value={pageSize}
@@ -926,7 +728,7 @@ const Gallery = () => {
         >
           <Toast.Header closeButton={true}>
             <strong className="me-auto">
-              {toastVariant === 'success' ? '✅ Éxito' : '❌ Error'}
+              {toastVariant === 'success' ? t('common:toast.success') : t('common:toast.error')}
             </strong>
           </Toast.Header>
           <Toast.Body>{toastMessage}</Toast.Body>
