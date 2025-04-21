@@ -93,7 +93,7 @@
         },
         "visibility": {
           "title": "Visibilidad de las fotos",
-          "content": "Al subir fotos, puedes elegir entre visibilidad **Pública** o **Privada**. Las fotos **públicas** aparecerán en el mapa general y podrán incluirse en mapas compartidos. Las fotos **privadas** solo serán visibles para ti y no aparecerán en el mapa a menos que cambies su configuración. Puedes modificar la visibilidad de tus fotos en cualquier momento desde la galería."
+          "content": "Al subir fotos, puedes elegir entre visibilidad Pública o Privada. Las fotos Públicas aparecerán en el mapa general y podrán incluirse en mapas compartidos. Las fotos Privadas solo serán visibles para ti y no aparecerán en el mapa a menos que cambies su configuración. Puedes modificar la visibilidad de tus fotos en cualquier momento desde la galería."
         }
       }
     },
