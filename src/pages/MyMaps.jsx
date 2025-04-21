@@ -324,14 +324,14 @@ const MapCard = ({ map, onDelete, onEdit, onShare, onVisibilityChange }) => {
               <i className="bi bi-share"></i>
             </Button>
 
-            <Button
+            {/*<Button
               variant="dark-inverse"
               className="action-btn"
               onClick={() => onEdit(map)}
               title={t('common:buttons.edit')}
             >
               <i className="bi bi-pencil"></i>
-            </Button>
+            </Button>*/}
 
             <Button
               variant="dark-inverse"
@@ -432,7 +432,7 @@ const MapCardSkeleton = () => {
             <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
             <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
             <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
-            <div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>
+            {/*<div className="skeleton-circle" style={{ width: '36px', height: '36px', backgroundColor: 'var(--dark)' }}></div>*/}
           </div>
         </div>
       </Card.Footer>
