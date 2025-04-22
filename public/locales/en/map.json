@@ -73,5 +73,7 @@
     "about": "About this map",
     "created_on": "Created on {{date}}",
     "view_count": "Viewed {{count}} times"
-  }
+  },
+  "photo_count": "{{count}} photos",
+  "created_by": "Created by:"
 }

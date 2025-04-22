@@ -16,7 +16,7 @@ const MENU_ITEMS = [
   { path: '/upload', label: 'nav:upload', icon: '📤' },
   { path: '/categories', label: 'nav:categories', icon: '🏷️' },
   { path: '/profile', label: 'nav:profile', icon: '👤' },
-  { path: '/help', label: 'nav:help', icon: '❓' },
+  { path: '/help', label: 'nav:helpcenter', icon: '❓' },
   { path: '/admin-tools', label: 'nav:admin', icon: '🧰' },
 ];
 

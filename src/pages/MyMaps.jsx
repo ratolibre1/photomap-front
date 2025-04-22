@@ -298,7 +298,7 @@ const MapCard = ({ map, onDelete, onShare, onVisibilityChange }) => {
             variant="primary"
             className="view-map-btn"
             as={Link}
-            to={`/mapa-publico/${map.shareId}`}
+            to={`/private/${map._id}`}
             target="_blank"
           >
             <i className="bi bi-map-fill me-2"></i> {t('common:mymaps.view')}
@@ -540,7 +540,7 @@ const MyMaps = () => {
   const handleShareMap = (map) => {
     console.log('Compartir mapa:', map);
     // Copiar directamente el link al portapapeles
-    const shareUrl = `${window.location.origin}/mapa-publico/${map.shareId}`;
+    const shareUrl = `${window.location.origin}/public/${map.shareId}`;
     navigator.clipboard.writeText(shareUrl)
       .then(() => {
         // Mostrar toast de confirmación

@@ -298,6 +298,17 @@ export const publicMapService = {
       throw error;
     }
   },
+  // Nuevos métodos para obtener mapas por ID (privados)
+  getMapById: async (mapId) => {
+    return await api.get(`/public-maps/${mapId}`);
+  },
+  getMapPhotosById: async (mapId) => {
+    return await api.get(`/public-maps/${mapId}/photos`, {
+      params: {
+        excludeUnknowns: true
+      }
+    });
+  },
   getUserMaps: async () => {
     return await api.get('/public-maps/user');
   },

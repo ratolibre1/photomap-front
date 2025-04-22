@@ -22,7 +22,7 @@ L.Icon.Default.mergeOptions({
   shadowSize: [41, 41]
 });
 
-const PublicMapComponent = ({ photos, loading, colorPalette }) => {
+const PublicMapComponent = ({ photos, userName, loading, colorPalette }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
@@ -435,7 +435,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
       }
     }
-  }, [photos, loading]);
+  }, [photos, userName, loading]);
 
   // Estilo CSS para el mapa
   const mapStyle = {
@@ -457,7 +457,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
 
       <div ref={mapRef} style={mapStyle}></div>
 
-      <div className="mt-2 text-muted">
+      <div className="d-flex justify-content-between align-items-center mt-2 text-muted">
         <small>
           {photos.length > 0 ? (
             `${t('map:status.showing', { count: photos.length })}${userLocation ? ' · ' + t('map:location.locationDetected') : ''}`
@@ -465,6 +465,11 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
             t('map:status.noPhotos')
           )}
         </small>
+        {userName && (
+          <small className="text-muted">
+            {t('map:created_by')} <span className="fw-bold">{userName}</span>
+          </small>
+        )}
       </div>
 
       <style jsx="true">{`

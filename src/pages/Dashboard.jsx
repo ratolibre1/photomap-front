@@ -1,11 +1,10 @@
 import { Card, Row, Col, Button, Container } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const { t } = useTranslation(['dashboard', 'common']);
 
   console.log("Token en localStorage:", localStorage.getItem('token'));
@@ -42,38 +41,48 @@ const Dashboard = () => {
       <Row>
         <Col md={4}>
           <Card className="shadow-sm text-center h-100">
-            <Card.Body className="p-4">
+            <Card.Body className="p-4 d-flex flex-column">
               <div className="display-1 mb-3">📤</div>
               <h3>{t('upload.title')}</h3>
               <p className="text-muted">{t('upload.description')}</p>
-              <Button
-                variant="outline-primary"
-                onClick={() => navigate('/upload')}
-              >
-                {t('upload.button')}
-              </Button>
+              <div className="mt-auto pt-3">
+                <Button as={Link} to="/upload" variant="dark-inverse">
+                  <i className="bi bi-upload me-2"></i>
+                  {t('upload.button')}
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
         <Col md={4}>
           <Card className="shadow-sm text-center h-100">
-            <Card.Body className="p-4">
+            <Card.Body className="p-4 d-flex flex-column">
               <div className="display-1 mb-3">🖼️</div>
               <h3>{t('gallery.title')}</h3>
               <p className="text-muted">{t('gallery.description')}</p>
-              <Button as={Link} to="/gallery" variant="outline-primary">{t('gallery.button')}</Button>
+              <div className="mt-auto pt-3">
+                <Button as={Link} to="/gallery" variant="dark-inverse">
+                  <i className="bi bi-images me-2"></i>
+                  {t('gallery.button')}
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
         <Col md={4}>
           <Card className="shadow-sm text-center h-100">
-            <Card.Body className="p-4">
+            <Card.Body className="p-4 d-flex flex-column">
               <div className="display-1 mb-3">👤</div>
               <h3>{t('profile.title')}</h3>
               <p className="text-muted">{t('profile.description')}</p>
-              <Button as={Link} to="/profile" variant="outline-primary">{t('profile.button')}</Button>
+              <div className="mt-auto pt-3">
+                <Button as={Link} to="/profile" variant="dark-inverse">
+                  <i className="bi bi-person-fill me-2"></i>
+                  {t('profile.button')}
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>

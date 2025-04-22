@@ -10,6 +10,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Upload from './pages/Upload';
 import PhotoMap from './pages/PhotoMap';
 import PublicMap from './pages/PublicMap';
+import PrivateMapById from './pages/PrivateMapById';
 import NotFound from './pages/NotFound';
 import { CategoryProvider } from './context/CategoryContext';
 import AdminTools from './pages/AdminTools';
@@ -55,8 +56,9 @@ function App() {
                   <Route path="/" element={<Navigate to="/dashboard" />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<div>Página de registro (pronto)</div>} />
-                  <Route path="/mapa-publico" element={<Navigate to="/not-found" />} />
-                  <Route path="/mapa-publico/:shareId" element={<PublicMap />} />
+                  <Route path="/public" element={<Navigate to="/not-found" />} />
+                  <Route path="/public/:shareId" element={<PublicMap />} />
+                  <Route path="/private/:mapId" element={<PrivateMapById />} />
                   <Route path="/not-found" element={<NotFound />} />
 
                   {/* Rutas protegidas con layout */}
