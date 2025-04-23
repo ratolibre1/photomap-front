@@ -51,6 +51,21 @@ export const authService = {
   register: (userData) => api.post('/users/register', userData),
   login: (credentials) => api.post('/users/login', credentials),
   updatePreferredLanguage: (languageCode) => api.patch('/users/language', { preferredLanguage: languageCode }),
+  updateProfile: (profileData) => api.patch('/users/profile', profileData),
+  changePassword: (passwordData) => api.patch('/users/password', passwordData),
+  updateProfilePhoto: (photoFile) => {
+    const formData = new FormData();
+    if (photoFile) {
+      formData.append('profilePhoto', photoFile);
+    }
+    return api.patch('/users/profile-photo', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  deleteProfilePhoto: () => api.delete('/users/profile-photo'),
+  getCurrentUser: () => api.get('/users/me'),
 };
 
 // Servicios de fotos
@@ -172,9 +187,14 @@ export const photoService = {
       data: { photoIds }
     });
   },
-  uploadTakeoutZip: (zipFile, options = {}) => {
+  uploadPhotoZip: (zipFile, options = {}) => {
     const formData = new FormData();
-    formData.append('takeoutZip', zipFile);
+    formData.append('photoZip', zipFile);
+
+    // Añadir parámetro de visibilidad si está en options.data
+    if (options.data && options.data.isPublic !== undefined) {
+      formData.append('isPublic', options.data.isPublic);
+    }
 
     const uploadConfig = {
       headers: {
@@ -185,8 +205,15 @@ export const photoService = {
 
     return api.post('/upload/zip', formData, uploadConfig);
   },
-  getPhotoCalendar: async (month, year) => {
-    return await api.get(`/photos/calendar?month=${month}&year=${year}`);
+  getPhotoCalendar: async (month, year, excludeUnknowns = false) => {
+    let url = `/photos/calendar?month=${month}&year=${year}`;
+
+    // Añadir el parámetro excludeUnknowns si es true
+    if (excludeUnknowns) {
+      url += '&excludeUnknowns=true';
+    }
+
+    return await api.get(url);
   },
   getPhotosOnThisDay: (params = {}) => {
     const { day, month } = params;
@@ -260,13 +287,41 @@ export const publicMapService = {
   },
   getPublicMapPhotos: async (shareId) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/public-maps/share/${shareId}/photos`);
+      const response = await axios.get(`${API_BASE_URL}/public-maps/share/${shareId}/photos`, {
+        params: {
+          excludeUnknowns: true
+        }
+      });
       return response;
     } catch (error) {
       console.error('Error al obtener las fotos del mapa público:', error);
       throw error;
     }
-  }
+  },
+  // Nuevos métodos para obtener mapas por ID (privados)
+  getMapById: async (mapId) => {
+    return await api.get(`/public-maps/${mapId}`);
+  },
+  getMapPhotosById: async (mapId) => {
+    return await api.get(`/public-maps/${mapId}/photos`, {
+      params: {
+        excludeUnknowns: true
+      }
+    });
+  },
+  getUserMaps: async () => {
+    return await api.get('/public-maps/user');
+  },
+  createMap: async (mapData) => {
+    return await api.post('/public-maps', mapData);
+  },
+  deleteMap: async (mapId) => {
+    return await api.delete(`/public-maps/${mapId}`);
+  },
+  updateMapVisibility: async (mapId, isPublic) => {
+    // Usamos el endpoint genérico de actualización pero solo enviamos el campo isPublic
+    return await api.put(`/public-maps/${mapId}`, { isPublic });
+  },
 };
 
 export default api;

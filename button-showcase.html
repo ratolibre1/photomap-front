@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoMap - Catálogo de Botones</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+  <!-- CSS real del proyecto -->
+  <link rel="stylesheet" href="./src/styles/theme.css">
+  <link rel="stylesheet" href="./src/components/buttons.css">
+  <link rel="stylesheet" href="./src/pages/MyMaps.css">
+
+  <style>
+    /* Variables de tema para simulación - Basado en ThemeContext.jsx */
+    :root {
+      /* Milotic Theme (default) */
+      --primary: #ee6a7b;
+      --secondary: #39acd5;
+      --info: #17a2b8;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #ffffe6;
+      --dark: #313131;
+      --page-background: #ffffe680;
+      --primary-rgb: 238, 106, 123;
+    }
+
+    /* Tema Exeggutor */
+    .exeggutor-theme {
+      --primary: #73ac31;
+      --secondary: #734110;
+      --info: #17a2b8;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #ffeea4;
+      --dark: #524110;
+      --page-background: #ffeea480;
+      --primary-rgb: 115, 172, 49;
+    }
+
+    /* Tema Azumarill */
+    .azumarill-theme {
+      --primary: #4183cd;
+      --secondary: #bd2931;
+      --info: #17a2b8;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #d5def6;
+      --dark: #183973;
+      --page-background: #d5def680;
+      --primary-rgb: 65, 131, 205;
+    }
+
+    /* Tema Starmie */
+    .starmie-theme {
+      --primary: #8b73bd;
+      --secondary: #f65273;
+      --info: #17a2b8;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #ffe694;
+      --dark: #313973;
+      --page-background: #ffe69480;
+      --primary-rgb: 139, 115, 189;
+    }
+
+    /* Tema Charizard */
+    .charizard-theme {
+      --primary: #ee8329;
+      --secondary: #207394;
+      --info: #17a2b8;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #eede7b;
+      --dark: #084152;
+      --page-background: #eede7b80;
+      --primary-rgb: 238, 131, 41;
+    }
+
+    /* Tema Shaymin */
+    .shaymin-theme {
+      --primary: #399441;
+      --secondary: #cd6a8b;
+      --info: #17a2b8;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #acde62;
+      --dark: #294129;
+      --page-background: #acde6280;
+      --primary-rgb: 57, 148, 65;
+    }
+
+    body {
+      background-color: var(--page-background);
+      padding: 30px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .theme-selector {
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .theme-option:hover {
+      transform: translateY(-2px);
+    }
+
+    .theme-option.active {
+      border-color: var(--secondary);
+      background-color: var(--light);
+    }
+
+    .theme-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .main-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .button-example {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .state-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .state-description {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    /* Botón transparente (usado en sidebar) - Replicado del código real */
+    .btn-transparent {
+      background-color: transparent;
+      border: none;
+      color: var(--light);
+      transition: all 0.2s ease;
+    }
+
+    .btn-transparent:hover {
+      color: white;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="theme-selector">
+    <div class="theme-option active" data-theme="milotic">
+      <div class="theme-icon" style="background-color: #ee6a7b; color: white;">🐍</div>
+      <span>Milotic</span>
+    </div>
+    <div class="theme-option" data-theme="exeggutor">
+      <div class="theme-icon" style="background-color: #73ac31; color: white;">🌴</div>
+      <span>Exeggutor</span>
+    </div>
+    <div class="theme-option" data-theme="azumarill">
+      <div class="theme-icon" style="background-color: #4183cd; color: white;">🐁</div>
+      <span>Azumarill</span>
+    </div>
+    <div class="theme-option" data-theme="starmie">
+      <div class="theme-icon" style="background-color: #8b73bd; color: white;">🌟</div>
+      <span>Starmie</span>
+    </div>
+    <div class="theme-option" data-theme="charizard">
+      <div class="theme-icon" style="background-color: #ee8329; color: white;">🐲</div>
+      <span>Charizard</span>
+    </div>
+    <div class="theme-option" data-theme="shaymin">
+      <div class="theme-icon" style="background-color: #399441; color: white;">🌸</div>
+      <span>Shaymin</span>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <h1>Catálogo de Botones - PhotoMap</h1>
+    <p class="mb-4">Este documento muestra todos los estilos de botones utilizados en la aplicación PhotoMap. Los
+      estilos se cargan directamente desde los archivos CSS del proyecto.</p>
+
+    <h2>Botones Principales</h2>
+    <div class="button-container">
+      <div class="button-example">
+        <div class="state-title">Botón Primario</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Páginas de upload, formularios, pantallas de creación<br>
+          <strong>Componentes:</strong> OnThisDay (línea 237) - Botón de subir fotos<br>
+          <strong>Uso:</strong> Acciones principales que queremos que el usuario realice
+        </div>
+        <button class="btn btn-primary">Crear Mapa</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Primario Grande</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Página MyMaps<br>
+          <strong>Componentes:</strong> MyMaps (línea 484) - Botón de crear nuevo mapa<br>
+          <strong>Uso:</strong> Call to action principal en la página de listado de mapas
+        </div>
+        <button class="btn btn-primary btn-lg create-map-btn">Crear Mapa</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Secundario</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Modales, formularios<br>
+          <strong>Uso:</strong> Botones de cancelación o alternativas secundarias a la acción principal<br>
+          <strong>Nota:</strong> Uso en modales de confirmación como segunda opción
+        </div>
+        <button class="btn btn-secondary">Ver Detalles</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Outline Primary</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Formularios, pantallas de opciones<br>
+          <strong>Uso:</strong> Acciones alternativas o complementarias dentro de formularios<br>
+          <strong>Ejemplo:</strong> Botones de cancelar en forms, opciones alternativas
+        </div>
+        <button class="btn btn-outline-primary">Explorar</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Small (btn-sm)</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Sidebar, interfaces densas<br>
+          <strong>Componentes:</strong> Sidebar.jsx (líneas 182, 222, 313), PhotoMap.jsx (línea 227)<br>
+          <strong>Uso:</strong> Acciones secundarias en interfaces con espacio limitado
+        </div>
+        <button class="btn btn-sm btn-primary">Acción</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón de Acción (Compartir)</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Tarjetas en MyMaps.jsx<br>
+          <strong>Componentes:</strong> MyMaps.jsx (línea 269)<br>
+          <strong>Uso:</strong> Botón circular para compartir mapas en tarjetas
+        </div>
+        <button class="btn action-btn share-btn">
+          <i class="bi bi-share"></i>
+        </button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón de Acción (Editar)</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Tarjetas en MyMaps.jsx<br>
+          <strong>Componentes:</strong> MyMaps.jsx (línea 278)<br>
+          <strong>Uso:</strong> Acceso a formularios de edición de mapas
+        </div>
+        <button class="btn action-btn edit-btn">
+          <i class="bi bi-pencil"></i>
+        </button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón de Acción (Eliminar)</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Tarjetas en MyMaps.jsx<br>
+          <strong>Componentes:</strong> MyMaps.jsx (línea 287)<br>
+          <strong>Uso:</strong> Acceso a la función de eliminación de mapas
+        </div>
+        <button class="btn action-btn delete-btn">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Transparente</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Sidebar, menús flotantes<br>
+          <strong>Componentes:</strong> Sidebar.jsx (líneas 222, 313) - Botones de tema e idioma<br>
+          <strong>Uso:</strong> Menú colapsado del sidebar para opciones de tema e idioma
+        </div>
+        <button class="btn btn-sm btn-transparent" style="background-color: #333;">
+          <i class="bi bi-gear"></i> Ajustes
+        </button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Ver Mapa</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Tarjetas de mapa en MyMaps<br>
+          <strong>Componentes:</strong> MyMaps.jsx (línea 258)<br>
+          <strong>Uso:</strong> Link principal en tarjetas de mapa para ver detalle, usado como
+          <code>&lt;Link&gt;</code> de React Router
+        </div>
+        <a href="#" class="view-map-btn">
+          Ver Mapa
+        </a>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Botón Outline en Sidebar</div>
+        <div class="state-description">
+          <strong>Ubicación:</strong> Footer del Sidebar<br>
+          <strong>Componentes:</strong> Sidebar.jsx (línea 379) - Botón de logout<br>
+          <strong>Uso:</strong> Botón de cierre de sesión con variante outline-light
+        </div>
+        <button class="btn btn-outline-light" style="color: var(--dark); border-color: var(--dark);">
+          <span style="padding-top: 3px;">🚪</span>
+          <span class="ms-2">Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+
+    <h2>Estados de Botones</h2>
+    <div class="button-container">
+      <div class="button-example">
+        <div class="state-title">Hover</div>
+        <div class="state-description">Estado al pasar el cursor (colores invertidos según theme.css)</div>
+        <!-- Este botón muestra el estado hover del botón principal según los estilos reales -->
+        <button class="btn btn-primary btn-hover-example">Hover State</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Focus</div>
+        <div class="state-description">Estado al estar enfocado (mismo estilo que hover + outline)</div>
+        <button class="btn btn-primary btn-focus-example">Focus State</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Active</div>
+        <div class="state-description">Estado al ser presionado (scale reducido)</div>
+        <button class="btn btn-primary btn-active-example">Active State</button>
+      </div>
+
+      <div class="button-example">
+        <div class="state-title">Disabled</div>
+        <div class="state-description">Estado deshabilitado (según theme.css)</div>
+        <button class="btn btn-primary" disabled>Disabled State</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Cambiar tema al hacer clic en una opción
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', function () {
+        // Remover clase active de todas las opciones
+        document.querySelectorAll('.theme-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+
+        // Añadir clase active a la opción seleccionada
+        this.classList.add('active');
+
+        // Obtener el tema seleccionado
+        const theme = this.getAttribute('data-theme');
+
+        // Remover todas las clases de tema del body
+        document.body.classList.remove('milotic-theme', 'exeggutor-theme', 'azumarill-theme', 'starmie-theme', 'charizard-theme', 'shaymin-theme');
+
+        // Si no es el tema por defecto, añadir la clase correspondiente
+        if (theme !== 'milotic') {
+          document.body.classList.add(`${theme}-theme`);
+        }
+      });
+    });
+
+    // Simular estados de hover/focus/active para ejemplos
+    document.addEventListener('DOMContentLoaded', function () {
+      // Aplicar estilos de hover
+      const hoverButton = document.querySelector('.btn-hover-example');
+      if (hoverButton) {
+        hoverButton.classList.add('hover-simulation');
+        // Los estilos vienen del CSS real del proyecto
+      }
+
+      // Aplicar estilos de focus
+      const focusButton = document.querySelector('.btn-focus-example');
+      if (focusButton) {
+        focusButton.classList.add('focus-simulation');
+        // Los estilos vienen del CSS real del proyecto
+      }
+
+      // Aplicar estilos de active
+      const activeButton = document.querySelector('.btn-active-example');
+      if (activeButton) {
+        activeButton.classList.add('active');
+        // Los estilos vienen del CSS real del proyecto
+      }
+    });
+  </script>
+
+  <!-- Estilos adicionales para simular estados -->
+  <style>
+    /* Simulación de estados para ejemplos */
+    .hover-simulation {
+      background-color: white !important;
+      border-color: var(--secondary) !important;
+      color: var(--secondary) !important;
+    }
+
+    .focus-simulation {
+      background-color: white !important;
+      border-color: var(--secondary) !important;
+      color: var(--secondary) !important;
+      box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25) !important;
+    }
+  </style>
+</body>
+
+</html>

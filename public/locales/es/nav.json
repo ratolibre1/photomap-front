@@ -1,11 +1,14 @@
 {
   "dashboard": "Inicio",
-  "map": "Mapa de Recuerdos",
-  "gallery": "Galería de Fotos",
-  "onthisday": "Un Día como Hoy",
-  "upload": "Subir Fotos",
+  "map": "Mapa de Fotos",
+  "gallery": "Galería",
+  "mymaps": "Mis Mapas",
+  "onthisday": "Un Día Como Hoy",
+  "upload": "Subir",
   "categories": "Categorías",
   "profile": "Perfil",
-  "admin": "Herramientas Admin",
-  "logout": "Cerrar sesión"
+  "admin": "Administración",
+  "helpcenter": "Centro de Ayuda",
+  "logout": "Cerrar sesión",
+  "changelog": "Historial de Cambios"
 }

@@ -8,6 +8,18 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* Reemplazo del efecto hover-scale por hover-border */
+.hover-border {
+  transition: outline 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  outline: 1px solid transparent;
+}
+
+.hover-border:hover {
+  outline: 1px solid;
+  outline-offset: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
 /* Aseguramos que las miniaturas sean cuadradas */
 .gallery-img-container {
   position: relative;
@@ -102,14 +114,38 @@
   align-items: center !important;
   padding: 0 !important;
   border-radius: 50%;
-  border: 1.5px solid var(--light);
-  background-color: transparent;
+  border: 1.5px solid var(--light) !important;
+  background-color: var(--secondary) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.2s;
 }
 
-.visibility-toggle {
-  color: red;
+/* Los íconos usan el color light del tema */
+.visibility-toggle i,
+.edit-pending i,
+.no-coordinates i {
+  color: var(--light) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Hover para los botones circulares - sobreescribiendo btn-primary */
+.visibility-toggle.btn-primary:hover,
+.edit-pending.btn-primary:hover,
+.no-coordinates.btn-primary:hover {
+  background-color: var(--light) !important;
+  border-color: var(--secondary) !important;
+  color: var(--secondary) !important;
+}
+
+/* Cambio de color del ícono en hover */
+.visibility-toggle.btn-primary:hover i,
+.edit-pending.btn-primary:hover i {
+  color: var(--secondary) !important;
 }
 
 /* Posicionamiento específico para cada botón */
@@ -119,24 +155,6 @@
 
 .no-coordinates {
   top: 80px;
-}
-
-/* Los íconos usan el color primario del tema */
-.visibility-toggle i,
-.edit-pending i,
-.no-coordinates i {
-  color: var(--info);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  line-height: 1;
-  margin: 0;
-}
-
-/* Color específico para el ícono de coordenadas faltantes */
-.no-coordinates i {
-  color: var(--warning);
 }
 
 /* Estilos para la paginación */

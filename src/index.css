@@ -85,3 +85,26 @@ code {
   position: relative !important;
   z-index: 2 !important;
 }
+
+/* Sobreescribir estilos de botones primary para usar el color secondary */
+.btn-primary {
+  --bs-btn-bg: var(--secondary) !important;
+  --bs-btn-border-color: var(--secondary) !important;
+  --bs-btn-hover-bg: var(--secondary-dark) !important;
+  --bs-btn-hover-border-color: var(--secondary-dark) !important;
+  --bs-btn-active-bg: var(--secondary-dark) !important;
+  --bs-btn-active-border-color: var(--secondary-dark) !important;
+  --bs-btn-disabled-bg: var(--secondary) !important;
+  --bs-btn-disabled-border-color: var(--secondary) !important;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--secondary) !important;
+  --bs-btn-border-color: var(--secondary) !important;
+  --bs-btn-hover-bg: var(--secondary) !important;
+  --bs-btn-hover-border-color: var(--secondary) !important;
+  --bs-btn-active-bg: var(--secondary) !important;
+  --bs-btn-active-border-color: var(--secondary) !important;
+  --bs-btn-disabled-color: var(--secondary) !important;
+  --bs-btn-disabled-border-color: var(--secondary) !important;
+}

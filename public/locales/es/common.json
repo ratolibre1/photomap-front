@@ -5,9 +5,12 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "back": "Volver",
-    "close": "Listo",
+    "close": "Cerrar",
     "upload": "Subir",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "share": "Compartir",
+    "add": "Agregar",
+    "accept": "Aceptar"
   },
   "actions": {
     "reset": "Restaurar",
@@ -50,11 +53,85 @@
     "plural": "fotos",
     "unknown": "? fotos"
   },
+  "no_description": "Sin descripción",
   "navigation": {
     "home": "Ir al inicio",
     "publicMaps": "Ver mapas públicos",
     "back": "Volver atrás",
     "next": "Siguiente",
     "previous": "Anterior"
+  },
+  "mymaps": {
+    "title": "Mis Mapas",
+    "create": "Crear Mapa",
+    "create_first": "Crear mi primer mapa",
+    "loading": "Cargando tus mapas...",
+    "error": "No pudimos cargar tus mapas. Por favor intenta más tarde.",
+    "empty_title": "No tienes mapas todavía",
+    "empty_description": "Crea tu primer mapa para compartir tus recuerdos fotográficos.",
+    "view": "Ver",
+    "share": "Compartir",
+    "share_title": "Compartir: {{title}}",
+    "share_link": "Link para compartir:",
+    "copied": "¡Link copiado al portapapeles!",
+    "views_one": "{{count}} vista",
+    "views_other": "{{count}} vistas",
+    "date_from": "Desde {{date}}",
+    "date_to": "Hasta {{date}}",
+    "date_range": "{{startDate}} - {{endDate}}",
+    "view_all": "Ver todos mis mapas",
+    "anywhere": "Cualquier lugar",
+    "any_date": "Cualquier fecha",
+    "any_label": "Cualquier etiqueta",
+    "delete_confirm": "¿Estás seguro que quieres eliminar el mapa \"{{title}}\"?",
+    "delete_success": "Mapa eliminado correctamente",
+    "delete_error": "No se pudo eliminar el mapa. Por favor intenta nuevamente.",
+    "visibility_public_success": "Mapa cambiado a público correctamente",
+    "visibility_private_success": "Mapa cambiado a privado correctamente",
+    "visibility_change_error": "No se pudo cambiar la visibilidad del mapa. Por favor intenta nuevamente.",
+    "location_filter": "📍 {{location}}",
+    "worldwide": "Todo el mundo",
+    "all_dates": "Todas las fechas",
+    "no_labels": "Sin etiquetas",
+    "delete_map_title": "Eliminar mapa",
+    "delete_map_confirm": "¿Estás seguro que quieres eliminar este mapa?",
+    "delete_map_warning": "Esta acción no se puede deshacer."
+  },
+  "error": {
+    "create_map": "No se pudo crear el mapa. Intenta nuevamente."
+  },
+  "filters": {
+    "none": "Sin filtros aplicados",
+    "tags": "Etiquetas",
+    "date_range": "Rango de fechas",
+    "date_from": "Desde",
+    "date_to": "Hasta",
+    "location": "Ubicación",
+    "title": "Filtros",
+    "match": "cumplen los filtros"
+  },
+  "to": "hasta",
+  "badges": {
+    "new": "¡NUEVO!"
+  },
+  "visibility": {
+    "public": "Público",
+    "private": "Privado"
+  },
+  "messages": {
+    "success": "¡Éxito!",
+    "error": "¡Error!"
+  },
+  "time": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "days_ago_one": "Hace {{count}} día",
+    "days_ago_other": "Hace {{count}} días",
+    "weeks_ago_one": "Hace {{count}} semana",
+    "weeks_ago_other": "Hace {{count}} semanas",
+    "months_ago_one": "Hace {{count}} mes",
+    "months_ago_other": "Hace {{count}} meses",
+    "years_ago_one": "Hace {{count}} año",
+    "years_ago_other": "Hace {{count}} años"
   }
 }

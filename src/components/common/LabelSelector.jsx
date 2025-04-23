@@ -1,14 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { Dropdown, Button, Form, InputGroup } from 'react-bootstrap';
 import { useLabels } from '../../context/LabelContext';
+import { useDropdown } from '../../context/DropdownContext';
 import LabelBadge from './LabelBadge';
 import { useTranslation } from 'react-i18next';
 
-const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, showPhotoCount = false }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, showPhotoCount = false, id = "labels-selector" }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { t } = useTranslation(['labels', 'common']);
+  const { t } = useTranslation(['labels', 'common', 'filters']);
   const { categoriesWithLabels, loading: labelsLoading } = useLabels();
+  const { openDropdownId, openDropdown, closeDropdown } = useDropdown();
+
+  const isOpen = openDropdownId === id;
 
   // Filtrar categorías que tienen etiquetas (filtro base)
   const categoriesWithValidLabels = useMemo(() =>
@@ -48,14 +51,16 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
 
   // Limpiar búsqueda cuando se cierra el dropdown
   const handleToggleDropdown = (isOpen) => {
-    setDropdownOpen(isOpen);
-    if (!isOpen) {
+    if (isOpen) {
+      openDropdown(id);
+    } else {
+      closeDropdown();
       setSearchTerm('');
     }
   };
 
   return (
-    <div>
+    <div className="w-100">
       {/* Mostrar etiquetas seleccionadas */}
       <div className="d-flex flex-wrap gap-2 mb-2">
         {selectedLabels.length === 0 ? (
@@ -75,21 +80,21 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
 
       {/* Dropdown para seleccionar etiquetas */}
       <Dropdown
-        show={dropdownOpen}
+        show={isOpen}
         onToggle={handleToggleDropdown}
         autoClose={false}
-        style={{ zIndex: 9999 }}
+        className="w-100"
       >
-        <Dropdown.Toggle variant="outline-secondary" size="sm" id="label-dropdown">
-          <i className="bi bi-tag me-1"></i> {t('dropdown.select')}
+        <Dropdown.Toggle variant="outline-secondary" size="sm" id={`label-dropdown-${id}`} className="w-100 d-flex justify-content-between align-items-center">
+          <span><i className="bi bi-tag me-1"></i> {t('labels:dropdown.select')}</span>
+          <i className="bi bi-chevron-down"></i>
         </Dropdown.Toggle>
         <Dropdown.Menu
           style={{
             maxHeight: '300px',
-            overflowY: 'auto',
-            zIndex: 9999, // Valor superior al de los controles de Leaflet
-            minWidth: '250px' // Ancho mínimo para acomodar el buscador
+            overflowY: 'auto'
           }}
+          className="w-100"
         >
           {/* Buscador */}
           <div className="px-2 py-2 border-bottom">
@@ -100,7 +105,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
               <Form.Control
                 size="sm"
                 type="text"
-                placeholder={t('dropdown.search')}
+                placeholder={t('filters:dropdown.search')}
                 value={searchTerm}
                 onChange={handleSearchChange}
                 onClick={(e) => e.stopPropagation()} // Evitar que el dropdown se cierre
@@ -160,16 +165,16 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
               </div>
             ))
           ) : searchTerm ? (
-            <Dropdown.Item disabled>{t('dropdown.no_results')}</Dropdown.Item>
+            <Dropdown.Item disabled>{t('filters:dropdown.no_results')}</Dropdown.Item>
           ) : (
-            <Dropdown.Item disabled>{t('dropdown.no_labels')}</Dropdown.Item>
+            <Dropdown.Item disabled>{t('labels:dropdown.no_labels')}</Dropdown.Item>
           )}
 
           <div className="d-grid gap-2 px-2 mt-2 mb-2">
             <Button
               variant="outline-secondary"
               size="sm"
-              onClick={() => setDropdownOpen(false)}
+              onClick={() => closeDropdown()}
             >
               <i className="bi bi-check2-all me-1"></i> {t('common:buttons.close')}
             </Button>

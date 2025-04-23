@@ -302,13 +302,13 @@ const CategoryManager = () => {
         {/* Panel para crear/editar categorías */}
         <Col className="mb-4">
           <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <h4>{t('category.title', 'Categorías')}</h4>
+            <Card.Header className="d-flex justify-content-between align-items-center bg-primary">
+              <h4 className="mb-0 text-light">{t('category.title', 'Categorías')}</h4>
               {isLoading ? (
-                <div className="skeleton-tag skeleton-tag-large" style={{ width: "150px", height: "38px" }}></div>
+                <div className="skeleton-tag" style={{ width: "150px", height: "30px", backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: '0.375rem' }}></div>
               ) : (
                 <Button variant="primary" onClick={handleNewCategory}>
-                  <i className="bi bi-plus-circle me-2"></i>
+                  <i className="bi bi-tags-fill me-2"></i>
                   {t('category.new')}
                 </Button>
               )}
@@ -319,73 +319,54 @@ const CategoryManager = () => {
                 <div>
                   {/* Primera categoría skeleton con 2 etiquetas */}
                   <Card className="mb-3">
-                    <Card.Header className="d-flex justify-content-between align-items-center">
-                      <div className="skeleton-title" style={{ width: '40%' }}></div>
+                    <Card.Header className="d-flex justify-content-between align-items-center bg-primary">
+                      <div className="skeleton-title" style={{ width: '40%', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
                       <div className="d-flex">
-                        <div className="skeleton-tag skeleton-tag-small me-2" style={{ width: "45px", height: "31px" }}></div>
-                        <Button variant="outline-secondary" size="sm" className="me-2" disabled>
-                          <i className="bi bi-pencil"></i>
-                        </Button>
-                        <Button variant="outline-danger" size="sm" disabled>
-                          <i className="bi bi-trash"></i>
-                        </Button>
+                        <div className="skeleton-tag skeleton-tag-medium me-2" style={{ width: "110px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small me-2" style={{ width: "31px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small" style={{ width: "31px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
                       </div>
                     </Card.Header>
                     <Card.Body>
-                      <div className="skeleton-label mb-3" style={{ width: '80%' }}></div>
                       <div className="d-flex flex-wrap gap-2">
-                        <div className="skeleton-tag skeleton-tag-small"></div>
-                        <div className="skeleton-tag skeleton-tag-medium"></div>
+                        <div className="skeleton-tag skeleton-tag-small" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
+                        <div className="skeleton-tag skeleton-tag-medium" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
                       </div>
                     </Card.Body>
                   </Card>
 
                   {/* Segunda categoría skeleton con 4 etiquetas */}
                   <Card className="mb-3">
-                    <Card.Header className="d-flex justify-content-between align-items-center">
-                      <div className="skeleton-title" style={{ width: '55%' }}></div>
+                    <Card.Header className="d-flex justify-content-between align-items-center bg-primary">
+                      <div className="skeleton-title" style={{ width: '55%', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
                       <div className="d-flex">
-                        <div className="skeleton-tag skeleton-tag-small me-2" style={{ width: "45px", height: "31px" }}></div>
-                        <Button variant="outline-secondary" size="sm" className="me-2" disabled>
-                          <i className="bi bi-pencil"></i>
-                        </Button>
-                        <Button variant="outline-danger" size="sm" disabled>
-                          <i className="bi bi-trash"></i>
-                        </Button>
+                        <div className="skeleton-tag skeleton-tag-medium me-2" style={{ width: "110px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small me-2" style={{ width: "31px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small" style={{ width: "31px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
                       </div>
                     </Card.Header>
                     <Card.Body>
-                      <div className="skeleton-label mb-3" style={{ width: '70%' }}></div>
                       <div className="d-flex flex-wrap gap-2">
-                        <div className="skeleton-tag skeleton-tag-small"></div>
-                        <div className="skeleton-tag skeleton-tag-medium"></div>
-                        <div className="skeleton-tag skeleton-tag-large"></div>
-                        <div className="skeleton-tag skeleton-tag-small"></div>
+                        <div className="skeleton-tag skeleton-tag-small" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
+                        <div className="skeleton-tag skeleton-tag-medium" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
+                        <div className="skeleton-tag skeleton-tag-large" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
                       </div>
                     </Card.Body>
                   </Card>
 
-                  {/* Tercera categoría skeleton con 3 etiquetas */}
+                  {/* Tercera categoría skeleton sin etiquetas */}
                   <Card className="mb-3">
-                    <Card.Header className="d-flex justify-content-between align-items-center">
-                      <div className="skeleton-title" style={{ width: '35%' }}></div>
+                    <Card.Header className="d-flex justify-content-between align-items-center bg-primary">
+                      <div className="skeleton-title" style={{ width: '35%', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
                       <div className="d-flex">
-                        <div className="skeleton-tag skeleton-tag-small me-2" style={{ width: "45px", height: "31px" }}></div>
-                        <Button variant="outline-secondary" size="sm" className="me-2" disabled>
-                          <i className="bi bi-pencil"></i>
-                        </Button>
-                        <Button variant="outline-danger" size="sm" disabled>
-                          <i className="bi bi-trash"></i>
-                        </Button>
+                        <div className="skeleton-tag skeleton-tag-medium me-2" style={{ width: "110px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small me-2" style={{ width: "31px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
+                        <div className="skeleton-tag skeleton-tag-small" style={{ width: "31px", height: "23px", backgroundColor: 'rgba(255, 255, 255, 0.2)' }}></div>
                       </div>
                     </Card.Header>
                     <Card.Body>
-                      <div className="skeleton-label mb-3" style={{ width: '60%' }}></div>
-                      <div className="d-flex flex-wrap gap-2">
-                        <div className="skeleton-tag skeleton-tag-medium"></div>
-                        <div className="skeleton-tag skeleton-tag-large"></div>
-                        <div className="skeleton-tag skeleton-tag-small"></div>
-                      </div>
+                      <div className="skeleton-tag skeleton-tag-large" style={{ borderRadius: '50px', padding: '5px 15px' }}></div>
                     </Card.Body>
                   </Card>
                 </div>
@@ -393,34 +374,34 @@ const CategoryManager = () => {
                 <div>
                   {categoriesWithLabels.map(category => (
                     <Card key={category._id || category.id} className="mb-3">
-                      <Card.Header className="d-flex justify-content-between align-items-center">
-                        <span className="fw-bold">{category.name}</span>
+                      <Card.Header className="d-flex justify-content-between align-items-center bg-primary">
+                        <span className="fw-bold text-light">{category.name}</span>
                         <div className="d-flex">
                           <Button
-                            variant="outline-primary"
+                            variant="dark-inverse"
                             size="sm"
                             className="me-2"
                             onClick={() => handleNewLabel(category._id || category.id)}
                             title={t('label.new')}
                           >
-                            <i className="bi bi-plus-circle me-1"></i> {t('label.new')}
+                            <i className="bi bi-tag-fill"></i> {t('label.new')}
                           </Button>
                           <Button
-                            variant="outline-secondary"
+                            variant="dark-inverse"
                             size="sm"
                             className="me-2"
                             onClick={() => handleEditCategory(category)}
                             title={t('common:buttons.edit')}
                           >
-                            <i className="bi bi-pencil"></i>
+                            <i className="bi bi-pencil-fill"></i>
                           </Button>
                           <Button
-                            variant="outline-danger"
+                            variant="dark-inverse"
                             size="sm"
                             onClick={() => handleDeleteCategoryClick(category)}
                             title={t('common:buttons.delete')}
                           >
-                            <i className="bi bi-trash"></i>
+                            <i className="bi bi-trash-fill"></i>
                           </Button>
                         </div>
                       </Card.Header>
@@ -479,7 +460,7 @@ const CategoryManager = () => {
           {previewLabel && (
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>{t('label.name')}</Form.Label>
+                <Form.Label>{t('label.name')} <span className="text-danger">*</span></Form.Label>
                 <Form.Control
                   ref={labelNameInputRef}
                   type="text"
@@ -487,6 +468,7 @@ const CategoryManager = () => {
                   onChange={(e) => setPreviewLabel({ ...previewLabel, name: e.target.value })}
                   placeholder={t('label.name')}
                   autoFocus
+                  required
                 />
               </Form.Group>
 
@@ -539,7 +521,7 @@ const CategoryManager = () => {
           <Button
             variant="primary"
             onClick={handleSaveLabel}
-            disabled={isLoading}
+            disabled={isLoading || !previewLabel?.name?.trim()}
           >
             {isLoading ? (
               <>
@@ -559,7 +541,7 @@ const CategoryManager = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>{t('category.name')}</Form.Label>
+              <Form.Label>{t('category.name')} <span className="text-danger">*</span></Form.Label>
               <Form.Control
                 ref={categoryNameInputRef}
                 type="text"
@@ -619,8 +601,8 @@ const CategoryManager = () => {
                 <p className="text-warning">
                   <i className="bi bi-exclamation-triangle me-2"></i>
                   {labelToDelete.photoCount === 1
-                    ? t('delete.photos_affected', { count: labelToDelete.photoCount })
-                    : t('delete.photos_affected_plural', { count: labelToDelete.photoCount })}
+                    ? t('delete.photos_affected_one', { count: labelToDelete.photoCount })
+                    : t('delete.photos_affected_other', { count: labelToDelete.photoCount })}
                 </p>
               ) : (
                 <p className="text-info">
@@ -681,10 +663,10 @@ const CategoryManager = () => {
                       <div>
                         {typeof label.photoCount !== 'undefined' ? (
                           <Badge bg={label.photoCount > 0 ? "warning" : "secondary"} text={label.photoCount > 0 ? "dark" : "light"}>
-                            {label.photoCount} {label.photoCount === 1 ? t('common:photo.singular', 'foto') : t('common:photo.plural', 'fotos')}
+                            {label.photoCount} {label.photoCount === 1 ? t('common:photo.singular') : t('common:photo.plural')}
                           </Badge>
                         ) : (
-                          <Badge bg="secondary">{t('common:photo.unknown', '? fotos')}</Badge>
+                          <Badge bg="secondary">{t('common:photo.unknown')}</Badge>
                         )}
                       </div>
                     </ListGroup.Item>

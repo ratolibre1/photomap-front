@@ -38,7 +38,42 @@
     "viewDetails": "View details"
   },
   "status": {
-    "showing": "Showing {{count}} photos",
+    "showing_one": "Showing {{count}} photo",
+    "showing_other": "Showing {{count}} photos",
     "noPhotos": "No photos to show on the map"
-  }
+  },
+  "create_map": {
+    "title": "Create Custom Map",
+    "applied_filters": "Applied filters",
+    "map_title": "Map title",
+    "title_placeholder": "Ex: Peru Trip 2024",
+    "description": "Description",
+    "description_placeholder": "Describe this custom map...",
+    "color_theme": "Color theme",
+    "public_map": "Public map (anyone with the link can view)",
+    "create_button": "Create Map",
+    "creating": "Creating...",
+    "success": "Map created successfully!",
+    "success_message": "Your map has been created and is ready to share."
+  },
+  "public_map": {
+    "footer": "This map has been publicly shared"
+  },
+  "stats": {
+    "date_info": "Date range",
+    "from": "From",
+    "to": "to",
+    "all_dates": "All dates",
+    "photo_count": {
+      "one": "{{count}} photo",
+      "other": "{{count}} photos"
+    },
+    "photo_singular": "photo",
+    "photo_plural": "photos",
+    "about": "About this map",
+    "created_on": "Created on {{date}}",
+    "view_count": "Viewed {{count}} times"
+  },
+  "photo_count": "{{count}} photos",
+  "created_by": "Created by:"
 }

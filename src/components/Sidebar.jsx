@@ -4,15 +4,19 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme, THEMES } from '../context/ThemeContext';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import NewFeatureBadge from './common/NewFeatureBadge';
+import './Sidebar.css';
 
 // Íconos usando emoji por simplicidad
 const MENU_ITEMS = [
   { path: '/photo-map', label: 'nav:map', icon: '🗺️' },
   { path: '/gallery', label: 'nav:gallery', icon: '🖼️' },
+  { path: '/my-maps', label: 'nav:mymaps', icon: '🌎', isNew: true },
   { path: '/on-this-day', label: 'nav:onthisday', icon: '📅' },
   { path: '/upload', label: 'nav:upload', icon: '📤' },
   { path: '/categories', label: 'nav:categories', icon: '🏷️' },
   { path: '/profile', label: 'nav:profile', icon: '👤' },
+  { path: '/help', label: 'nav:helpcenter', icon: '❓' },
   { path: '/admin-tools', label: 'nav:admin', icon: '🧰' },
 ];
 
@@ -80,18 +84,12 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
 
   return (
     <div className={`sidebar ${expanded ? 'expanded' : 'collapsed'}`}
-      style={{
-        width: expanded ? '250px' : '60px',
-        transition: 'width 0.3s',
-        backgroundColor: 'var(--primary)',
-        borderRight: '1px solid var(--info)'
-      }}>
-
+      style={{ backgroundColor: THEMES[theme].colors.primary, display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* Logo/Brand sin botón */}
       <div className="p-3 d-flex align-items-center">
-        <Link to="/dashboard" className="text-decoration-none text-white d-flex align-items-center">
+        <Link to="/dashboard" className="brand-link d-flex align-items-center">
           <span className="fs-4 me-2" style={{ paddingTop: '3px' }}>📷</span>
-          {expanded && <h1 className="fs-4 fw-bold mb-0" style={{ fontFamily: 'Courgette' }}>PhotoMap</h1>}
+          {expanded && <h1 className="brand-title">PhotoMap</h1>}
         </Link>
 
         {/* Botón toggle solo visible cuando está expandido */}
@@ -99,9 +97,8 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
           <Button
             variant="outline-light"
             size="sm"
-            className="ms-auto p-1 border-0 d-flex align-items-center justify-content-center"
+            className="ms-auto toggle-button"
             onClick={toggleSidebar}
-            style={{ width: '28px', height: '28px' }}
           >
             ◀
           </Button>
@@ -109,7 +106,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
       </div>
 
       {/* Menú de navegación */}
-      <Nav className="flex-column mb-auto">
+      <Nav className="flex-column">
         {/* Botón de expandir - solo visible cuando está colapsado */}
         {!expanded && (
           <Nav.Link
@@ -129,52 +126,45 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
             <Nav.Link
               as={Link}
               to={item.path}
-              className={`py-2 ${location.pathname === item.path ? 'active bg-secondary bg-opacity-25' : ''}`}
+              className={`py-2 ${location.pathname === item.path ? 'active' : ''}`}
             >
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center position-relative">
                 <span className={`${expanded ? 'me-3' : ''} fs-5`} style={{ paddingTop: '3px' }}>{item.icon}</span>
-                {expanded && <span>{t(item.label)}</span>}
+                {expanded && (
+                  <>
+                    <span className="nav-text">
+                      {t(item.label)}
+                    </span>
+                    {item.isNew && <NewFeatureBadge position="inline" size="sm" rotate={-12} />}
+                  </>
+                )}
               </div>
             </Nav.Link>
           </Nav.Item>
         ))}
       </Nav>
 
+      {/* Línea divisoria entre el menú y las opciones de tema/idioma */}
+      <hr className="mx-3 my-3 border-light" />
+
       {/* Selector de tema cuando está expandido */}
       {expanded && (
         <>
           <div className="px-3 mb-3">
-            <p className="text-light small mb-2">{t('common:theme.title')}:</p>
+            <p className="section-title fs-6 fw-bold">{t('common:theme.title')}</p>
             <div className="d-flex flex-wrap gap-2">
               {Object.keys(THEMES).map((themeKey) => (
                 <button
                   key={themeKey}
                   onClick={() => setTheme(themeKey)}
-                  className={`btn btn-sm p-1`}
+                  className={`theme-button ${theme === themeKey ? 'active' : ''}`}
                   style={{
                     backgroundColor: THEMES[themeKey].colors.light,
-                    width: '32px',
-                    height: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: theme === themeKey ? '2px solid ' + THEMES[themeKey].colors.dark : 'none',
-                    borderRadius: '50%',
-                    transition: 'all 0.3s ease',
                     color: THEMES[themeKey].colors.light,
-                    opacity: theme === themeKey ? 1 : 0.7,
+                    boxShadow: theme === themeKey ? `0 0 0 3px var(--secondary)` : 'none',
+                    border: 'none',
                   }}
                   title={THEMES[themeKey].name}
-                  onMouseEnter={(e) => {
-                    if (theme !== themeKey) {
-                      e.currentTarget.style.opacity = '1';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (theme !== themeKey) {
-                      e.currentTarget.style.opacity = '0.7';
-                    }
-                  }}
                 >
                   <span style={{ paddingTop: '3px' }}>{THEMES[themeKey].icon}</span>
                 </button>
@@ -184,7 +174,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
 
           {/* Selector de idioma */}
           <div className="px-3 mb-3">
-            <p className="text-light small mb-2">{t('common:language.title')}:</p>
+            <p className="section-title fs-6 fw-bold">{t('common:language.title')}</p>
             <div className="d-flex flex-wrap gap-2">
               {LANGUAGES.map((lang) => (
                 <button
@@ -198,10 +188,11 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: i18n.language === lang.code ? '2px solid var(--dark)' : 'none',
+                    border: 'none',
                     borderRadius: '50%',
                     transition: 'all 0.3s ease',
                     opacity: i18n.language === lang.code ? 1 : 0.7,
+                    boxShadow: i18n.language === lang.code ? `0 0 0 3px var(--secondary)` : 'none',
                   }}
                   title={t(`common:${lang.name}`)}
                   onMouseEnter={(e) => {
@@ -407,8 +398,24 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
         </div>
       )}
 
+      {/* El espacio flexible para empujar el footer hacia abajo */}
+      <div className="flex-grow-1"></div>
+
       {/* Footer */}
-      <div className={`${expanded ? 'p-3' : 'px-2 py-3'} mt-auto`}>
+      <div className={`${expanded ? 'p-3' : 'px-2 py-3'}`}>
+        {/* Enlace al Changelog */}
+        <div className="position-relative mb-3 text-center">
+          <Link
+            to="/changelog"
+            className={`d-inline-flex align-items-center ${expanded ? 'text-decoration-none' : 'mx-auto'}`}
+            style={!expanded ? { width: '40px', height: '40px', borderRadius: '50%', opacity: 0.7 } : { color: 'rgba(255,255,255,0.8)' }}
+            title={t('nav:changelog')}
+          >
+            <span className={expanded ? "me-2" : ""} style={{ paddingTop: '3px' }}>📜</span>
+            {expanded && <small className="text-decoration-underline">v1.1.0</small>}
+          </Link>
+        </div>
+
         <Button
           variant="outline-light"
           className={`${expanded ? 'w-100' : 'mx-auto'} d-flex align-items-center justify-content-center`}

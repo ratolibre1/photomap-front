@@ -1,0 +1,359 @@
+/* Estilos para las tarjetas de mapas */
+.map-card {
+  transition: all 0.25s ease;
+  overflow: hidden;
+  border-radius: 12px;
+  position: relative;
+  background-color: #fff;
+  border-width: var(--bs-border-width);
+  border-color: var(--bs-border-color-translucent);
+  border-radius: var(--bs-border-radius);
+  outline: none;
+  padding-top: 0;
+}
+
+.map-card:hover {
+  transform: none;
+  outline: 2px solid #000;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
+/* Botones flotantes de tema e idioma */
+.theme-language-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 5;
+}
+
+.map-theme-button,
+.map-language-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 3px var(--secondary) !important;
+  cursor: default;
+  font-size: 1.1rem;
+  border: none;
+}
+
+.map-theme-button:hover,
+.map-language-button:hover {
+  transform: scale(1.1);
+}
+
+.map-language-button {
+  background-color: var(--light);
+  border: none;
+}
+
+.map-theme-button span,
+.map-language-button span {
+  padding-top: 3px;
+}
+
+/* Badge de conteo de fotos */
+.photo-count-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 2px 12px 2px 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 5;
+}
+
+.photo-count-icon {
+  width: 26px;
+  height: 26px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  font-size: 0.8rem;
+}
+
+.photo-count-number {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--dark);
+}
+
+/* Contenedor del título y fecha, con margin-top para darle espacio al badge de fotos */
+.map-title-container {
+  margin-top: 35px;
+  padding-right: 50px;
+  /* Espacio para los botones de tema/idioma */
+  padding-left: 4px;
+}
+
+/* Estilos para el título */
+.map-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Fecha */
+.map-date {
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+/* Estilos para la descripción */
+.map-description {
+  font-size: 0.9rem;
+  color: var(--dark);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 8px;
+  min-height: 2.8em;
+  padding: 0 4px;
+}
+
+/* Estilos para las cajitas de filtros */
+.filter-boxes {
+  padding: 0 4px;
+}
+
+.filter-box {
+  background-color: var(--light);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--dark);
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.filter-box:last-child {
+  margin-bottom: 0;
+}
+
+.filter-box i {
+  font-size: 1rem;
+  min-width: 20px;
+  margin-top: 2px;
+}
+
+.filter-box small {
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.filter-box .d-flex {
+  align-items: center;
+  min-height: 24px;
+}
+
+.filter-box .badge {
+  font-size: 0.75rem !important;
+  font-weight: normal !important;
+}
+
+/* Estilos para el rango de fechas */
+.date-range-display {
+  background-color: var(--light);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--dark);
+  margin: 15px 4px 5px 4px;
+}
+
+/* Badges de estadísticas */
+.map-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 15px 4px 0;
+}
+
+.stats-badge {
+  font-weight: normal;
+  font-size: 0.75rem;
+  color: #fff !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary);
+}
+
+.stats-badge.bg-secondary {
+  background-color: var(--secondary) !important;
+}
+
+.stats-badge i {
+  padding-top: 3px;
+  margin-right: 4px;
+}
+
+/* Botones de acción */
+.map-actions {
+  padding-top: 15px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-map-btn {
+  padding: 8px 16px;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.action-btn i {
+  padding-top: 3px;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.share-btn:hover {
+  background-color: var(--info);
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: var(--warning);
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: var(--danger);
+  color: white;
+}
+
+/* Botón de crear mapa */
+.create-map-btn {
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+/* Badge de Nuevo mejorado */
+.new-feature-badge {
+  position: relative;
+  top: -8px;
+  right: -8px;
+  background-color: var(--danger);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: rotate(12deg);
+  z-index: 10;
+}
+
+/* Estilos para skeleton loader */
+.skeleton-bg,
+.skeleton-text,
+.skeleton-circle {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--light);
+  border-radius: 6px;
+}
+
+/* Estilos específicos para los botones de tema e idioma en el skeleton */
+.skeleton-bg.map-theme-button,
+.skeleton-bg.map-language-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--secondary);
+  opacity: 0.6;
+  box-shadow: 0 0 0 3px rgba(var(--bs-secondary-rgb), 0.3) !important;
+}
+
+/* Estilo específico para los elementos circulares */
+.skeleton-circle {
+  border-radius: 50%;
+  background-color: var(--secondary);
+  opacity: 0.6;
+}
+
+/* Estilos para elementos tipo texto en header */
+.card-header .skeleton-text {
+  background-color: var(--dark);
+  opacity: 0.2;
+}
+
+/* Efecto de shimmer (brillo) para todos los elementos skeleton */
+.skeleton-bg::after,
+.skeleton-text::after,
+.skeleton-circle::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.3) 20%,
+      rgba(255, 255, 255, 0.6) 60%,
+      rgba(255, 255, 255, 0));
+  animation: shimmer 2s infinite;
+  content: '';
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Efectos de hover deshabilitados para skeleton */
+.map-card:hover .skeleton-bg::after,
+.map-card:hover .skeleton-text::after,
+.map-card:hover .skeleton-circle::after {
+  animation: shimmer 2s infinite;
+}
+
+/* Sin escalado en hover para skeleton */
+.map-card:hover .skeleton-bg,
+.map-card:hover .skeleton-circle {
+  transform: none;
+}

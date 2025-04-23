@@ -4,7 +4,9 @@
   "map": {
     "title": "Explora tus recuerdos en el mapa 🗺️",
     "description": "Visualiza todas tus fotos distribuidas geográficamente y descubre los lugares que has visitado.",
-    "button": "Ver mapa"
+    "button": "Ver mapa",
+    "featured_title": "Explora tus recuerdos en el mapa 🗺️",
+    "featured_description": "Visualiza todas tus fotos distribuidas geográficamente y descubre los lugares que has visitado."
   },
   "stats": {
     "title": "Tus estadísticas 📊",

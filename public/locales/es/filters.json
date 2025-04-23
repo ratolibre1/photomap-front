@@ -17,7 +17,12 @@
     "loading_cities": "Cargando ciudades...",
     "no_regions": "No hay regiones disponibles",
     "no_provinces": "No hay provincias disponibles",
-    "no_cities": "No hay ciudades disponibles"
+    "no_cities": "No hay ciudades disponibles",
+    "no_countries": "No hay países disponibles",
+    "select_country_first": "Primero selecciona un país",
+    "select_region_first": "Primero selecciona una región",
+    "select_province_first": "Primero selecciona una provincia",
+    "select": "Seleccionar ubicación"
   },
   "date": {
     "title": "Rango de fechas",
@@ -27,9 +32,19 @@
     "photo_count": "{{count}} foto",
     "photo_count_plural": "{{count}} fotos"
   },
+  "dropdown": {
+    "select": "Seleccionar",
+    "search": "Buscar...",
+    "no_results": "No se encontraron resultados",
+    "none_selected": "Ninguno seleccionado",
+    "clear_selection": "Borrar selección"
+  },
   "labels": {
     "title": "Etiquetas",
     "none_selected": "Sin etiquetas seleccionadas",
     "select": "Seleccionar etiquetas"
-  }
+  },
+  "create_map_button": "Crear mapa personalizado con estos filtros",
+  "create_map_title": "¡Tu filtro está listo!",
+  "create_map_description": "Ahora puedes crear un mapa personalizado con los filtros que has aplicado y compartirlo con otros."
 }

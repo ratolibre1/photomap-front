@@ -10,6 +10,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Upload from './pages/Upload';
 import PhotoMap from './pages/PhotoMap';
 import PublicMap from './pages/PublicMap';
+import PrivateMapById from './pages/PrivateMapById';
 import NotFound from './pages/NotFound';
 import { CategoryProvider } from './context/CategoryContext';
 import AdminTools from './pages/AdminTools';
@@ -17,6 +18,9 @@ import OnThisDay from './pages/OnThisDay';
 import { LocationProvider } from './context/LocationContext';
 import { LabelProvider } from './context/LabelContext';
 import { AuthProvider } from './context/AuthContext';
+import MyMaps from './pages/MyMaps';
+import Help from './pages/Help';
+import Changelog from './pages/Changelog';
 
 // Importamos el CSS del layout
 import './components/layout.css';
@@ -52,8 +56,9 @@ function App() {
                   <Route path="/" element={<Navigate to="/dashboard" />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<div>Página de registro (pronto)</div>} />
-                  <Route path="/mapa-publico" element={<Navigate to="/not-found" />} />
-                  <Route path="/mapa-publico/:shareId" element={<PublicMap />} />
+                  <Route path="/public" element={<Navigate to="/not-found" />} />
+                  <Route path="/public/:shareId" element={<PublicMap />} />
+                  <Route path="/private/:mapId" element={<PrivateMapById />} />
                   <Route path="/not-found" element={<NotFound />} />
 
                   {/* Rutas protegidas con layout */}
@@ -117,6 +122,27 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <OnThisDay />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/my-maps" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <MyMaps />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/help" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Help />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/changelog" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Changelog />
                       </Layout>
                     </ProtectedRoute>
                   } />

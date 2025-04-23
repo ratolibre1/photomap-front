@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { photoService } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import LocationSelector from '../components/common/LocationSelector';
+import { DropdownProvider } from '../context/DropdownContext';
 
 const OnThisDay = () => {
   const [loading, setLoading] = useState(true);
@@ -22,6 +24,15 @@ const OnThisDay = () => {
   const currentMonth = today.getMonth() + 1; // getMonth() es 0-indexed
   const currentDay = today.getDate();
 
+  // Generar opciones de meses (sin ordenamiento alfabético)
+  const monthOptions = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => ({
+      id: (i + 1).toString(),
+      name: t(`admin_search.months.${i + 1}`),
+      disableSort: true // Deshabilitar ordenamiento
+    }));
+  }, [i18n.language]);
+
   // Función para calcular días en el mes seleccionado (teniendo en cuenta años bisiestos)
   const getDaysInMonth = (month) => {
     if (!month) return 31; // valor por defecto
@@ -38,18 +49,21 @@ const OnThisDay = () => {
     return 31;
   };
 
-  // Calcular los días disponibles según el mes seleccionado
-  const daysInSelectedMonth = useMemo(() => {
+  // Generar opciones de días (sin ordenamiento alfabético)
+  const dayOptions = useMemo(() => {
     return Array.from(
       { length: getDaysInMonth(selectedMonth) },
-      (_, i) => i + 1
+      (_, i) => ({
+        id: (i + 1).toString(),
+        name: (i + 1).toString(),
+        disableSort: true // Deshabilitar ordenamiento
+      })
     );
   }, [selectedMonth]);
 
   // Manejador para cambio de mes (resetea el día seleccionado)
-  const handleMonthChange = (e) => {
-    const newMonth = e.target.value;
-    setSelectedMonth(newMonth);
+  const handleMonthChange = (monthId) => {
+    setSelectedMonth(monthId);
     setSelectedDay(''); // Resetear el día al cambiar de mes
   };
 
@@ -167,32 +181,34 @@ const OnThisDay = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>{t('admin_search.month_label')}</Form.Label>
-                    <Form.Select
-                      value={selectedMonth}
-                      onChange={handleMonthChange}
-                    >
-                      <option value="">{t('admin_search.month_label')}...</option>
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
-                        <option key={month} value={month}>
-                          {t(`admin_search.months.${month}`)}
-                        </option>
-                      ))}
-                    </Form.Select>
+                    <DropdownProvider>
+                      <LocationSelector
+                        id="month-selector"
+                        options={monthOptions}
+                        selectedValue={selectedMonth}
+                        onSelect={handleMonthChange}
+                        placeholder={t('admin_search.month_label')}
+                        icon="calendar-month"
+                        noOptionsMessage={t('common:dropdown.no_options')}
+                      />
+                    </DropdownProvider>
                   </Form.Group>
                 </Col>
                 <Col md={3}>
                   <Form.Group className="mb-3">
                     <Form.Label>{t('admin_search.day_label')}</Form.Label>
-                    <Form.Select
-                      value={selectedDay}
-                      onChange={(e) => setSelectedDay(e.target.value)}
-                      disabled={!selectedMonth} // Deshabilitar hasta que se seleccione un mes
-                    >
-                      <option value="">{t('admin_search.day_label')}...</option>
-                      {daysInSelectedMonth.map(day => (
-                        <option key={day} value={day}>{day}</option>
-                      ))}
-                    </Form.Select>
+                    <DropdownProvider>
+                      <LocationSelector
+                        id="day-selector"
+                        options={dayOptions}
+                        selectedValue={selectedDay}
+                        onSelect={setSelectedDay}
+                        placeholder={t('admin_search.day_label')}
+                        icon="calendar-day"
+                        noOptionsMessage={t('common:dropdown.no_options')}
+                        disabled={!selectedMonth}
+                      />
+                    </DropdownProvider>
                   </Form.Group>
                 </Col>
                 <Col md={5}>
@@ -208,7 +224,7 @@ const OnThisDay = () => {
 
                     <Button
                       type="button"
-                      variant="outline-secondary"
+                      variant="dark-inverse"
                       onClick={handleReset}
                     >
                       <i className="bi bi-arrow-counterclockwise me-1"></i>
@@ -234,7 +250,11 @@ const OnThisDay = () => {
           <Card.Body>
             <i className="bi bi-calendar-x display-1 text-muted"></i>
             <h3 className="mt-4">{t('no_photos.title')}</h3>
-            <p>{t('no_photos.message', { date: formattedDate })}</p>
+            <p>
+              {t('no_photos.message', { date: formattedDate }).split(formattedDate).map((part, index) =>
+                index === 0 ? part : <><strong>{formattedDate}</strong>{part}</>
+              )}
+            </p>
             <Link to="/upload" className="btn btn-primary mt-3">
               <i className="bi bi-cloud-upload me-2"></i>
               {t('no_photos.upload_button')}
@@ -247,7 +267,7 @@ const OnThisDay = () => {
             <div key={memory.year} className="mb-5">
               <div className="d-flex align-items-center mb-3">
                 <h2 className="mb-0">{memory.year}</h2>
-                <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--info)', color: 'var(--dark)' }}>
+                <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--primary)', color: 'white' }}>
                   {new Date().getFullYear() - memory.year} {new Date().getFullYear() - memory.year === 1 ? t('year_ago') : t('years_ago')}
                 </div>
                 <div className="ms-2 badge rounded-pill" style={{ backgroundColor: 'var(--secondary)', color: 'white' }}>

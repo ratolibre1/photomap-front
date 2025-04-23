@@ -22,7 +22,7 @@ L.Icon.Default.mergeOptions({
   shadowSize: [41, 41]
 });
 
-const PublicMapComponent = ({ photos, loading, colorPalette }) => {
+const PublicMapComponent = ({ photos, userName, loading, colorPalette }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
@@ -35,7 +35,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
   // Seleccionar la paleta de colores a utilizar desde los temas disponibles
   const themeColors = colorPalette && THEMES[colorPalette]
     ? THEMES[colorPalette].colors
-    : THEMES.magmar.colors;
+    : THEMES.milotic.colors;
 
   // Mapeamos los colores para su uso en el mapa
   const palette = {
@@ -276,7 +276,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
                   <div class="marker-container">
                     <div class="marker-pin user-pin">
                       <div class="marker-thumbnail-container user-location-container">
-                        <i class="bi bi-person-fill-slash" style="color: white; font-size: 1.2rem;"></i>
+                        <i class="bi bi-incognito" style="color: white; font-size: 1.2rem;"></i>
                       </div>
                     </div>
                   </div>
@@ -346,7 +346,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
   // Función para generar el contenido del popup
   const createPopupContent = (photo) => {
     const popupContent = document.createElement('div');
-    popupContent.style.width = '200px';
+    popupContent.style.width = '220px';
     popupContent.style.textAlign = 'center';
 
     const title = document.createElement('h6');
@@ -360,6 +360,9 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
       img.style.maxWidth = '100%';
       img.style.height = 'auto';
       img.style.maxHeight = '150px';
+      img.style.minHeight = '100px';
+      img.style.minWidth = '100px';
+      img.style.objectFit = 'cover';
       img.style.borderRadius = '5px';
       popupContent.appendChild(img);
     } else {
@@ -376,8 +379,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
       popupContent.appendChild(description);
     }
 
-    // En el mapa público, no permitimos ver detalles ya que el usuario no está autenticado
-    // Solo mostramos la información básica de la foto
+    // En el mapa público, no mostramos el botón de ver detalles
 
     return popupContent;
   };
@@ -433,7 +435,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
         mapInstanceRef.current.setView([-33.45, -70.67], 5);
       }
     }
-  }, [photos, loading]);
+  }, [photos, userName, loading]);
 
   // Estilo CSS para el mapa
   const mapStyle = {
@@ -455,7 +457,7 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
 
       <div ref={mapRef} style={mapStyle}></div>
 
-      <div className="mt-2 text-muted">
+      <div className="d-flex justify-content-between align-items-center mt-2 text-muted">
         <small>
           {photos.length > 0 ? (
             `${t('map:status.showing', { count: photos.length })}${userLocation ? ' · ' + t('map:location.locationDetected') : ''}`
@@ -463,6 +465,11 @@ const PublicMapComponent = ({ photos, loading, colorPalette }) => {
             t('map:status.noPhotos')
           )}
         </small>
+        {userName && (
+          <small className="text-muted">
+            {t('map:created_by')} <span className="fw-bold">{userName}</span>
+          </small>
+        )}
       </div>
 
       <style jsx="true">{`

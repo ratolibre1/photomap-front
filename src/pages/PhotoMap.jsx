@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Alert, Toast, ToastContainer } from 'react-bootstrap';
 import MapComponent from '../components/map/MapComponent';
 import SearchFilters from '../components/gallery/SearchFilters';
 import { photoService } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import './PhotoMap.css'; // Importar estilos para skeletons
+import CreateMapModal from '../components/map/CreateMapModal';
+import { Link } from 'react-router-dom';
 
 const PhotoMap = () => {
   const [filters, setFilters] = useState({
@@ -19,7 +21,10 @@ const PhotoMap = () => {
   });
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState(null);
+  const [showCreateMapModal, setShowCreateMapModal] = useState(false);
+  const [toast, setToast] = useState(null);
   const { t } = useTranslation(['map', 'common']);
 
   useEffect(() => {
@@ -28,7 +33,10 @@ const PhotoMap = () => {
 
   const fetchPhotos = async () => {
     try {
-      setLoading(true);
+      // Solo mostrar loading en la carga inicial
+      if (initialLoad) {
+        setLoading(true);
+      }
 
       // Crear objeto base con filtros
       const queryParams = {};
@@ -53,6 +61,9 @@ const PhotoMap = () => {
         queryParams.isPublic = filters.isPublic;
       }
 
+      // Agregar flag para excluir fotos sin ubicación conocida
+      queryParams.excludeUnknowns = true;
+
       queryParams.limit = 1000;
 
       console.log('🔍 Filtros de búsqueda enviados:', queryParams);
@@ -65,6 +76,7 @@ const PhotoMap = () => {
       setError('No pudimos cargar el mapa. Por favor, intenta nuevamente más tarde.');
     } finally {
       setLoading(false);
+      setInitialLoad(false);
     }
   };
 
@@ -78,6 +90,28 @@ const PhotoMap = () => {
 
     // Mostrar el estado actualizado (aunque esto capturará el estado anterior)
     console.log('💽 Estado de filtros después de actualizar:', field, value);
+  };
+
+  // Función para manejar la apertura del modal de creación de mapas
+  const handleOpenCreateMapModal = () => {
+    setShowCreateMapModal(true);
+  };
+
+  // Función para manejar el éxito al crear un mapa
+  const handleMapCreated = (map) => {
+    console.log('Mapa creado con éxito:', map);
+
+    // Mostrar toast de confirmación
+    setToast({
+      title: t('map:create_map.success'),
+      message: t('map:create_map.success_message'),
+      variant: 'success'
+    });
+
+    // Ocultar el toast después de 5 segundos
+    setTimeout(() => {
+      setToast(null);
+    }, 5000);
   };
 
   return (
@@ -140,6 +174,9 @@ const PhotoMap = () => {
                 <SearchFilters
                   filters={filters}
                   onFilterChange={handleFilterChange}
+                  showCreateMapButton={true}
+                  onOpenCreateMapModal={handleOpenCreateMapModal}
+                  excludeUnknowns={true}
                 />
               )}
             </Card.Body>
@@ -166,6 +203,41 @@ const PhotoMap = () => {
           )}
         </Card.Body>
       </Card>
+
+      {/* Modal para crear mapa personalizado */}
+      <CreateMapModal
+        show={showCreateMapModal}
+        onHide={() => setShowCreateMapModal(false)}
+        filters={filters}
+        onSuccess={handleMapCreated}
+      />
+
+      {/* Toast para mostrar mensajes de confirmación */}
+      <ToastContainer position="bottom-end" className="p-3">
+        {toast && (
+          <Toast
+            onClose={() => setToast(null)}
+            show={true}
+            delay={5000}
+            autohide
+            bg={toast.variant || 'success'}
+            className="text-white"
+          >
+            <Toast.Header>
+              <strong className="me-auto">{toast.title}</strong>
+            </Toast.Header>
+            <Toast.Body>
+              {toast.message}
+              <div className="mt-2">
+                <Link to="/my-maps" className="btn btn-sm btn-light">
+                  <i className="bi bi-arrow-right me-1"></i>
+                  {t('common:mymaps.view_all')}
+                </Link>
+              </div>
+            </Toast.Body>
+          </Toast>
+        )}
+      </ToastContainer>
     </Container>
   );
 };

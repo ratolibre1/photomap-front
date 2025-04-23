@@ -1,0 +1,127 @@
+{
+  "title": "Help Center",
+  "description": "Find answers to your questions about using **PhotoMap**. Select a topic to learn more.",
+  "table_of_contents": "Help Topics",
+  "sections": {
+    "general": {
+      "title": "General Information",
+      "items": {
+        "what_is": {
+          "title": "What is **PhotoMap**?",
+          "content": "**PhotoMap** is a personal application for visualizing and organizing your photos on an interactive map. It allows you to see your memories organized geographically, creating a unique experience to relive your favorite moments based on where they happened."
+        },
+        "getting_started": {
+          "title": "Getting started",
+          "content": "To get started, upload your photos using the 'Upload Photos' section. The application will automatically extract the location information (if available) and organize your photos on the map. If your photos don't have location data, you can add it manually."
+        },
+        "navigation": {
+          "title": "Navigating the application",
+          "content": "Use the sidebar menu to navigate between the different sections of the application. You can collapse or expand the menu using the button at the top. Each section offers specific functionalities to manage and visualize your photos."
+        }
+      }
+    },
+    "photo_map": {
+      "title": "Memories Map",
+      "items": {
+        "overview": {
+          "title": "What is the Memories Map?",
+          "content": "The Memories Map is the main visualization of your photos on an interactive map. Each photo is displayed as a marker at the location where it was taken, allowing you to explore your memories geographically."
+        },
+        "navigation": {
+          "title": "Navigating the map",
+          "content": "You can zoom, pan, and click on markers to view photos. Markers are automatically clustered when there are many photos nearby to facilitate navigation."
+        },
+        "filters": {
+          "title": "Filtering photos on the map",
+          "content": "Use the filters in the sidebar to find specific photos by location, date, categories, and tags. The filters help you quickly find the memories you're looking for."
+        },
+        "create_map": {
+          "title": "Create custom map",
+          "content": "From the Memories Map, you can apply filters and create custom public maps. These maps can be shared with friends and family, even if they don't have a **PhotoMap** account. Currently, this is the only section where you can create public maps."
+        }
+      }
+    },
+    "gallery": {
+      "title": "Photo Gallery",
+      "items": {
+        "overview": {
+          "title": "Exploring your gallery",
+          "content": "The Photo Gallery shows you all your images in a grid format, allowing you to explore and manage your photos easily. You can click on any photo to view it in detail."
+        },
+        "search": {
+          "title": "Search and filters",
+          "content": "Use the search and filter options to find specific photos. You can filter by location, date, tags, and more to find exactly what you're looking for."
+        },
+        "visibility": {
+          "title": "Changing photo visibility",
+          "content": "From the gallery, you can manage the visibility of your photos. To change if a photo is public or private, select the photo and use the visibility option in the details panel. You can also select multiple photos and change their visibility in batch using the bulk actions options."
+        }
+      }
+    },
+    "my_maps": {
+      "title": "My Maps",
+      "items": {
+        "overview": {
+          "title": "Managing custom maps",
+          "content": "In the My Maps section, you can view, edit, and manage all the custom maps you've created. Each map displays a specific set of photos based on the filters you applied when creating it."
+        },
+        "sharing": {
+          "title": "Sharing maps",
+          "content": "You can share your maps with anyone using a unique link. People you share the map with will be able to see the included photos without needing to create an account. You can also choose to make your maps private at any time."
+        }
+      }
+    },
+    "on_this_day": {
+      "title": "On This Day",
+      "items": {
+        "overview": {
+          "title": "Remembering past moments",
+          "content": "The 'On This Day' feature shows you photos you took on the same date but in previous years. It's a fun way to relive memories and see how things have changed over time."
+        }
+      }
+    },
+    "upload": {
+      "title": "Upload Photos",
+      "items": {
+        "methods": {
+          "title": "Upload methods",
+          "content": "You can upload photos individually or in batches. Simply drag and drop the images onto the indicated area or use the button to select them from your device."
+        },
+        "zip_upload": {
+          "title": "Import from ZIP file",
+          "content": "**PhotoMap** allows you to directly import your photos from any ZIP file containing images. This is a quick and convenient way to upload multiple photos at once, maintaining metadata such as location, date, and tags if available in the original images."
+        },
+        "visibility": {
+          "title": "Photo visibility",
+          "content": "When uploading photos, you can choose between Public or Private visibility. Public photos will appear on the general map and can be included in shared maps. Private photos will only be visible to you and won't appear on the map unless you change their settings. You can modify the visibility of your photos at any time from the gallery."
+        }
+      }
+    },
+    "categories": {
+      "title": "Categories",
+      "items": {
+        "overview": {
+          "title": "Organization with categories and tags",
+          "content": "Categories and tags help you organize your photos thematically. You can create custom categories (such as 'Travel', 'Family', 'Nature') and assign specific tags within each category."
+        },
+        "management": {
+          "title": "Category management",
+          "content": "In this section, you can create, edit, and delete categories and tags. You can also assign colors to tags to visually identify them throughout the application."
+        }
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "items": {
+        "settings": {
+          "title": "Profile settings",
+          "content": "In the Profile section, you can update your personal information, change the application language, and customize other preferences such as the visual theme."
+        },
+        "security": {
+          "title": "Security",
+          "content": "Here you can change your password and manage other security aspects of your account to keep your photos secure."
+        }
+      }
+    }
+  }
+}

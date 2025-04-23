@@ -33,7 +33,8 @@
   "visibility": {
     "title": "Visibilidad",
     "public": "Pública",
-    "private": "Privada"
+    "private": "Privada",
+    "help": "Las fotos privadas no aparecerán en el mapa. Puedes cambiar esta configuración en cualquier momento desde la galería."
   },
   "buttons": {
     "upload_one": "Subir {{count}} foto",

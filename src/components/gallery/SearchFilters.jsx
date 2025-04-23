@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Row, Col, Form, Button, Collapse } from 'react-bootstrap';
 import { useLocation } from '../../context/LocationContext';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Estilos principales
@@ -9,11 +9,16 @@ import enUS from 'date-fns/locale/en-US'; // Importar localización inglesa
 import { useTranslation } from 'react-i18next';
 import { photoService } from '../../services/api';
 import LabelSelector from '../common/LabelSelector';
+import LocationSelector from '../common/LocationSelector';
+import { DropdownProvider } from '../../context/DropdownContext';
+import NewFeatureBadge from '../common/NewFeatureBadge';
 
-const SearchFilters = ({ filters, onFilterChange }) => {
+const SearchFilters = ({ filters, onFilterChange, showCreateMapButton = false, onOpenCreateMapModal, excludeUnknowns = false }) => {
   // Obtenemos funciones y datos del contexto de ubicación
   const { locations: filteredLocations, loading, selectLocation } = useLocation();
   const { t, i18n } = useTranslation(['filters', 'labels']);
+  const [showCreateMapSection, setShowCreateMapSection] = useState(false);
+  const prevFiltersRef = useRef(null);
 
   // Mapa de locales soportados para date-fns
   // Se puede extender fácilmente con más idiomas
@@ -79,12 +84,26 @@ const SearchFilters = ({ filters, onFilterChange }) => {
       const month = firstMonth.getMonth() + 1; // getMonth() devuelve 0-11, necesitamos 1-12
       const year = firstMonth.getFullYear();
 
-      // El backend ya devuelve los datos para los dos meses visibles
-      const response = await photoService.getPhotoCalendar(month, year);
-      const calendarData = response.data.data.calendar || [];
+      // Calcular el mes siguiente y su año correspondiente
+      const nextMonth = month === 12 ? 1 : month + 1;
+      const nextMonthYear = month === 12 ? year + 1 : year;
 
-      setCalendarData(calendarData);
-      console.log('Datos del calendario cargados:', calendarData);
+      // Realizar ambas solicitudes en paralelo
+      const [currentMonthResponse, nextMonthResponse] = await Promise.all([
+        photoService.getPhotoCalendar(month, year, excludeUnknowns),
+        photoService.getPhotoCalendar(nextMonth, nextMonthYear, excludeUnknowns)
+      ]);
+
+      // Extraer y combinar los datos de ambos meses
+      const currentMonthData = currentMonthResponse.data.data.calendar || [];
+      const nextMonthData = nextMonthResponse.data.data.calendar || [];
+
+      // Combinar los datos de ambos meses en un solo array
+      const combinedCalendarData = [...currentMonthData, ...nextMonthData];
+
+      setCalendarData(combinedCalendarData);
+      console.log('Datos del calendario cargados para meses:', `${month}/${year}`, `${nextMonth}/${nextMonthYear}`);
+      console.log('Total de días con datos:', combinedCalendarData.length);
     } catch (error) {
       console.error('Error al cargar datos del calendario:', error);
     } finally {
@@ -134,6 +153,12 @@ const SearchFilters = ({ filters, onFilterChange }) => {
 
     // Actualizamos el estado con la selección del usuario
     setDateRangeState([item.selection]);
+
+    // Verificar si las fechas son válidas
+    if (!item.selection.startDate || !item.selection.endDate) {
+      console.log('⚠️ Fechas inválidas en la selección:', item.selection);
+      return; // Salir si alguna fecha es nula
+    }
 
     // Verificar si es un solo día (inicio y fin iguales)
     const isSingleDay = item.selection.startDate.getTime() === item.selection.endDate.getTime();
@@ -317,168 +342,280 @@ const SearchFilters = ({ filters, onFilterChange }) => {
     onFilterChange('labels', updatedLabels);
   };
 
-  // Función para reiniciar todos los filtros
+  // Función para verificar si hay filtros activos
+  const hasActiveFilters = () => {
+    return !!(
+      filters.startDate ||
+      filters.endDate ||
+      filters.country ||
+      filters.region ||
+      filters.county ||
+      filters.city ||
+      (filters.labels && filters.labels.length > 0)
+    );
+  };
+
+  // Efecto para detectar cuando se activan o desactivan filtros
+  useEffect(() => {
+    const hasFilters = hasActiveFilters();
+
+    // Si acaban de aplicar filtros, mostrar el cajón
+    if (hasFilters && !showCreateMapSection) {
+      // Pequeño retraso para mejorar la animación
+      setTimeout(() => {
+        setShowCreateMapSection(true);
+      }, 300);
+    }
+    // Si borraron todos los filtros, ocultar el cajón
+    else if (!hasFilters && showCreateMapSection) {
+      setShowCreateMapSection(false);
+    }
+
+    // Guardar estado actual para la próxima comparación
+    prevFiltersRef.current = { ...filters };
+  }, [filters]);
+
+  // Función para reiniciar filtros
   const handleResetFilters = () => {
-    // Reiniciar ubicación
+    // Reiniciar todos los filtros
+    onFilterChange('startDate', '');
+    onFilterChange('endDate', '');
     onFilterChange('country', '');
     onFilterChange('region', '');
     onFilterChange('county', '');
     onFilterChange('city', '');
-
-    // Reiniciar etiquetas
     onFilterChange('labels', []);
 
-    // Reiniciar fechas sin establecer valores
-    onFilterChange('startDate', '');
-    onFilterChange('endDate', '');
-
-    // Reiniciar el estado del DateRange con la fecha actual pero sin selección
-    const today = new Date();
-    setDateRangeState([{
-      startDate: null,
-      endDate: null,
-      key: 'selection'
-    }]);
-
-    // Recargar datos del calendario con la fecha actual
-    loadCalendarData(today);
+    // Ocultar el cajón del botón
+    setShowCreateMapSection(false);
   };
 
   return (
     <div className="search-filters p-3 bg-light border rounded mb-3">
       <h6 className="mb-3">{t('title')}</h6>
 
-      <Row>
-        {/* COLUMNA IZQUIERDA: Filtros de ubicación y etiquetas */}
-        <Col md={5} lg={4}>
-          {/* Filtros de ubicación en vertical */}
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.country')}</Form.Label>
-            <Form.Select
-              value={filters.country || ''}
-              onChange={(e) => handleLocationChange('country', e.target.value)}
-            >
-              <option value="">{t('location.select_country')}</option>
-              {filteredLocations.countries.map(country => (
-                <option key={country.id || country._id} value={country.id || country._id}>
-                  {country.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.countries && <small className="text-muted">{t('location.loading_countries')}</small>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.region')}</Form.Label>
-            <Form.Select
-              value={filters.region || ''}
-              onChange={(e) => handleLocationChange('region', e.target.value)}
-            >
-              <option value="">{t('location.select_region')}</option>
-              {filteredLocations.regions.map(region => (
-                <option key={region.id || region._id} value={region.id || region._id}>
-                  {region.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.regions && <small className="text-muted">{t('location.loading_regions')}</small>}
-            {filteredLocations.regions.length === 0 && filters.country &&
-              <small className="text-muted">{t('location.no_regions')}</small>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.province')}</Form.Label>
-            <Form.Select
-              value={filters.county || ''}
-              onChange={(e) => handleLocationChange('county', e.target.value)}
-            >
-              <option value="">{t('location.select_province')}</option>
-              {filteredLocations.counties.map(county => (
-                <option key={county.id || county._id} value={county.id || county._id}>
-                  {county.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.counties && <small className="text-muted">{t('location.loading_provinces')}</small>}
-            {filteredLocations.counties.length === 0 && filters.region &&
-              <small className="text-muted">{t('location.no_provinces')}</small>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>{t('location.city')}</Form.Label>
-            <Form.Select
-              value={filters.city || ''}
-              onChange={(e) => handleLocationChange('city', e.target.value)}
-            >
-              <option value="">{t('location.select_city')}</option>
-              {filteredLocations.cities.map(city => (
-                <option key={city.id || city._id} value={city.id || city._id}>
-                  {city.name}
-                </option>
-              ))}
-            </Form.Select>
-            {loading.cities && <small className="text-muted">{t('location.loading_cities')}</small>}
-            {filteredLocations.cities.length === 0 && filters.county &&
-              <small className="text-muted">{t('location.no_cities')}</small>}
-          </Form.Group>
-
-          {/* Selector de etiquetas */}
-          <Form.Group className="mb-3">
-            <Form.Label>{t('labels:title')}</Form.Label>
-            <LabelSelector
-              selectedLabels={filters.labels || []}
-              onLabelSelect={handleLabelSelect}
-              onLabelRemove={handleLabelRemove}
-              showPhotoCount={true}
-            />
-          </Form.Group>
-
-          {/* Botón de reinicio de filtros */}
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="w-100 mb-3"
-            onClick={handleResetFilters}
-          >
-            {t('reset_filters')}
-          </Button>
-        </Col>
-
-        {/* COLUMNA DERECHA: Calendario */}
-        <Col md={7} lg={8}>
-          <Form.Group>
-            <Form.Label>{t('date.title')}</Form.Label>
-            <div className="date-range-container">
-              {loadingCalendarData && (
-                <div className="calendar-loading-overlay">
-                  <div className="text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                </div>
-              )}
-              <DateRange
-                key={`date-range-${i18n.language}`}
-                editableDateInputs={true}
-                onChange={handleDateRangeChange}
-                moveRangeOnFirstSelection={false}
-                ranges={dateRangeState}
-                months={2}
-                direction="horizontal"
-                locale={currentLocale}
-                weekdayDisplayFormat="EEEEE"
-                rangeColors={["var(--secondary)"]}
-                showMonthAndYearPickers={true}
-                onShownDateChange={handleShownDateChange}
-                dayContentRenderer={renderDayContent}
-                startDatePlaceholder={currentDatePlaceholder}
-                endDatePlaceholder={currentDatePlaceholder}
-                showSelectionPreview={true}
-                className="w-100"
+      <DropdownProvider>
+        <Row>
+          {/* COLUMNA IZQUIERDA: Filtros de ubicación y etiquetas */}
+          <Col md={5} lg={4}>
+            {/* Filtros de ubicación en vertical */}
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.country')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.countries}
+                selectedValue={filters.country || ''}
+                onSelect={(value) => handleLocationChange('country', value)}
+                placeholder={t('location.select_country')}
+                loading={loading.countries}
+                noOptionsMessage={t('location.no_countries')}
+                icon="globe"
+                id="country-selector"
               />
+              {loading.countries && <small className="text-muted">{t('location.loading_countries')}</small>}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.region')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.regions}
+                selectedValue={filters.region || ''}
+                onSelect={(value) => handleLocationChange('region', value)}
+                placeholder={t('location.select_region')}
+                loading={loading.regions}
+                noOptionsMessage={
+                  filters.country
+                    ? t('location.no_regions')
+                    : t('location.select_country_first')
+                }
+                icon="map"
+                id="region-selector"
+              />
+              {loading.regions && <small className="text-muted">{t('location.loading_regions')}</small>}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.province')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.counties}
+                selectedValue={filters.county || ''}
+                onSelect={(value) => handleLocationChange('county', value)}
+                placeholder={t('location.select_province')}
+                loading={loading.counties}
+                noOptionsMessage={
+                  filters.region
+                    ? t('location.no_provinces')
+                    : t('location.select_region_first')
+                }
+                icon="geo-alt-fill"
+                id="province-selector"
+              />
+              {loading.counties && <small className="text-muted">{t('location.loading_provinces')}</small>}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>{t('location.city')}</Form.Label>
+              <LocationSelector
+                options={filteredLocations.cities}
+                selectedValue={filters.city || ''}
+                onSelect={(value) => handleLocationChange('city', value)}
+                placeholder={t('location.select_city')}
+                loading={loading.cities}
+                noOptionsMessage={
+                  filters.county
+                    ? t('location.no_cities')
+                    : t('location.select_province_first')
+                }
+                icon="building"
+                id="city-selector"
+              />
+              {loading.cities && <small className="text-muted">{t('location.loading_cities')}</small>}
+            </Form.Group>
+
+            {/* Selector de etiquetas */}
+            <Form.Group className="mb-3">
+              <Form.Label>{t('labels:title')}</Form.Label>
+              <div className="w-100">
+                <LabelSelector
+                  selectedLabels={filters.labels || []}
+                  onLabelSelect={handleLabelSelect}
+                  onLabelRemove={handleLabelRemove}
+                  showPhotoCount={true}
+                  id="labels-selector"
+                />
+              </div>
+            </Form.Group>
+
+            {/* Botón de reinicio de filtros */}
+            {hasActiveFilters() && (
+              <div className="d-flex justify-content-center mt-3">
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={handleResetFilters}
+                >
+                  <i className="bi bi-x-circle me-2"></i>
+                  {t('filters:reset_filters')}
+                </Button>
+              </div>
+            )}
+          </Col>
+
+          {/* COLUMNA DERECHA: Calendario */}
+          <Col md={7} lg={8}>
+            <Form.Group>
+              <Form.Label>{t('date.title')}</Form.Label>
+              <div className="date-range-container">
+                {loadingCalendarData && (
+                  <div className="calendar-loading-overlay">
+                    <div className="text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                )}
+                <DateRange
+                  key={`date-range-${i18n.language}`}
+                  editableDateInputs={false}
+                  onChange={handleDateRangeChange}
+                  moveRangeOnFirstSelection={false}
+                  ranges={dateRangeState}
+                  months={2}
+                  direction="horizontal"
+                  locale={currentLocale}
+                  weekdayDisplayFormat="EEEEE"
+                  rangeColors={["var(--secondary)"]}
+                  showMonthAndYearPickers={true}
+                  onShownDateChange={handleShownDateChange}
+                  dayContentRenderer={renderDayContent}
+                  startDatePlaceholder={currentDatePlaceholder}
+                  endDatePlaceholder={currentDatePlaceholder}
+                  showSelectionPreview={true}
+                  className="w-100"
+                />
+              </div>
+            </Form.Group>
+          </Col>
+        </Row>
+      </DropdownProvider>
+
+      {/* Cajón animado para el botón de crear mapa */}
+      {showCreateMapButton && (
+        <Collapse in={showCreateMapSection && hasActiveFilters()}>
+          <div className="mt-4 border-top pt-4">
+            <div className="text-center mb-3">
+              <i className="bi bi-map-fill text-primary fs-3"></i>
+              <h5 className="mb-0 mt-2">{t('filters:create_map_title')}</h5>
+              <p className="text-muted">{t('filters:create_map_description')}</p>
             </div>
-          </Form.Group>
-        </Col>
-      </Row>
+            <div className="d-flex justify-content-center">
+              <div className="position-relative">
+                <Button
+                  variant="primary"
+                  className="px-4"
+                  onClick={() => onOpenCreateMapModal(filters)}
+                >
+                  <i className="bi bi-globe me-2"></i>
+                  {t('filters:create_map_button')}
+                </Button>
+                <NewFeatureBadge className="position-absolute" rotate={12} />
+              </div>
+            </div>
+          </div>
+        </Collapse>
+      )}
+
+      {/* Estilo para la animación */}
+      <style jsx="true">{`
+        .btn-success {
+          position: relative;
+        }
+        
+        /* Estilos para los inputs de fecha */
+        .rdrDateDisplay {
+          display: flex !important;
+          cursor: default !important;
+        }
+        
+        /* Eliminar el borde rojo usando border-color personalizado */
+        .rdrDateDisplayItem {
+          border: 1px solid #ced4da !important;
+          background-color: white !important;
+          cursor: default !important;
+        }
+        
+        .rdrDateDisplayItemActive {
+          border-color: #ced4da !important;
+          color: #212529 !important;
+          cursor: default !important;
+        }
+        
+        /* Estilo para los inputs dentro de los contenedores */
+        .rdrDateInput input {
+          color: #212529 !important;
+          border: none !important;
+          box-shadow: none !important;
+          background-color: transparent !important;
+          cursor: default !important;
+        }
+        
+        /* Eliminar estilos de foco */
+        .rdrDateDisplayItem:focus-within,
+        .rdrDateInput input:focus {
+          border-color: #ced4da !important;
+          box-shadow: none !important;
+          outline: none !important;
+          cursor: default !important;
+        }
+        
+        /* Clase específica para anular estilos de rojo */
+        .rdrDateDisplay,
+        .rdrDateDisplayItem,
+        .rdrDateDisplayItemActive,
+        .rdrDateDisplayWrapper,
+        .rdrDateInput {
+          border-color: #ced4da !important;
+          box-shadow: none !important;
+        }
+      `}</style>
     </div>
   );
 };

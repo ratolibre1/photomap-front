@@ -1,0 +1,127 @@
+{
+  "title": "Centro de Ayuda",
+  "description": "Encuentra respuestas a tus preguntas sobre cómo usar **PhotoMap**. Selecciona un tema para obtener más información.",
+  "table_of_contents": "Temas de Ayuda",
+  "sections": {
+    "general": {
+      "title": "Información General",
+      "items": {
+        "what_is": {
+          "title": "¿Qué es **PhotoMap**?",
+          "content": "**PhotoMap** es una aplicación personal para visualizar y organizar tus fotos en un mapa interactivo. Te permite ver tus recuerdos organizados geográficamente, creando una experiencia única para revivir tus momentos favoritos según el lugar donde ocurrieron."
+        },
+        "getting_started": {
+          "title": "Primeros pasos",
+          "content": "Para comenzar, sube tus fotos usando la sección 'Subir Fotos'. La aplicación extraerá automáticamente la información de ubicación (si está disponible) y organizará tus fotos en el mapa. Si tus fotos no tienen datos de ubicación, podrás agregarlos manualmente."
+        },
+        "navigation": {
+          "title": "Navegando por la aplicación",
+          "content": "Usa el menú lateral para navegar entre las diferentes secciones de la aplicación. Puedes contraer o expandir el menú usando el botón en la parte superior. Cada sección ofrece funcionalidades específicas para gestionar y visualizar tus fotos."
+        }
+      }
+    },
+    "photo_map": {
+      "title": "Mapa de Recuerdos",
+      "items": {
+        "overview": {
+          "title": "¿Qué es el Mapa de Recuerdos?",
+          "content": "El Mapa de Recuerdos es la visualización principal de tus fotos en un mapa interactivo. Cada foto se muestra como un marcador en el lugar donde fue tomada, permitiéndote explorar tus recuerdos geográficamente."
+        },
+        "navigation": {
+          "title": "Navegando por el mapa",
+          "content": "Puedes hacer zoom, desplazarte y hacer clic en los marcadores para ver las fotos. Los marcadores se agrupan automáticamente cuando hay muchas fotos cercanas para facilitar la navegación."
+        },
+        "filters": {
+          "title": "Filtrado de fotos en el mapa",
+          "content": "Usa los filtros en el panel lateral para encontrar fotos específicas por ubicación, fecha, categorías y etiquetas. Los filtros te ayudan a encontrar rápidamente los recuerdos que buscas."
+        },
+        "create_map": {
+          "title": "Crear mapa personalizado",
+          "content": "Desde el Mapa de Recuerdos puedes aplicar filtros y crear mapas públicos personalizados. Estos mapas pueden ser compartidos con amigos y familiares, incluso si no tienen una cuenta en **PhotoMap**. Es la única sección desde donde puedes crear mapas públicos actualmente."
+        }
+      }
+    },
+    "gallery": {
+      "title": "Galería de Fotos",
+      "items": {
+        "overview": {
+          "title": "Explorando tu galería",
+          "content": "La Galería de Fotos te muestra todas tus imágenes en un formato de cuadrícula, permitiéndote explorar y gestionar tus fotos fácilmente. Puedes hacer clic en cualquier foto para verla en detalle."
+        },
+        "search": {
+          "title": "Búsqueda y filtros",
+          "content": "Usa las opciones de búsqueda y filtros para encontrar fotos específicas. Puedes filtrar por ubicación, fecha, etiquetas y más para encontrar exactamente lo que buscas."
+        },
+        "visibility": {
+          "title": "Cambiar la visibilidad de fotos",
+          "content": "Desde la galería puedes gestionar la visibilidad de tus fotos. Para cambiar si una foto es pública o privada, selecciona la foto y usa la opción de visibilidad en el panel de detalles. También puedes seleccionar múltiples fotos y cambiar su visibilidad en lote usando las opciones de acciones masivas."
+        }
+      }
+    },
+    "my_maps": {
+      "title": "Mis Mapas",
+      "items": {
+        "overview": {
+          "title": "Gestión de mapas personalizados",
+          "content": "En la sección Mis Mapas puedes ver, editar y gestionar todos los mapas personalizados que has creado. Cada mapa muestra un conjunto específico de fotos basado en los filtros que aplicaste al crearlo."
+        },
+        "sharing": {
+          "title": "Compartir mapas",
+          "content": "Puedes compartir tus mapas con cualquier persona mediante un enlace único. Las personas con quienes compartas el mapa podrán ver las fotos incluidas sin necesidad de crear una cuenta. También puedes elegir hacer tus mapas privados en cualquier momento."
+        }
+      }
+    },
+    "on_this_day": {
+      "title": "Un Día como Hoy",
+      "items": {
+        "overview": {
+          "title": "Recordando momentos pasados",
+          "content": "La función 'Un Día como Hoy' te muestra las fotos que tomaste en la misma fecha pero en años anteriores. Es una forma divertida de revivir recuerdos y ver cómo han cambiado las cosas con el tiempo."
+        }
+      }
+    },
+    "upload": {
+      "title": "Subir Fotos",
+      "items": {
+        "methods": {
+          "title": "Métodos de subida",
+          "content": "Puedes subir fotos individualmente o en lotes. Simplemente arrastra y suelta las imágenes en la zona indicada o usa el botón para seleccionarlas desde tu dispositivo."
+        },
+        "zip_upload": {
+          "title": "Importación desde archivo ZIP",
+          "content": "**PhotoMap** te permite importar directamente tus fotos desde cualquier archivo ZIP que contenga imágenes. Esta es una manera rápida y conveniente de subir múltiples fotos a la vez, manteniendo los metadatos como ubicación, fecha y etiquetas si están disponibles en las imágenes originales."
+        },
+        "visibility": {
+          "title": "Visibilidad de las fotos",
+          "content": "Al subir fotos, puedes elegir entre visibilidad Pública o Privada. Las fotos Públicas aparecerán en el mapa general y podrán incluirse en mapas compartidos. Las fotos Privadas solo serán visibles para ti y no aparecerán en el mapa a menos que cambies su configuración. Puedes modificar la visibilidad de tus fotos en cualquier momento desde la galería."
+        }
+      }
+    },
+    "categories": {
+      "title": "Categorías",
+      "items": {
+        "overview": {
+          "title": "Organización con categorías y etiquetas",
+          "content": "Las categorías y etiquetas te ayudan a organizar tus fotos de manera temática. Puedes crear categorías personalizadas (como 'Viajes', 'Familia', 'Naturaleza') y asignar etiquetas específicas dentro de cada categoría."
+        },
+        "management": {
+          "title": "Gestión de categorías",
+          "content": "En esta sección puedes crear, editar y eliminar categorías y etiquetas. También puedes asignar colores a las etiquetas para identificarlas visualmente en toda la aplicación."
+        }
+      }
+    },
+    "profile": {
+      "title": "Perfil",
+      "items": {
+        "settings": {
+          "title": "Ajustes de perfil",
+          "content": "En la sección de Perfil puedes actualizar tu información personal, cambiar el idioma de la aplicación y personalizar otras preferencias como el tema visual."
+        },
+        "security": {
+          "title": "Seguridad",
+          "content": "Aquí puedes cambiar tu contraseña y gestionar otros aspectos de seguridad de tu cuenta para mantener tus fotos seguras."
+        }
+      }
+    }
+  }
+}

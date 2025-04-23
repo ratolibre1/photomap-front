@@ -5,9 +5,12 @@
     "delete": "Delete",
     "edit": "Edit",
     "back": "Back",
-    "close": "Done",
+    "close": "Close",
     "upload": "Upload",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "share": "Share",
+    "add": "Add",
+    "accept": "Accept"
   },
   "actions": {
     "reset": "Reset",
@@ -24,7 +27,7 @@
     "location_denied": "You have denied permission to access your location",
     "location_unavailable": "Location information is unavailable",
     "location_timeout": "The request to get your location has timed out",
-    "location_unknown": "An unknown error occurred while getting your location"
+    "location_unknown": "An unknown error occurred when trying to get your location"
   },
   "success": {
     "saved": "Saved successfully",
@@ -50,11 +53,86 @@
     "plural": "photos",
     "unknown": "? photos"
   },
+  "no_description": "No description",
   "navigation": {
-    "home": "Go to home",
+    "home": "Go to Home",
     "publicMaps": "View public maps",
     "back": "Go back",
     "next": "Next",
     "previous": "Previous"
+  },
+  "mymaps": {
+    "title": "My Maps",
+    "create": "Create Map",
+    "create_first": "Create my first map",
+    "loading": "Loading your maps...",
+    "error": "We couldn't load your maps. Please try again later.",
+    "empty_title": "You don't have any maps yet",
+    "empty_description": "Create your first map to share your photo memories.",
+    "view": "View",
+    "share": "Share",
+    "share_title": "Share: {{title}}",
+    "share_link": "Share link:",
+    "copied": "Link copied to clipboard!",
+    "views_one": "{{count}} view",
+    "views_other": "{{count}} views",
+    "date_from": "From {{date}}",
+    "date_to": "To {{date}}",
+    "date_range": "{{startDate}} - {{endDate}}",
+    "view_all": "View all my maps",
+    "anywhere": "Anywhere",
+    "any_date": "Any date",
+    "any_label": "Any label",
+    "delete_confirm": "Are you sure you want to delete the map \"{{title}}\"?",
+    "delete_success": "Map deleted successfully",
+    "delete_error": "Could not delete the map. Please try again.",
+    "visibility_public_success": "Map changed to public successfully",
+    "visibility_private_success": "Map changed to private successfully",
+    "visibility_change_error": "Could not change map visibility. Please try again.",
+    "location_filter": "📍 {{location}}",
+    "worldwide": "Worldwide",
+    "all_dates": "All dates",
+    "no_labels": "No labels"
+  },
+  "error": {
+    "create_map": "Could not create the map. Please try again."
+  },
+  "filters": {
+    "none": "No filters applied",
+    "tags": "Tags",
+    "date_range": "Date range",
+    "date_from": "From",
+    "date_to": "To",
+    "location": "Location",
+    "title": "Filters",
+    "match": "match filters"
+  },
+  "to": "to",
+  "badges": {
+    "new": "NEW!"
+  },
+  "visibility": {
+    "public": "Public",
+    "private": "Private"
+  },
+  "messages": {
+    "success": "Success!",
+    "error": "Error!"
+  },
+  "toast": {
+    "success": "✅ Success",
+    "error": "❌ Error"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "days_ago_one": "{{count}} day ago",
+    "days_ago_other": "{{count}} days ago",
+    "weeks_ago_one": "{{count}} week ago",
+    "weeks_ago_other": "{{count}} weeks ago",
+    "months_ago_one": "{{count}} month ago",
+    "months_ago_other": "{{count}} months ago",
+    "years_ago_one": "{{count}} year ago",
+    "years_ago_other": "{{count}} years ago"
   }
 }

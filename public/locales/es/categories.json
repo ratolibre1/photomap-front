@@ -20,8 +20,8 @@
   "delete": {
     "confirm_category": "¿Estás seguro de que quieres eliminar la categoría {{name}}?",
     "confirm_label": "¿Estás seguro de que quieres eliminar la etiqueta {{name}}?",
-    "photos_affected": "Esta etiqueta se eliminará de {{count}} foto",
-    "photos_affected_plural": "Esta etiqueta se eliminará de {{count}} fotos",
+    "photos_affected_one": "Esta etiqueta se eliminará de {{count}} foto",
+    "photos_affected_other": "Esta etiqueta se eliminará de {{count}} fotos",
     "no_photos": "Esta etiqueta no está siendo utilizada en ninguna foto",
     "labels_to_delete": "Se eliminarán las siguientes etiquetas:"
   }

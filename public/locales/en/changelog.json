@@ -1,0 +1,99 @@
+{
+  "title": "Changelog",
+  "subtitle": "A detailed record of all updates and improvements made to the application.",
+  "current_version": "Current version",
+  "initial_release": "Initial release",
+  "view_help": "View help guide",
+  "categories": {
+    "features": "New Features",
+    "improvements": "Improvements",
+    "fixes": "Bug Fixes",
+    "ui": "UI & Design"
+  },
+  "changes": {
+    "v1_1_0": {
+      "features": {
+        "maps": "Custom maps",
+        "location_selector": "Enhanced location selector",
+        "avatar_upload": "Profile avatar upload",
+        "search": "Search improvements"
+      },
+      "improvements": {
+        "i18n": "Complete internationalization",
+        "gallery_filters": "Gallery filters simplification",
+        "help_center": "Enhanced Help Center"
+      },
+      "fixes": {
+        "text_format": "Text formatting fixes",
+        "pagination": "Pagination correction",
+        "search_placeholder": "Search field improvements"
+      },
+      "ui": {
+        "theme_update": "Theme update",
+        "sidebar_improvement": "Sidebar improvements",
+        "dropdowns": "Standardized dropdown components",
+        "animations": "Fluid animations",
+        "responsive": "Optimized responsive design"
+      }
+    },
+    "v1_0_0": {
+      "features": {
+        "photo_upload": "Photo upload",
+        "gallery": "Photo gallery",
+        "photo_map": "Photo map",
+        "user_profile": "User profiles",
+        "on_this_day": "On this day"
+      },
+      "ui": {
+        "responsive_design": "Responsive design",
+        "theme_support": "Theme support",
+        "map_integration": "Map integration",
+        "modern_design": "Modern design",
+        "reusable_components": "Reusable components"
+      }
+    }
+  },
+  "descriptions": {
+    "v1_1_0": {
+      "features": {
+        "maps": "Create custom maps from your favorite photos. Share your collections with other users and group your memories by themes.",
+        "location_selector": "New component for selecting locations with optimized search. Includes autocomplete and regional grouping.",
+        "avatar_upload": "Now you can upload and customize your profile avatar. Supports interactive cropping and real-time preview.",
+        "search": "Advanced filters to find photos by date, location, and tags. The system saves your recent searches."
+      },
+      "improvements": {
+        "i18n": "The application is now fully internationalized in English and Spanish. All texts, messages, and help content are available in both languages.",
+        "gallery_filters": "Simplified filter interface in the Gallery for a more intuitive experience, removing rarely used advanced filters.",
+        "help_center": "Enhanced Help Center with complete documentation and rich formatting for better readability."
+      },
+      "fixes": {
+        "text_format": "Fixed text formatting throughout the application, ensuring that bold text and other styles display correctly.",
+        "pagination": "Solved an issue where numbers in the paginator weren't correctly displayed in bold.",
+        "search_placeholder": "Help texts in search fields now display in the user's selected language."
+      },
+      "ui": {
+        "theme_update": "Complete theme redesign using more harmonious color palettes. Better contrast and accessibility in dark and light modes.",
+        "sidebar_improvement": "More intuitive sidebar with shortcuts to frequent sections. Supports expanded and collapsed modes to maximize space.",
+        "dropdowns": "Unified selection components throughout the application with support for search, keyboard, and touch navigation.",
+        "animations": "Smooth transitions between views and microinteractions to enhance user experience.",
+        "responsive": "Better adaptation to mobile devices and tablets with improved touch controls."
+      }
+    },
+    "v1_0_0": {
+      "features": {
+        "photo_upload": "Upload your photos with support for metadata and automatic geolocation.",
+        "gallery": "Browse your photos with filters by date, location, and categories.",
+        "photo_map": "Visualize your memories on an interactive map with zone grouping.",
+        "user_profile": "Profile management with statistics and custom settings.",
+        "on_this_day": "Relive memories from previous years on the same day."
+      },
+      "ui": {
+        "responsive_design": "Interface adaptable to any device, from mobile to large screens.",
+        "theme_support": "Support for light and dark themes with smooth transitions between them.",
+        "map_integration": "Interactive maps with different layers and customizable styles.",
+        "modern_design": "Clean and modern interface focused on usability and accessibility.",
+        "reusable_components": "Consistent design system throughout the application."
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ const Login = () => {
   });
   const [formError, setFormError] = useState('');
   const [validated, setValidated] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
   const { login, loading, error } = useAuth();
 
   const handleChange = (e) => {
@@ -18,6 +19,19 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
+
+    // Validar el formulario con cada cambio
+    const updatedCredentials = {
+      ...credentials,
+      [name]: value
+    };
+
+    // Validación básica: email con formato correcto y contraseña con longitud mínima
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailRegex.test(updatedCredentials.email);
+    const isPasswordValid = updatedCredentials.password.length >= 6;
+
+    setIsFormValid(isEmailValid && isPasswordValid);
   };
 
   const handleSubmit = async (e) => {
@@ -98,7 +112,7 @@ const Login = () => {
                   variant="primary"
                   type="submit"
                   className="w-100 py-2 mb-3"
-                  disabled={loading}
+                  disabled={loading || !isFormValid}
                 >
                   {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
                 </Button>

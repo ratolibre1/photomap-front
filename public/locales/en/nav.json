@@ -1,11 +1,14 @@
 {
   "dashboard": "Dashboard",
-  "map": "Memories Map",
-  "gallery": "Photo Gallery",
+  "map": "Photo Map",
+  "gallery": "Gallery",
+  "mymaps": "My Maps",
   "onthisday": "On This Day",
-  "upload": "Upload Photos",
+  "upload": "Upload",
   "categories": "Categories",
   "profile": "Profile",
   "admin": "Admin Tools",
-  "logout": "Sign out"
+  "helpcenter": "Help Center",
+  "logout": "Logout",
+  "changelog": "Changelog"
 }
