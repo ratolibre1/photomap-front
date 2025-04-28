@@ -11,6 +11,28 @@
     "ui": "UI & Design"
   },
   "changes": {
+    "v1_2_0": {
+      "features": {
+        "upload_improvements": "Optimized multiple upload",
+        "upload_results": "New results modal",
+        "batch_upload": "Batch labeling in ZIP"
+      },
+      "improvements": {
+        "map_interactions": "Enhanced map interactions",
+        "photo_filters": "Improved photo filters",
+        "error_handling": "Better error handling"
+      },
+      "fixes": {
+        "upload_modal": "Upload modal fixes",
+        "map_visibility": "Satellite layer visibility",
+        "mobile_experience": "Mobile experience"
+      },
+      "ui": {
+        "photo_details": "Photo details view",
+        "sidebar_compact": "Improved compact sidebar",
+        "responsive_layout": "Advanced responsive design"
+      }
+    },
     "v1_1_0": {
       "features": {
         "maps": "Custom maps",
@@ -54,6 +76,28 @@
     }
   },
   "descriptions": {
+    "v1_2_0": {
+      "features": {
+        "upload_improvements": "New way to upload multiple photos in a single request, optimizing the process and reducing server load. Simultaneous processing of all images.",
+        "upload_results": "Completely redesigned to provide better information about successes, duplicates, and errors. Improved navigation and visualization of thumbnails, locations, and dates.",
+        "batch_upload": "Now you can apply labels directly to all ZIP photos during upload, which simplifies mass organization and categorization."
+      },
+      "improvements": {
+        "map_interactions": "Greater fluidity in panning, zooming, and marker clustering on maps. Better performance and precision when displaying photo locations.",
+        "photo_filters": "More intuitive and faster filters, with better integration between locations, dates, and labels. Immediate response when changing any criteria.",
+        "error_handling": "Clearer error handling, with specific messages and guidance on how to resolve them. Better recovery from network or server failures."
+      },
+      "fixes": {
+        "upload_modal": "Fixed vertical scrolling in the upload results modal and better visualization of long photo lists.",
+        "map_visibility": "Solution to problems with the display of the satellite layer and other map styles on different devices.",
+        "mobile_experience": "Fixes in navigation, menus, and forms to improve the experience on mobile devices and tablets."
+      },
+      "ui": {
+        "photo_details": "New presentation of photo details with more accessible and visual information about location, date, and labels.",
+        "sidebar_compact": "Improvements in the compact sidebar with centered icons and better organization of quick access.",
+        "responsive_layout": "Complete optimization of the adaptive design to ensure an excellent experience on all screen sizes."
+      }
+    },
     "v1_1_0": {
       "features": {
         "maps": "Create custom maps from your favorite photos. Share your collections with other users and group your memories by themes.",

@@ -17,8 +17,94 @@ const Changelog = () => {
       {/* Versión actual */}
       <Card className="mb-4 shadow-sm">
         <Card.Header className="d-flex justify-content-between align-items-center bg-light">
-          <span className="fw-bold">🚀 v1.1.0 - {t('current_version')}</span>
+          <span className="fw-bold">🚀 v1.2.0 - {t('current_version')}</span>
           <NewFeatureBadge rotate={12}>{t('common:badges.new')}</NewFeatureBadge>
+        </Card.Header>
+        <Card.Body>
+          <Row className="mb-4">
+            <Col md={6}>
+              <h5 className="d-flex align-items-center">
+                <i className="bi bi-stars me-2 text-primary"></i>
+                {t('categories.features')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <Link to="/upload" className="text-decoration-none">
+                    <strong>{t('changes.v1_2_0.features.upload_improvements')}</strong>
+                  </Link> - {t('descriptions.v1_2_0.features.upload_improvements')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.features.upload_results')}</strong> - {t('descriptions.v1_2_0.features.upload_results')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.features.batch_upload')}</strong> - {t('descriptions.v1_2_0.features.batch_upload')}
+                </li>
+              </ul>
+
+              <h5 className="d-flex align-items-center mt-4">
+                <i className="bi bi-arrow-up-circle me-2 text-primary"></i>
+                {t('categories.improvements')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_2_0.improvements.map_interactions')}</strong> - {t('descriptions.v1_2_0.improvements.map_interactions')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.improvements.photo_filters')}</strong> - {t('descriptions.v1_2_0.improvements.photo_filters')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.improvements.error_handling')}</strong> - {t('descriptions.v1_2_0.improvements.error_handling')}
+                </li>
+              </ul>
+            </Col>
+
+            <Col md={6}>
+              <h5 className="d-flex align-items-center">
+                <i className="bi bi-palette me-2 text-primary"></i>
+                {t('categories.ui')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_2_0.ui.photo_details')}</strong> - {t('descriptions.v1_2_0.ui.photo_details')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.ui.sidebar_compact')}</strong> - {t('descriptions.v1_2_0.ui.sidebar_compact')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.ui.responsive_layout')}</strong> - {t('descriptions.v1_2_0.ui.responsive_layout')}
+                </li>
+              </ul>
+
+              <h5 className="d-flex align-items-center mt-4">
+                <i className="bi bi-bug me-2 text-primary"></i>
+                {t('categories.fixes')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_2_0.fixes.upload_modal')}</strong> - {t('descriptions.v1_2_0.fixes.upload_modal')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.fixes.map_visibility')}</strong> - {t('descriptions.v1_2_0.fixes.map_visibility')}
+                </li>
+                <li>
+                  <strong>{t('changes.v1_2_0.fixes.mobile_experience')}</strong> - {t('descriptions.v1_2_0.fixes.mobile_experience')}
+                </li>
+              </ul>
+            </Col>
+          </Row>
+          <div className="d-flex justify-content-end">
+            <Link to="/help" className="btn btn-sm btn-outline-primary">
+              <i className="bi bi-question-circle me-1"></i>
+              {t('view_help')}
+            </Link>
+          </div>
+        </Card.Body>
+      </Card>
+
+      {/* Versión anterior */}
+      <Card className="mb-4 shadow-sm">
+        <Card.Header className="d-flex justify-content-between align-items-center bg-light">
+          <span className="fw-bold">📦 v1.1.0</span>
         </Card.Header>
         <Card.Body>
           <Row className="mb-4">
@@ -101,12 +187,6 @@ const Changelog = () => {
               </ul>
             </Col>
           </Row>
-          <div className="d-flex justify-content-end">
-            <Link to="/help" className="btn btn-sm btn-outline-primary">
-              <i className="bi bi-question-circle me-1"></i>
-              {t('view_help')}
-            </Link>
-          </div>
         </Card.Body>
       </Card>
 
