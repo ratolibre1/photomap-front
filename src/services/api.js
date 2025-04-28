@@ -11,6 +11,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 60000, // 60 segundos de timeout para todas las peticiones
 });
 
 // Interceptor para depurar el envío del token
@@ -136,6 +137,47 @@ export const photoService = {
 
     return api.post('/photos', formData, uploadConfig);
   },
+
+  // Nuevo método para subir múltiples fotos en una sola petición
+  uploadMultiplePhotos: (files, data = {}, options = {}) => {
+    const formData = new FormData();
+
+    // Añadir cada archivo al FormData con el mismo nombre "photos"
+    files.forEach(file => {
+      formData.append('photos', file);
+    });
+
+    // Añadir isPublic si está definido
+    if (data.isPublic !== undefined) {
+      formData.append('isPublic', data.isPublic);
+    }
+
+    // Añadir etiquetas si están definidas
+    if (data.labels && data.labels.length > 0) {
+      const labelIds = data.labels.map(label => label._id || label.id).join(',');
+      formData.append('labels', labelIds);
+    }
+
+    // Añadir título y descripción si están definidos
+    if (data.title) {
+      formData.append('title', data.title);
+    }
+
+    if (data.description) {
+      formData.append('description', data.description);
+    }
+
+    // Configuración para la petición
+    const uploadConfig = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      timeout: 300000, // Timeout de 5 minutos para cargas grandes
+      ...options
+    };
+
+    return api.post('/photos/multiple', formData, uploadConfig);
+  },
   updatePhoto: (id, photoData) => {
     // La API ahora espera labels en vez de categories
     return api.patch(`/photos/${id}`, photoData);
@@ -196,10 +238,18 @@ export const photoService = {
       formData.append('isPublic', options.data.isPublic);
     }
 
+    // Añadir etiquetas si están en options.data
+    if (options.data && options.data.labels && options.data.labels.length > 0) {
+      // Convertir array de etiquetas a formato JSON string
+      const labelIds = options.data.labels.map(label => label._id || label.id);
+      formData.append('labels', JSON.stringify(labelIds));
+    }
+
     const uploadConfig = {
       headers: {
         'Content-Type': 'multipart/form-data'
       },
+      timeout: 300000, // Aumentar timeout a 5 minutos para archivos grandes
       ...options
     };
 

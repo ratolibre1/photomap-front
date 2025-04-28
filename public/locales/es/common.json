@@ -10,7 +10,8 @@
     "confirm": "Confirmar",
     "share": "Compartir",
     "add": "Agregar",
-    "accept": "Aceptar"
+    "accept": "Aceptar",
+    "uploading": "Subiendo..."
   },
   "actions": {
     "reset": "Restaurar",
