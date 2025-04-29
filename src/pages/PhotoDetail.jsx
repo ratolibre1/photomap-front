@@ -133,8 +133,14 @@ const PhotoDetail = () => {
       await photoService.deletePhoto(id);
 
       setPhotoDeleted(true);
-      // Redirigir a la galería después de un tiempo
-      setTimeout(() => navigate('/gallery'), 2000);
+
+      // Mostrar mensaje de éxito antes de redirigir
+      setToastMessage(t('delete.success'));
+      setShowToast(true);
+
+      // Redirigir inmediatamente a la galería en lugar de usar un temporizador
+      // Esto evita conflictos si el usuario navega a otra página
+      navigate('/gallery');
 
       // Cerrar el modal de confirmación
       setShowDeleteModal(false);
@@ -349,7 +355,7 @@ const PhotoDetail = () => {
           <p>{t('delete.redirecting')}</p>
           <Button
             as={Link}
-            to="/map"
+            to="/gallery"
             variant="primary"
             className="mt-3"
           >

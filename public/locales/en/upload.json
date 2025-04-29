@@ -6,7 +6,7 @@
   },
   "dropzone": {
     "title": "Select photos to upload",
-    "subtitle": "Drop your photos here, or click to select",
+    "subtitle": "Drag and drop your photos here, or click to select them",
     "formats": "Accepted formats: JPG, JPEG, PNG, GIF",
     "max_size": "Maximum size: {{size}}MB"
   },
@@ -20,7 +20,7 @@
   "form": {
     "title": "Title (optional)",
     "title_placeholder": "Add a title for all photos",
-    "title_help": "File name will be used if no title is specified",
+    "title_help": "The file name will be used if no title is specified",
     "description": "Description (optional)",
     "description_placeholder": "Add a description",
     "labels": "Labels",
@@ -33,7 +33,8 @@
   "visibility": {
     "title": "Visibility",
     "public": "Public",
-    "private": "Private"
+    "private": "Private",
+    "help": "Private photos won't appear on the map. You can change this setting anytime from the gallery."
   },
   "buttons": {
     "upload_one": "Upload {{count}} photo",
@@ -45,7 +46,7 @@
   },
   "error": {
     "no_files": "Please select at least one photo to upload",
-    "partial_upload": "There were problems uploading some images. Please try again",
+    "partial_upload": "There were issues uploading some images. Please try again",
     "upload_failed": "Error uploading images. Please check your connection and try again"
   },
   "zip": {
@@ -56,7 +57,7 @@
     "file_selected": "Selected file:",
     "processing": "This process may take several minutes depending on the file size",
     "file_label": "ZIP File",
-    "help_text": "Select a ZIP file that contains your photos",
+    "help_text": "Select a ZIP file containing your photos",
     "max_size": "Maximum size: {{size}}MB",
     "upload_button": "Import Photos",
     "error": {
@@ -65,5 +66,27 @@
       "upload_failed": "Error uploading file: {{message}}",
       "try_again": "Please try again later"
     }
+  },
+  "result": {
+    "success_title": "Upload successful! 🎉",
+    "partial_success_title": "Upload completed with warnings ⚠️",
+    "error_title": "Upload error ❌",
+    "duplicate_title": "Duplicate photo detected",
+    "duplicate_message": "You already have an identical photo in your collection",
+    "stats_title": "Upload statistics",
+    "photos_title": "Photo details",
+    "processed": "Processed",
+    "duplicates": "Duplicates",
+    "errors": "Errors",
+    "with_location": "With location",
+    "without_location": "Without location",
+    "with_timestamp": "With timestamp",
+    "without_timestamp": "Without timestamp",
+    "duplicate_photo": "Duplicate photo",
+    "view_duplicate": "View original photo",
+    "view": "View",
+    "view_all_photos": "View all my photos",
+    "is_duplicate": "Duplicate",
+    "error_processing": "Error processing"
   }
 }

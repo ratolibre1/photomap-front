@@ -5,7 +5,7 @@ import { useDropdown } from '../../context/DropdownContext';
 import LabelBadge from './LabelBadge';
 import { useTranslation } from 'react-i18next';
 
-const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, showPhotoCount = false, id = "labels-selector" }) => {
+const LabelSelector = ({ selectedLabels = [], onLabelSelect, onSelect, onLabelRemove, onRemove, showPhotoCount = false, id = "labels-selector" }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation(['labels', 'common', 'filters']);
   const { categoriesWithLabels, loading: labelsLoading } = useLabels();
@@ -59,6 +59,24 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
     }
   };
 
+  // Usar onSelect si está presente, de lo contrario usar onLabelSelect
+  const handleLabelSelect = (label) => {
+    if (onSelect) {
+      onSelect(label);
+    } else if (onLabelSelect) {
+      onLabelSelect(label);
+    }
+  };
+
+  // Usar onRemove si está presente, de lo contrario usar onLabelRemove
+  const handleLabelRemove = (label) => {
+    if (onRemove) {
+      onRemove(label);
+    } else if (onLabelRemove) {
+      onLabelRemove(label);
+    }
+  };
+
   return (
     <div className="w-100">
       {/* Mostrar etiquetas seleccionadas */}
@@ -71,7 +89,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
               key={label._id || label.id}
               label={label}
               showEditButton={false}
-              onDelete={() => onLabelRemove(label)}
+              onDelete={() => handleLabelRemove(label)}
               showPhotoCount={showPhotoCount}
             />
           ))
@@ -137,7 +155,7 @@ const LabelSelector = ({ selectedLabels = [], onLabelSelect, onLabelRemove, show
                     <div
                       key={label._id || label.id}
                       onClick={() => {
-                        if (!isSelected) onLabelSelect(label);
+                        if (!isSelected) handleLabelSelect(label);
                       }}
                       className={`dropdown-item custom-label-item ${isSelected ? 'disabled' : ''}`}
                       style={{

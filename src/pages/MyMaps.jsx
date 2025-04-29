@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Alert, Badge, OverlayTrigger, Tooltip, Modal, Toast, ToastContainer } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { publicMapService } from '../services/api';
 import { THEMES } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
@@ -147,7 +147,7 @@ const MapCard = ({ map, onDelete, onShare, onVisibilityChange }) => {
           <h5 className="map-title mb-0">{map.title}</h5>
 
           {/* Tema e idioma */}
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-3" style={{ paddingTop: '8px' }}>
             <OverlayTrigger
               placement="top"
               overlay={<Tooltip>{themeData.name}</Tooltip>}
@@ -381,7 +381,7 @@ const MapCardSkeleton = () => {
       <Card.Header className="bg-light border-bottom">
         <div className="d-flex justify-content-between align-items-center mb-1">
           <div className="skeleton-text" style={{ width: '60%', height: '24px' }}></div>
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-3" style={{ paddingTop: '8px' }}>
             <div className="skeleton-circle" style={{ width: '34px', height: '34px' }}></div>
             <div className="skeleton-circle" style={{ width: '34px', height: '34px' }}></div>
           </div>
@@ -447,6 +447,7 @@ const MyMaps = () => {
   const [toast, setToast] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ show: false, map: null });
   const { t } = useTranslation(['common']);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadMaps = async () => {
@@ -564,7 +565,12 @@ const MyMaps = () => {
     <Container fluid className="my-maps-container py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>{t('common:mymaps.title')}</h1>
-        <Button variant="primary" size="lg" className="create-map-btn">
+        <Button
+          variant="primary"
+          size="lg"
+          className="create-map-btn"
+          onClick={() => navigate('/photo-map')}
+        >
           <i className="bi bi-map-fill me-2"></i> {t('common:mymaps.create')}
         </Button>
       </div>

@@ -6,13 +6,15 @@ import LabelSelector from '../components/common/LabelSelector';
 import { useTranslation } from 'react-i18next';
 import { DropdownProvider } from '../context/DropdownContext';
 import { FILE_UPLOAD_CONFIG } from '../config';
+import UploadResultModal from '../components/upload/UploadResultModal';
 
 const Upload = () => {
   const { t } = useTranslation(['upload', 'common']);
   const [activeTab, setActiveTab] = useState('photos');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
-  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadResult, setUploadResult] = useState(null);
+  const [showResultModal, setShowResultModal] = useState(false);
   const [uploadError, setUploadError] = useState(null);
 
   // Estado para archivos
@@ -58,6 +60,19 @@ const Upload = () => {
     ));
   };
 
+  // Cerrar el modal de resultados
+  const handleCloseResultModal = () => {
+    setShowResultModal(false);
+
+    // Si fue éxito, limpiar el formulario
+    if (uploadResult && uploadResult.success) {
+      setFiles([]);
+      setTitle('');
+      setDescription('');
+      setSelectedLabels([]);
+    }
+  };
+
   // Enviar archivos al servidor
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -70,64 +85,112 @@ const Upload = () => {
     try {
       setUploading(true);
       setUploadError(null);
-      setUploadSuccess(false);
+      setUploadResult(null);
 
-      // Subir cada archivo individualmente
-      const uploadPromises = files.map(async (file) => {
-        const formData = new FormData();
-        formData.append('photo', file);
-        formData.append('title', title || file.name);
-        formData.append('description', description || '');
+      // Configurar el seguimiento de progreso global
+      const onUploadProgress = (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
 
-        // Añadir etiquetas
-        selectedLabels.forEach(label => {
-          formData.append('labels[]', label._id || label.id);
+        // Actualizar el progreso de todas las fotos (ya que se suben juntas)
+        const newProgress = {};
+        files.forEach(file => {
+          newProgress[file.id] = percentCompleted;
         });
 
-        // Añadir visibilidad
-        formData.append('isPublic', isPublic);
+        setUploadProgress(newProgress);
+      };
 
-        // Configurar el tracking de progreso para este archivo
-        setUploadProgress(prev => ({
-          ...prev,
-          [file.id]: 0
-        }));
+      // Usar el nuevo método para subir todas las fotos de una vez
+      const response = await photoService.uploadMultiplePhotos(
+        files, // Todos los archivos
+        {
+          title,
+          description,
+          labels: selectedLabels,
+          isPublic
+        },
+        { onUploadProgress }
+      );
 
+      console.log('Respuesta completa del servidor:', response);
+
+      if (response.data && response.data.status === 'success') {
         try {
-          await photoService.uploadPhoto(formData, {
-            onUploadProgress: (progressEvent) => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              setUploadProgress(prev => ({
-                ...prev,
-                [file.id]: percentCompleted
-              }));
+          // La respuesta ahora viene en el formato estándar directamente desde el servidor
+          // Verificamos que la estructura sea exactamente la que espera el modal
+          const responseData = response.data;
+
+          console.log('Datos recibidos del servidor:', JSON.stringify(responseData, null, 2));
+
+          if (!responseData.data || typeof responseData.data !== 'object') {
+            throw new Error('La respuesta no contiene el objeto data esperado');
+          }
+
+          // Asegurar que el objeto uploadResult tenga la estructura esperada por el modal
+          const standardizedResult = {
+            success: true,
+            data: {
+              message: responseData.data.message || 'Procesamiento completado',
+              stats: responseData.data.stats || {},
+              allDuplicates: responseData.data.allDuplicates
+            }
+          };
+
+          // Verificar que stats tenga las propiedades necesarias
+          if (!standardizedResult.data.stats.photos) {
+            standardizedResult.data.stats.photos = [];
+          }
+
+          console.log('Setting standardized upload result for modal:', standardizedResult);
+
+          setUploadResult(standardizedResult);
+          setShowResultModal(true);
+
+          // Limpiar el formulario tras éxito
+          setFiles([]);
+          setTitle('');
+          setDescription('');
+          setSelectedLabels([]);
+        } catch (error) {
+          console.error('Error al procesar la respuesta:', error);
+
+          // Mostrar error de formato
+          setUploadResult({
+            success: false,
+            error: {
+              message: 'Error al procesar la respuesta del servidor: ' + error.message
             }
           });
-
-          return { id: file.id, success: true };
-        } catch (error) {
-          console.error(`Error al subir ${file.name}:`, error);
-          return { id: file.id, success: false, error };
+          setShowResultModal(true);
         }
-      });
-
-      const results = await Promise.all(uploadPromises);
-      const allSuccess = results.every(result => result.success);
-
-      if (allSuccess) {
-        setUploadSuccess(true);
-        setFiles([]);
-        setTitle('');
-        setDescription('');
-        setSelectedLabels([]);
       } else {
-        setUploadError(t('error.partial_upload'));
+        // Manejar respuesta incorrecta
+        setUploadError(response.data?.message || t('error.unexpected_response'));
+
+        // Mostrar modal de error con formato estándar
+        setUploadResult({
+          success: false,
+          error: {
+            message: response.data?.message || t('error.unexpected_response')
+          }
+        });
+        setShowResultModal(true);
       }
     } catch (error) {
       console.error('Error durante la subida de fotos:', error);
       setUploadError(t('error.upload_failed'));
+
+      // Mostrar el modal de error con formato estandarizado
+      setUploadResult({
+        success: false,
+        error: {
+          statusCode: error.response?.status || 500,
+          message: error.response?.data?.message || t('error.upload_failed')
+        }
+      });
+      setShowResultModal(true);
     } finally {
       setUploading(false);
       // Limpiar progreso después de un tiempo
@@ -139,57 +202,152 @@ const Upload = () => {
 
   // Componente interno para la subida de archivos ZIP
   const ZipUploader = () => {
-    const [file, setFile] = useState(null);
-    const [zipUploading, setZipUploading] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
+    const [zipFile, setZipFile] = useState(null);
     const [zipIsPublic, setZipIsPublic] = useState(true);
+    const [zipLabels, setZipLabels] = useState([]);
+    const [zipUploadProgress, setZipUploadProgress] = useState(0);
+    const [zipError, setZipError] = useState(null);
+    const [isZipUploading, setIsZipUploading] = useState(false);
     const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
       const selectedFile = e.target.files[0];
       if (selectedFile && selectedFile.type === 'application/zip') {
-        setFile(selectedFile);
-        setError(null);
+        setZipFile(selectedFile);
+        setZipError(null);
       } else {
-        setFile(null);
-        setError(t('zip.error.invalid_file'));
+        setZipFile(null);
+        setZipError(t('zip.error.invalid_file'));
       }
     };
 
-    const handleZipUpload = async () => {
-      if (!file) {
-        setError(t('zip.error.no_file'));
+    const handleZipLabelSelect = (label) => {
+      if (!zipLabels.some(item => (item._id || item.id) === (label._id || label.id))) {
+        setZipLabels([...zipLabels, label]);
+      }
+    };
+
+    const handleZipLabelRemove = (labelToRemove) => {
+      setZipLabels(zipLabels.filter(label =>
+        (label._id || label.id) !== (labelToRemove._id || labelToRemove.id)
+      ));
+    };
+
+    const handleZipUpload = async (e) => {
+      e.preventDefault();
+      if (!zipFile) {
+        setZipError(t('upload.select_zip'));
         return;
       }
+      setIsZipUploading(true);
+      setZipUploadProgress(0);
+      setZipError(null);
 
       try {
-        setZipUploading(true);
-        setProgress(0);
-        setError(null);
-        setSuccess(false);
-
-        await photoService.uploadPhotoZip(file, {
+        // Usar el servicio específico para subir archivos ZIP
+        const response = await photoService.uploadPhotoZip(zipFile, {
+          data: {
+            isPublic: zipIsPublic,
+            labels: zipLabels // Enviamos las etiquetas seleccionadas
+          },
           onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round(
               (progressEvent.loaded * 100) / progressEvent.total
             );
-            setProgress(percentCompleted);
+            setZipUploadProgress(percentCompleted);
           },
-          data: { isPublic: zipIsPublic }
         });
 
-        setSuccess(true);
-        setFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
+        // Ya no es necesario este bloque porque las etiquetas se envían en la petición principal
+        // if (zipLabels && zipLabels.length > 0 && response.data.data?.photos?.length > 0) {
+        //   console.log('Las etiquetas seleccionadas deberían aplicarse a las fotos:',
+        //     zipLabels.map(label => label._id || label.id));
+        // }
+
+        console.log('Respuesta del servidor ZIP:', response.data);
+
+        // Verificar si hay una respuesta válida
+        if (response.data && (response.data.status === 'success' || response.data.success === true)) {
+          // Obtener los datos de la respuesta directamente
+          const responseData = response.data.data || {};
+
+          // IMPORTANTE: Usar las fotos directamente desde la respuesta del servidor
+          // sin manipularlas para evitar perder información
+          const photosData = responseData.photos || [];
+
+          // Configurar el resultado para mostrar en el modal con estructura estandarizada
+          // Preservar la estructura original tanto como sea posible
+          const uploadResult = {
+            success: true,
+            data: {
+              // Preservar el mensaje original del servidor si existe
+              message: responseData.message || response.data.message,
+              // Preservar la marca allDuplicates si existe
+              allDuplicates: responseData.allDuplicates,
+              // Preservar las estadísticas originales del servidor
+              stats: responseData.stats || {}
+            }
+          };
+
+          // Asegurarse de que las fotos estén presentes en el resultado
+          if (photosData && photosData.length > 0) {
+            uploadResult.data.stats.photos = photosData;
+          }
+
+          console.log('Setting upload result for modal:', uploadResult);
+
+          setUploadResult(uploadResult);
+          setShowResultModal(true);
+
+          // Limpiar el estado
+          setZipFile(null);
+          setZipLabels([]);
+          setZipIsPublic(true);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+        } else {
+          // Manejar respuesta incorrecta
+          setZipError(response.data.message || t('upload.unknown_error'));
+          // También podemos mostrar el modal de error con estructura estandarizada
+          setUploadResult({
+            success: false,
+            error: {
+              message: response.data.message || t('upload.unknown_error')
+            }
+          });
+          setShowResultModal(true);
         }
-      } catch (err) {
-        console.error('Error al subir archivo ZIP:', err);
-        setError(t('zip.error.upload_failed', { message: err.message || t('zip.error.try_again') }));
+      } catch (error) {
+        console.error('Error al subir ZIP:', error);
+
+        // Mensaje específico para timeout
+        if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+          setZipError(t('zip.error.timeout'));
+          // Mostrar el modal de error con estructura estandarizada
+          setUploadResult({
+            success: false,
+            error: {
+              statusCode: 408, // Request Timeout
+              message: t('zip.error.timeout_message')
+            }
+          });
+        } else {
+          // Otros errores
+          setZipError(error.response?.data?.message || t('upload.network_error'));
+          // Mostrar el modal de error con estructura estandarizada
+          setUploadResult({
+            success: false,
+            error: {
+              statusCode: error.response?.status || 500,
+              message: error.response?.data?.message || t('upload.network_error')
+            }
+          });
+        }
+
+        setShowResultModal(true);
       } finally {
-        setZipUploading(false);
+        setIsZipUploading(false);
       }
     };
 
@@ -202,16 +360,9 @@ const Upload = () => {
             {t('zip.description')}
           </p>
 
-          {success && (
-            <Alert variant="success" dismissible onClose={() => setSuccess(false)}>
-              <Alert.Heading>{t('zip.success')}</Alert.Heading>
-              {t('zip.success_message')}
-            </Alert>
-          )}
-
-          {error && (
-            <Alert variant="danger" dismissible onClose={() => setError(null)}>
-              {error}
+          {zipError && (
+            <Alert variant="danger" dismissible onClose={() => setZipError(null)}>
+              {zipError}
             </Alert>
           )}
 
@@ -221,7 +372,7 @@ const Upload = () => {
               type="file"
               accept=".zip"
               onChange={handleFileChange}
-              disabled={zipUploading}
+              disabled={isZipUploading}
               ref={fileInputRef}
             />
             <Form.Text className="text-muted">
@@ -232,11 +383,24 @@ const Upload = () => {
             </Form.Text>
           </Form.Group>
 
-          {file && (
+          {zipFile && (
             <div className="mb-3">
-              <strong>{t('zip.file_selected')}</strong> {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+              <strong>{t('zip.file_selected')}</strong> {zipFile.name} ({(zipFile.size / (1024 * 1024)).toFixed(2)} MB)
             </div>
           )}
+
+          <Form.Group className="mb-3">
+            <Form.Label>{t('form.labels')}</Form.Label>
+            <DropdownProvider>
+              <LabelSelector
+                onSelect={handleZipLabelSelect}
+                selectedLabels={zipLabels}
+                onRemove={handleZipLabelRemove}
+                disabled={isZipUploading}
+                id="zip-labels-selector"
+              />
+            </DropdownProvider>
+          </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>{t('visibility.title')}</Form.Label>
@@ -249,7 +413,7 @@ const Upload = () => {
                 checked={zipIsPublic}
                 onChange={() => setZipIsPublic(true)}
                 className="mb-2"
-                disabled={zipUploading}
+                disabled={isZipUploading}
               />
               <Form.Check
                 type="radio"
@@ -258,7 +422,7 @@ const Upload = () => {
                 label={t('visibility.private')}
                 checked={!zipIsPublic}
                 onChange={() => setZipIsPublic(false)}
-                disabled={zipUploading}
+                disabled={isZipUploading}
               />
               <Form.Text className="text-muted mt-2">
                 {t('visibility.help')}
@@ -266,11 +430,11 @@ const Upload = () => {
             </div>
           </Form.Group>
 
-          {zipUploading && (
+          {isZipUploading && (
             <div className="mb-3">
               <ProgressBar
-                now={progress}
-                label={`${progress}%`}
+                now={zipUploadProgress}
+                label={`${zipUploadProgress}%`}
                 variant="primary"
                 animated
               />
@@ -284,9 +448,9 @@ const Upload = () => {
             <Button
               variant="primary"
               onClick={handleZipUpload}
-              disabled={!file || zipUploading}
+              disabled={!zipFile || isZipUploading}
             >
-              {zipUploading ? (
+              {isZipUploading ? (
                 <>
                   <Spinner animation="border" size="sm" className="me-2" />
                   {t('common:buttons.uploading')}
@@ -332,14 +496,8 @@ const Upload = () => {
           </Nav>
         </Card.Header>
         <Card.Body>
-          {uploadSuccess && (
-            <Alert variant="success" className="mb-3">
-              {t('common:success.uploaded')}
-            </Alert>
-          )}
-
           {uploadError && (
-            <Alert variant="danger" className="mb-3">
+            <Alert variant="danger" className="mb-3" dismissible onClose={() => setUploadError(null)}>
               {uploadError}
             </Alert>
           )}
@@ -347,7 +505,7 @@ const Upload = () => {
           {uploading && (
             <div className="mb-3">
               <p className="text-muted">{t('progress.uploading')}</p>
-              <ProgressBar animated now={uploadProgress} label={`${uploadProgress}%`} />
+              <ProgressBar animated now={Object.values(uploadProgress).reduce((a, b) => a + b, 0) / Object.keys(uploadProgress).length} />
             </div>
           )}
 
@@ -360,7 +518,7 @@ const Upload = () => {
                       <h5 className="mb-3">{t('dropzone.title')}</h5>
 
                       {/* Zona de arrastrar y soltar */}
-                      <div {...getRootProps({ className: 'dropzone' })}>
+                      <div {...getRootProps({ className: 'dropzone' })} className="upload-dropzone border border-dashed p-3 rounded">
                         <input {...getInputProps()} />
                         <div className="text-center py-5">
                           <i className="bi bi-cloud-arrow-up display-3"></i>
@@ -380,7 +538,7 @@ const Upload = () => {
                           <Row xs={2} md={3} lg={4} className="g-3 mt-2">
                             {files.map(file => (
                               <Col key={file.id}>
-                                <Card className="h-100">
+                                <Card className="h-100 preview-container">
                                   <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
                                     <img
                                       src={file.preview}
@@ -395,12 +553,13 @@ const Upload = () => {
                                       }}
                                     />
                                     {uploadProgress[file.id] > 0 && uploadProgress[file.id] < 100 && (
-                                      <div className="upload-progress">
-                                        <div
-                                          className="progress-bar"
-                                          style={{ width: `${uploadProgress[file.id]}%` }}
-                                        ></div>
-                                        <span className="progress-text">{uploadProgress[file.id]}%</span>
+                                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50 text-white">
+                                        <div className="text-center">
+                                          <div className="spinner-border spinner-border-sm mb-2" role="status">
+                                            <span className="visually-hidden">Cargando...</span>
+                                          </div>
+                                          <div>{uploadProgress[file.id]}%</div>
+                                        </div>
                                       </div>
                                     )}
                                   </div>
@@ -411,6 +570,7 @@ const Upload = () => {
                                       size="sm"
                                       onClick={() => removeFile(file.id)}
                                       className="py-0 px-1"
+                                      disabled={uploading}
                                     >
                                       <i className="bi bi-x"></i>
                                     </Button>
@@ -426,7 +586,7 @@ const Upload = () => {
                 </Col>
 
                 <Col lg={4}>
-                  <Card className="mb-4">
+                  <Card className="shadow-sm mb-4">
                     <Card.Body>
                       <h5 className="mb-3">{t('details.title')}</h5>
 
@@ -437,6 +597,7 @@ const Upload = () => {
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
                           placeholder={t('form.title_placeholder')}
+                          disabled={uploading}
                         />
                         <Form.Text className="text-muted">
                           {t('form.title_help')}
@@ -451,6 +612,7 @@ const Upload = () => {
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder={t('form.description_placeholder')}
+                          disabled={uploading}
                         />
                       </Form.Group>
 
@@ -458,20 +620,21 @@ const Upload = () => {
                         <Form.Label>{t('form.labels')}</Form.Label>
                         <DropdownProvider>
                           <LabelSelector
+                            onSelect={handleLabelSelect}
                             selectedLabels={selectedLabels}
-                            onLabelSelect={handleLabelSelect}
-                            onLabelRemove={handleLabelRemove}
+                            onRemove={handleLabelRemove}
+                            disabled={uploading}
                           />
                         </DropdownProvider>
                       </Form.Group>
 
-                      <Form.Group className="mb-3">
+                      <Form.Group className="mb-4">
                         <Form.Label>{t('visibility.title')}</Form.Label>
                         <div>
                           <Form.Check
                             type="radio"
                             id="visibility-public"
-                            name="isPublic"
+                            name="visibility"
                             label={t('visibility.public')}
                             checked={isPublic}
                             onChange={() => setIsPublic(true)}
@@ -481,7 +644,7 @@ const Upload = () => {
                           <Form.Check
                             type="radio"
                             id="visibility-private"
-                            name="isPublic"
+                            name="visibility"
                             label={t('visibility.private')}
                             checked={!isPublic}
                             onChange={() => setIsPublic(false)}
@@ -492,25 +655,28 @@ const Upload = () => {
                           </Form.Text>
                         </div>
                       </Form.Group>
+
+                      <div className="d-grid">
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          disabled={files.length === 0 || uploading}
+                        >
+                          {uploading ? (
+                            <>
+                              <Spinner animation="border" size="sm" className="me-2" />
+                              {t('common:buttons.uploading')}
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-cloud-upload me-2"></i>
+                              {t('buttons.upload', { count: files.length })}
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </Card.Body>
                   </Card>
-
-                  <div className="d-grid">
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      disabled={files.length === 0 || uploading}
-                    >
-                      {uploading ? (
-                        <>
-                          <Spinner animation="border" size="sm" className="me-2" />
-                          {t('buttons.uploading')}
-                        </>
-                      ) : (
-                        <>{t('buttons.upload', { count: files.length })}</>
-                      )}
-                    </Button>
-                  </div>
                 </Col>
               </Row>
             </Form>
@@ -520,45 +686,12 @@ const Upload = () => {
         </Card.Body>
       </Card>
 
-      <style jsx="true">{`
-        .dropzone {
-          border: 2px dashed #ccc;
-          border-radius: 8px;
-          padding: 20px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        .dropzone:hover, .dropzone:focus {
-          border-color: var(--bs-primary);
-          background-color: rgba(13, 110, 253, 0.05);
-        }
-        .upload-progress {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 24px;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .progress-bar {
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          background: rgba(13, 110, 253, 0.7);
-          z-index: 1;
-        }
-        .progress-text {
-          color: white;
-          font-size: 12px;
-          position: relative;
-          z-index: 2;
-          text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-        }
-      `}</style>
+      {/* Modal de resultados de carga */}
+      <UploadResultModal
+        show={showResultModal}
+        onHide={handleCloseResultModal}
+        result={uploadResult}
+      />
     </Container>
   );
 };

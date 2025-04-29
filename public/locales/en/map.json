@@ -12,6 +12,8 @@
   },
   "mapStyles": {
     "voyager": "Voyager",
+    "satellite": "Satellite",
+    "hybrid": "Hybrid",
     "streets": "Streets",
     "basic": "Basic",
     "outdoor": "Outdoor",

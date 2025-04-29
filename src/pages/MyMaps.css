@@ -14,7 +14,7 @@
 
 .map-card:hover {
   transform: none;
-  outline: 2px solid #000;
+  outline: 2px solid var(--dark);
   outline-offset: 0;
   box-shadow: none;
 }

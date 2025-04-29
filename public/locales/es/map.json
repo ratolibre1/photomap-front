@@ -12,6 +12,8 @@
   },
   "mapStyles": {
     "voyager": "Voyager",
+    "satellite": "Satélite",
+    "hybrid": "Híbrido",
     "streets": "Calles",
     "basic": "Básico",
     "outdoor": "Exterior",

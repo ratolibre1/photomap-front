@@ -52,6 +52,14 @@ const PublicMapComponent = ({ photos, userName, loading, colorPalette }) => {
       title: t('map:mapStyles.voyager'),
       url: `https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?key=${apiKey}`
     },
+    satellite: {
+      title: t('map:mapStyles.satellite'),
+      url: `https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=${apiKey}`
+    },
+    hybrid: {
+      title: t('map:mapStyles.hybrid'),
+      url: `https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${apiKey}`
+    },
     streets: {
       title: t('map:mapStyles.streets'),
       url: `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${apiKey}`

@@ -11,6 +11,28 @@
     "ui": "Interfaz y diseño"
   },
   "changes": {
+    "v1_2_0": {
+      "features": {
+        "upload_improvements": "Carga múltiple optimizada",
+        "upload_results": "Nuevo modal de resultados",
+        "batch_upload": "Etiquetado masivo en ZIP"
+      },
+      "improvements": {
+        "map_interactions": "Interacciones mejoradas en mapas",
+        "photo_filters": "Filtros de fotos mejorados",
+        "error_handling": "Mejor manejo de errores"
+      },
+      "fixes": {
+        "upload_modal": "Correcciones en modal de subida",
+        "map_visibility": "Visualización de capa satelital",
+        "mobile_experience": "Experiencia móvil"
+      },
+      "ui": {
+        "photo_details": "Vista detallada de fotos",
+        "sidebar_compact": "Sidebar compacto mejorado",
+        "responsive_layout": "Diseño responsivo avanzado"
+      }
+    },
     "v1_1_0": {
       "features": {
         "maps": "Mapas personalizados",
@@ -54,6 +76,28 @@
     }
   },
   "descriptions": {
+    "v1_2_0": {
+      "features": {
+        "upload_improvements": "Nueva forma de cargar múltiples fotos en una sola petición, optimizando el proceso y reduciendo la carga en el servidor. Procesamiento simultáneo de todas las imágenes.",
+        "upload_results": "Completamente rediseñado para ofrecer mejor información sobre éxitos, duplicados y errores. Navegación mejorada y visualización de miniaturas, ubicaciones y fechas.",
+        "batch_upload": "Ahora puedes aplicar etiquetas directamente a todas las fotos ZIP durante la carga, lo que simplifica la organización y categorización masiva."
+      },
+      "improvements": {
+        "map_interactions": "Mayor fluidez en desplazamiento, zoom y agrupación de marcadores en los mapas. Mejor rendimiento y precisión al mostrar ubicaciones de fotos.",
+        "photo_filters": "Filtros más intuitivos y rápidos, con mejor integración entre ubicaciones, fechas y etiquetas. Respuesta inmediata al cambiar cualquier criterio.",
+        "error_handling": "Manejo de errores más claro, con mensajes específicos y orientación sobre cómo resolverlos. Mejor recuperación ante fallas de red o servidor."
+      },
+      "fixes": {
+        "upload_modal": "Corrección del scroll vertical en el modal de resultados de carga y mejor visualización de listas largas de fotos.",
+        "map_visibility": "Solución a problemas con la visualización de la capa satelital y otros estilos de mapa en diferentes dispositivos.",
+        "mobile_experience": "Arreglos en la navegación, menús y formularios para mejorar la experiencia en dispositivos móviles y tablets."
+      },
+      "ui": {
+        "photo_details": "Nueva presentación de detalles de fotos con información de ubicación, fecha y etiquetas más accesible y visual.",
+        "sidebar_compact": "Mejoras en la barra lateral compacta con iconos centrados y mejor organización de accesos rápidos.",
+        "responsive_layout": "Optimización completa del diseño adaptativo para asegurar una excelente experiencia en todos los tamaños de pantalla."
+      }
+    },
     "v1_1_0": {
       "features": {
         "maps": "Crea mapas personalizados a partir de tus fotos favoritas. Comparte tus colecciones con otros usuarios y agrupa tus recuerdos por temáticas.",

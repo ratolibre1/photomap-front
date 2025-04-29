@@ -15,8 +15,8 @@ const MENU_ITEMS = [
   { path: '/on-this-day', label: 'nav:onthisday', icon: '📅' },
   { path: '/upload', label: 'nav:upload', icon: '📤' },
   { path: '/categories', label: 'nav:categories', icon: '🏷️' },
-  { path: '/profile', label: 'nav:profile', icon: '👤' },
-  { path: '/help', label: 'nav:helpcenter', icon: '❓' },
+  { path: '/profile', label: 'nav:profile', icon: '🪪' },
+  { path: '/help', label: 'nav:helpcenter', icon: 'ℹ️' },
   { path: '/admin-tools', label: 'nav:admin', icon: '🧰' },
 ];
 
@@ -407,12 +407,12 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
         <div className="position-relative mb-3 text-center">
           <Link
             to="/changelog"
-            className={`d-inline-flex align-items-center ${expanded ? 'text-decoration-none' : 'mx-auto'}`}
-            style={!expanded ? { width: '40px', height: '40px', borderRadius: '50%', opacity: 0.7 } : { color: 'rgba(255,255,255,0.8)' }}
+            className={`d-inline-flex align-items-center justify-content-center ${expanded ? 'text-decoration-none' : 'mx-auto'}`}
+            style={!expanded ? { width: '40px', height: '40px', borderRadius: '50%', opacity: 0.7, display: 'flex' } : { color: 'rgba(255,255,255,0.8)' }}
             title={t('nav:changelog')}
           >
-            <span className={expanded ? "me-2" : ""} style={{ paddingTop: '3px' }}>📜</span>
-            {expanded && <small className="text-decoration-underline">v1.1.0</small>}
+            <span className={expanded ? "me-2" : ""}>📜</span>
+            {expanded && <small className="text-decoration-underline">v1.2.0</small>}
           </Link>
         </div>
 

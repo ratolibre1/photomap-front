@@ -47,7 +47,8 @@
   "error": {
     "no_files": "Por favor, selecciona al menos una foto para subir",
     "partial_upload": "Hubo problemas al subir algunas imágenes. Por favor, intenta de nuevo",
-    "upload_failed": "Error al subir las imágenes. Por favor, verifica tu conexión e intenta de nuevo"
+    "upload_failed": "Error al subir las imágenes. Por favor, verifica tu conexión e intenta de nuevo",
+    "unexpected_response": "La respuesta del servidor no tiene el formato esperado. Por favor, intenta nuevamente."
   },
   "zip": {
     "title": "Importar fotos desde archivo ZIP",
@@ -64,7 +65,55 @@
       "invalid_file": "Por favor selecciona un archivo ZIP válido",
       "no_file": "Por favor selecciona un archivo ZIP para subir",
       "upload_failed": "Error al subir archivo: {{message}}",
-      "try_again": "Intenta nuevamente más tarde"
+      "try_again": "Intenta nuevamente más tarde",
+      "timeout": "Error: La subida ha excedido el tiempo límite",
+      "timeout_message": "La subida del archivo ZIP ha tardado demasiado tiempo. Intenta con un archivo más pequeño o verifica tu conexión a Internet."
     }
+  },
+  "result": {
+    "success_title": "¡Carga exitosa! 🎉",
+    "partial_success_title": "Carga completada con advertencias ⚠️",
+    "error_title": "Error en la carga ❌",
+    "duplicate_title": "Foto duplicada detectada",
+    "duplicate_message": "Ya tienes una foto idéntica en tu colección",
+    "stats_title": "Estadísticas de la carga",
+    "photos_title": "Detalle de fotos",
+    "process_completed": "Procesamiento completado. Se procesaron {{photos}} {{photos, plural, one{foto} other{fotos}}}, {{duplicates}} {{duplicates, plural, one{duplicado} other{duplicados}}}, {{errors}} {{errors, plural, one{error} other{errores}}}.",
+    "processed": "Procesadas",
+    "duplicates": "Duplicadas",
+    "errors": "Errores",
+    "with_location": "Con ubicación",
+    "with_location_singular": "Con ubicación",
+    "without_location": "Sin ubicación",
+    "without_location_singular": "Sin ubicación",
+    "with_timestamp": "Con fecha",
+    "with_timestamp_singular": "Con fecha",
+    "without_timestamp": "Sin fecha",
+    "without_timestamp_singular": "Sin fecha",
+    "duplicate_photo": "Foto duplicada",
+    "view_duplicate": "Ver foto original",
+    "view": "Ver",
+    "view_detail": "Ver detalle",
+    "view_all_photos": "Ver todas mis fotos",
+    "is_duplicate": "Duplicada",
+    "error_processing": "Error al procesar",
+    "has_location_tooltip": "La foto tiene datos de ubicación geográfica",
+    "no_location_tooltip": "La foto no tiene datos de ubicación",
+    "has_timestamp_tooltip": "La foto tiene datos de fecha y hora",
+    "no_timestamp_tooltip": "La foto no tiene datos de fecha y hora",
+    "location_available": "Ubicación disponible",
+    "location_unknown": "Desconocida",
+    "date_available": "Fecha disponible",
+    "date_unknown": "Desconocida",
+    "process_completed_prefix": "Procesamiento completado. Se procesaron",
+    "photo_singular": "foto",
+    "photo_plural": "fotos",
+    "duplicate_singular": "duplicado",
+    "duplicate_plural": "duplicados",
+    "error_singular": "error",
+    "error_plural": "errores",
+    "success_photos": "Fotos cargadas correctamente",
+    "duplicate_photos": "Fotos duplicadas",
+    "error_photos": "Fotos con errores"
   }
 }
