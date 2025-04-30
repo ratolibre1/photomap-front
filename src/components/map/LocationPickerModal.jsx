@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
   iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconAnchor: [12, 20],
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
@@ -63,8 +63,8 @@ const LocationPickerModal = ({ show, onHide, initialCoordinates, onConfirm, phot
         </div>
       `,
       className: 'custom-photo-marker',
-      iconSize: [40, 60],
-      iconAnchor: [25, 55],
+      iconSize: [50, 50],
+      iconAnchor: [25, 25],
     });
   };
 
@@ -227,8 +227,8 @@ const LocationPickerModal = ({ show, onHide, initialCoordinates, onConfirm, phot
     }
     .marker-container {
       position: relative;
-      width: 40px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
     }
     .marker-pin {
       width: 50px;
