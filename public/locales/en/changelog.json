@@ -11,6 +11,20 @@
     "ui": "UI & Design"
   },
   "changes": {
+    "v1_3_0": {
+      "features": {
+        "location_picker_modal": "Location picker modal"
+      },
+      "improvements": {
+        "map_styles": "Multiple map styles"
+      },
+      "fixes": {
+        "i18n_translations": "Translation fixes"
+      },
+      "ui": {
+        "photo_thumbnail_marker": "Photo thumbnail markers"
+      }
+    },
     "v1_2_0": {
       "features": {
         "upload_improvements": "Optimized multiple upload",
@@ -76,6 +90,20 @@
     }
   },
   "descriptions": {
+    "v1_3_0": {
+      "features": {
+        "location_picker_modal": "New interactive map modal for selecting and editing photo locations with precision. Includes address search, custom map styles, and direct coordinate input."
+      },
+      "improvements": {
+        "map_styles": "Added three selectable map styles (Streets, Hybrid, and Outdoor) for better visualization according to your preferences."
+      },
+      "fixes": {
+        "i18n_translations": "Fixed translation issues in modals and map components to ensure proper display in both English and Spanish."
+      },
+      "ui": {
+        "photo_thumbnail_marker": "Enhanced map markers now display the actual photo thumbnail instead of generic icons, making location identification more intuitive."
+      }
+    },
     "v1_2_0": {
       "features": {
         "upload_improvements": "New way to upload multiple photos in a single request, optimizing the process and reducing server load. Simultaneous processing of all images.",

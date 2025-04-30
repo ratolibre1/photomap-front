@@ -412,7 +412,7 @@ const Sidebar = ({ expanded, toggleSidebar }) => {
             title={t('nav:changelog')}
           >
             <span className={expanded ? "me-2" : ""}>📜</span>
-            {expanded && <small className="text-decoration-underline">v1.2.0</small>}
+            {expanded && <small className="text-decoration-underline">v1.3.0</small>}
           </Link>
         </div>
 

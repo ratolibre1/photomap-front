@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, Form, Toast, ToastContainer } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Modal, Form, Toast, ToastContainer, InputGroup } from 'react-bootstrap';
 import { photoService } from '../services/api';
 import { useLabels } from '../context/LabelContext';
 import LabelBadge from '../components/common/LabelBadge';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import DisplayCroppedImage from '../components/common/DisplayCroppedImage';
 import SimpleImageEditor from '../components/common/SimpleImageEditor';
 import { DropdownProvider } from '../context/DropdownContext';
+import LocationPickerModal from '../components/map/LocationPickerModal';
 
 const PhotoDetail = () => {
   const { id } = useParams();
@@ -41,6 +42,7 @@ const PhotoDetail = () => {
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [imageTransformations, setImageTransformations] = useState({});
   const [showOriginalPhoto, setShowOriginalPhoto] = useState(false);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -320,6 +322,14 @@ const PhotoDetail = () => {
       setToastMessage("Error al guardar las transformaciones. Intenta nuevamente.");
       setShowToast(true);
     }
+  };
+
+  // Función para manejar la selección de ubicación en el mapa
+  const handleLocationSelected = (coords) => {
+    setEditForm({
+      ...editForm,
+      coordinates: coords
+    });
   };
 
   if (loading) {
@@ -697,13 +707,22 @@ const PhotoDetail = () => {
 
             <Form.Group className="mb-3">
               <Form.Label>{t('edit.coordinates')}</Form.Label>
-              <Form.Control
-                type="text"
-                name="coordinates"
-                value={editForm.coordinates}
-                onChange={handleFormChange}
-                placeholder={t('edit.coordinates_placeholder')}
-              />
+              <InputGroup>
+                <Form.Control
+                  type="text"
+                  name="coordinates"
+                  value={editForm.coordinates}
+                  onChange={handleFormChange}
+                  placeholder={t('edit.coordinates_placeholder')}
+                />
+                <Button
+                  variant="primary"
+                  onClick={() => setShowLocationPicker(true)}
+                  title={t('edit.pick_on_map')}
+                >
+                  <i className="bi bi-geo-alt-fill"></i>
+                </Button>
+              </InputGroup>
               <Form.Text className="text-muted">
                 {t('edit.coordinates_help')}
               </Form.Text>
@@ -775,6 +794,15 @@ const PhotoDetail = () => {
           />
         </Modal.Body>
       </Modal>
+
+      {/* Modal de selección de ubicación */}
+      <LocationPickerModal
+        show={showLocationPicker}
+        onHide={() => setShowLocationPicker(false)}
+        initialCoordinates={editForm.coordinates}
+        onConfirm={handleLocationSelected}
+        photoUrl={photo?.thumbnailUrl}
+      />
 
       {/* Toast para notificación de copia */}
       <ToastContainer position="bottom-end" className="p-3">

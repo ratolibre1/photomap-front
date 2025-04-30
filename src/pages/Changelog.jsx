@@ -17,8 +17,68 @@ const Changelog = () => {
       {/* Versión actual */}
       <Card className="mb-4 shadow-sm">
         <Card.Header className="d-flex justify-content-between align-items-center bg-light">
-          <span className="fw-bold">🚀 v1.2.0 - {t('current_version')}</span>
+          <span className="fw-bold">🚀 v1.3.0 - {t('current_version')}</span>
           <NewFeatureBadge rotate={12}>{t('common:badges.new')}</NewFeatureBadge>
+        </Card.Header>
+        <Card.Body>
+          <Row className="mb-4">
+            <Col md={6}>
+              <h5 className="d-flex align-items-center">
+                <i className="bi bi-stars me-2 text-primary"></i>
+                {t('categories.features')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_3_0.features.location_picker_modal')}</strong> - {t('descriptions.v1_3_0.features.location_picker_modal')}
+                </li>
+              </ul>
+
+              <h5 className="d-flex align-items-center mt-4">
+                <i className="bi bi-arrow-up-circle me-2 text-primary"></i>
+                {t('categories.improvements')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_3_0.improvements.map_styles')}</strong> - {t('descriptions.v1_3_0.improvements.map_styles')}
+                </li>
+              </ul>
+            </Col>
+
+            <Col md={6}>
+              <h5 className="d-flex align-items-center">
+                <i className="bi bi-palette me-2 text-primary"></i>
+                {t('categories.ui')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_3_0.ui.photo_thumbnail_marker')}</strong> - {t('descriptions.v1_3_0.ui.photo_thumbnail_marker')}
+                </li>
+              </ul>
+
+              <h5 className="d-flex align-items-center mt-4">
+                <i className="bi bi-bug me-2 text-primary"></i>
+                {t('categories.fixes')}
+              </h5>
+              <ul className="changelog-list">
+                <li>
+                  <strong>{t('changes.v1_3_0.fixes.i18n_translations')}</strong> - {t('descriptions.v1_3_0.fixes.i18n_translations')}
+                </li>
+              </ul>
+            </Col>
+          </Row>
+          <div className="d-flex justify-content-end">
+            <Link to="/help" className="btn btn-sm btn-outline-primary">
+              <i className="bi bi-question-circle me-1"></i>
+              {t('view_help')}
+            </Link>
+          </div>
+        </Card.Body>
+      </Card>
+
+      {/* Versión anterior */}
+      <Card className="mb-4 shadow-sm">
+        <Card.Header className="d-flex justify-content-between align-items-center bg-light">
+          <span className="fw-bold">📦 v1.2.0</span>
         </Card.Header>
         <Card.Body>
           <Row className="mb-4">
@@ -92,12 +152,6 @@ const Changelog = () => {
               </ul>
             </Col>
           </Row>
-          <div className="d-flex justify-content-end">
-            <Link to="/help" className="btn btn-sm btn-outline-primary">
-              <i className="bi bi-question-circle me-1"></i>
-              {t('view_help')}
-            </Link>
-          </div>
         </Card.Body>
       </Card>
 
