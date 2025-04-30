@@ -21,6 +21,17 @@ export const THEMES = {
       ...COMMON_COLORS
     }
   },
+  exploud: {
+    name: 'Exploud',
+    icon: '📣',
+    colors: {
+      light: '#bdbdee',
+      dark: '#524a8b',
+      primary: '#a4a4de',
+      secondary: '#b4417b',
+      ...COMMON_COLORS
+    }
+  },
   exeggutor: {
     name: 'Exeggutor',
     icon: '🌴',
@@ -73,6 +84,17 @@ export const THEMES = {
       dark: '#294129',
       primary: '#399441',
       secondary: '#cd6a8b',
+      ...COMMON_COLORS
+    }
+  },
+  gligar: {
+    name: 'Gligar',
+    icon: '🦇',
+    colors: {
+      light: '#e6a4cd',
+      dark: '#62314a',
+      primary: '#ac6294',
+      secondary: '#4a73bd',
       ...COMMON_COLORS
     }
   }
