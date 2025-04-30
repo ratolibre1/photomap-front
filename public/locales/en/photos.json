@@ -84,7 +84,11 @@
     "saving": "Saving...",
     "save_changes": "Save Changes",
     "save_error": "Could not save changes. Please try again.",
-    "save_success": "Photo updated successfully"
+    "save_success": "Photo updated successfully",
+    "location_picker": "Select Location",
+    "search_location": "Search location",
+    "search_results": "Search Results",
+    "pick_on_map": "Select on map"
   },
   "delete": {
     "title": "Confirm Deletion",

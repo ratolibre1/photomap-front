@@ -11,6 +11,20 @@
     "ui": "Interfaz y diseño"
   },
   "changes": {
+    "v1_3_0": {
+      "features": {
+        "location_picker_modal": "Modal de selección de ubicación"
+      },
+      "improvements": {
+        "map_styles": "Múltiples estilos de mapa"
+      },
+      "fixes": {
+        "i18n_translations": "Correcciones de traducciones"
+      },
+      "ui": {
+        "photo_thumbnail_marker": "Marcadores con miniaturas de fotos"
+      }
+    },
     "v1_2_0": {
       "features": {
         "upload_improvements": "Carga múltiple optimizada",
@@ -76,6 +90,20 @@
     }
   },
   "descriptions": {
+    "v1_3_0": {
+      "features": {
+        "location_picker_modal": "Nuevo modal de mapa interactivo para seleccionar y editar ubicaciones de fotos con precisión. Incluye búsqueda de direcciones, estilos de mapa personalizados y entrada directa de coordenadas."
+      },
+      "improvements": {
+        "map_styles": "Añadidos tres estilos de mapa seleccionables (Calles, Híbrido y Exterior) para mejor visualización según tus preferencias."
+      },
+      "fixes": {
+        "i18n_translations": "Corrección de problemas de traducción en modales y componentes de mapas para asegurar una visualización correcta tanto en español como en inglés."
+      },
+      "ui": {
+        "photo_thumbnail_marker": "Marcadores de mapa mejorados que ahora muestran la miniatura real de la foto en lugar de íconos genéricos, haciendo más intuitiva la identificación de ubicaciones."
+      }
+    },
     "v1_2_0": {
       "features": {
         "upload_improvements": "Nueva forma de cargar múltiples fotos en una sola petición, optimizando el proceso y reduciendo la carga en el servidor. Procesamiento simultáneo de todas las imágenes.",

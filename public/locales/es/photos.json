@@ -2,7 +2,7 @@
   "detail": {
     "title": "Detalles de la foto",
     "loading": "Cargando detalles de la foto...",
-    "not_found": "No se encontró la foto solicitada 😕",
+    "not_found": "La foto solicitada no se encuentra 😕",
     "back_to_gallery": "Volver a la galería",
     "view_full_size": "Ver tamaño completo",
     "image_unavailable": "Imagen no disponible",
@@ -19,7 +19,7 @@
     "technical_details": "Detalles técnicos",
     "camera": "Cámara",
     "aperture": "Apertura",
-    "shutter_speed": "Velocidad",
+    "shutter_speed": "Velocidad de obturación",
     "iso": "ISO",
     "labels": "Etiquetas",
     "no_labels": "Sin etiquetas",
@@ -83,8 +83,12 @@
     "time_help": "Hora de la foto (opcional)",
     "saving": "Guardando...",
     "save_changes": "Guardar cambios",
-    "save_error": "No se pudieron guardar los cambios. Por favor, intenta nuevamente.",
-    "save_success": "Foto actualizada correctamente"
+    "save_error": "No se pudieron guardar los cambios. Inténtalo de nuevo.",
+    "save_success": "Foto actualizada correctamente",
+    "location_picker": "Seleccionar ubicación",
+    "search_location": "Buscar ubicación",
+    "search_results": "Resultados de búsqueda",
+    "pick_on_map": "Seleccionar en el mapa"
   },
   "delete": {
     "title": "Confirmar eliminación",
@@ -95,7 +99,7 @@
   },
   "actions": {
     "edit": "Editar foto",
-    "edit_data": "Editar Datos",
+    "edit_data": "Editar datos",
     "delete": "Eliminar foto",
     "edit_image": "Editar imagen"
   },
@@ -110,11 +114,11 @@
     "next": "Foto siguiente"
   },
   "image_editor": {
-    "title": "Editor de Imagen",
-    "rotate_left": "Rotar a la izquierda",
-    "rotate_right": "Rotar a la derecha",
+    "title": "Editor de imagen",
+    "rotate_left": "Rotar izquierda",
+    "rotate_right": "Rotar derecha",
     "zoom": "Zoom",
-    "reset": "Restaurar",
+    "reset": "Restablecer",
     "save": "Guardar",
     "aspect_ratio": "Relación de aspecto",
     "free": "Libre",
@@ -124,11 +128,11 @@
     "flip_horizontal": "Horizontal",
     "flip_vertical": "Vertical",
     "saved": "Cambios guardados correctamente",
-    "crop": "Recorte",
+    "crop": "Recortar",
     "width": "Ancho",
     "height": "Alto",
-    "show_original": "Ver Foto Original",
-    "show_edited": "Ver Foto Editada",
+    "show_original": "Mostrar foto original",
+    "show_edited": "Mostrar foto editada",
     "restore_original": "Restaurar foto original",
     "transformations": "Transformaciones"
   }
