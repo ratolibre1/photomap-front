@@ -29,6 +29,10 @@
     "location_timeout": "The request to get your location has timed out",
     "location_unknown": "An unknown error occurred when trying to get your location"
   },
+  "session": {
+    "expired": "Session Expired",
+    "redirecting": "Redirecting to login page..."
+  },
   "success": {
     "saved": "Saved successfully",
     "deleted": "Deleted successfully",

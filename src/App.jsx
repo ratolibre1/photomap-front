@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -21,6 +22,8 @@ import { AuthProvider } from './context/AuthContext';
 import MyMaps from './pages/MyMaps';
 import Help from './pages/Help';
 import Changelog from './pages/Changelog';
+import SessionExpiredPage from './components/common/SessionExpiredModal';
+import { SESSION_EXPIRED_EVENT } from './services/api';
 
 // Importamos el CSS del layout
 import './components/layout.css';
@@ -44,6 +47,31 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  const [showSessionExpired, setShowSessionExpired] = useState(false);
+
+  // Escuchar el evento de sesión expirada
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      console.log("Sesión expirada, mostrando página de redirección");
+      setShowSessionExpired(true);
+    };
+
+    // Añadir listener para el evento personalizado
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+
+    // Limpiar listener al desmontar
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    };
+  }, []);
+
+  // Si la sesión ha expirado, mostrar la página intersticial
+  // Pero no sobreescribir la página not-found ni la de login
+  const currentPath = window.location.pathname;
+  if (showSessionExpired && currentPath !== '/not-found' && currentPath !== '/login') {
+    return <SessionExpiredPage />;
+  }
+
   return (
     <AuthProvider>
       <CategoryProvider>

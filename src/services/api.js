@@ -5,6 +5,15 @@ const API_BASE_URL = import.meta.env.PROD
   ? 'https://photomap-back.onrender.com' // URL completa en producción
   : '/api'; // Ruta relativa en desarrollo (usará el proxy de Vite)
 
+// Evento personalizado para manejar la expiración de la sesión
+export const SESSION_EXPIRED_EVENT = 'sessionExpired';
+
+// Función para disparar el evento de sesión expirada
+export const triggerSessionExpiredEvent = () => {
+  const event = new CustomEvent(SESSION_EXPIRED_EVENT);
+  window.dispatchEvent(event);
+};
+
 // Configuración base para axios
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -42,6 +51,25 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Verificar si es un error 401 (Unauthorized)
+    if (error.response && error.response.status === 401) {
+      console.error("Error 401: Token expirado o inválido");
+
+      // Limpiar el token del localStorage
+      localStorage.removeItem('token');
+
+      // Comprobar que no estemos ya en el login para evitar bucles
+      if (window.location.pathname !== '/login') {
+        console.log("Sesión expirada, mostrando modal...");
+
+        // Disparar el evento para mostrar el modal
+        triggerSessionExpiredEvent();
+
+        // No redirigimos inmediatamente, el modal se encargará de eso
+        return Promise.reject(error);
+      }
+    }
+
     console.error("Error en respuesta:", error.response?.status, error.response?.data);
     return Promise.reject(error);
   }
@@ -309,7 +337,8 @@ export const locationService = {
   getCountries: () => api.get('/location/countries'),
   getRegions: (countryId) => api.get(countryId ? `/location/regions?countryId=${countryId}` : '/location/regions'),
   getCounties: (regionId) => api.get(regionId ? `/location/counties?regionId=${regionId}` : '/location/counties'),
-  getCities: (countyId) => api.get(countyId ? `/location/cities?countyId=${countyId}` : '/location/cities')
+  getCities: (countyId) => api.get(countyId ? `/location/cities?countyId=${countyId}` : '/location/cities'),
+  getLocationTree: () => api.get('/location/tree')
 };
 
 // Agregar el servicio de etiquetas

@@ -30,6 +30,10 @@
     "location_timeout": "La solicitud para obtener tu ubicación ha expirado",
     "location_unknown": "Ha ocurrido un error desconocido al obtener tu ubicación"
   },
+  "session": {
+    "expired": "Sesión Expirada",
+    "redirecting": "Redirigiendo a la página de inicio de sesión..."
+  },
   "success": {
     "saved": "Guardado correctamente",
     "deleted": "Eliminado correctamente",

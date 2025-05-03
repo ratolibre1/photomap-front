@@ -1,6 +1,7 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import GeocodingPanel from '../components/admin/GeocodingPanel';
 import ColorPalette from '../components/admin/ColorPalette';
+import LocationTree from '../components/admin/LocationTree';
 import { useTranslation } from 'react-i18next';
 
 const AdminTools = () => {
@@ -23,6 +24,13 @@ const AdminTools = () => {
         {/* Panel de colores */}
         <Col md={6}>
           <ColorPalette />
+        </Col>
+      </Row>
+
+      <Row className="mt-4">
+        <Col md={12}>
+          {/* Nuevo panel de árbol de ubicaciones */}
+          <LocationTree />
         </Col>
       </Row>
     </Container>
